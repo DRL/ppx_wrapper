@@ -14,6 +14,7 @@ import sys
 import time
 import multiprocessing as mp 
 import subprocess
+import string
 
 class Contig():
 	def __init__(self, header, seq):
@@ -30,7 +31,7 @@ def parse_contigs_to_dict(contig_file):
 					contigs.add(Contig(header, seq)) 
 				header = line.rstrip("\n").lstrip(">")	
 			else:
-				seq += line.rstrip("\n")
+				seq += line.translate(None,string.ascii_lowercase).rstrip("\n")
 		contigs.add(Contig(header, seq)) 
 	return contigs
 
