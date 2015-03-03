@@ -28,15 +28,13 @@ def parse_contigs_to_dict(contig_file):
 		for line in fh:
 			if line.startswith(">"):
 				if (seq):
-					if len(seq) > 3000000: 
-						print "Parsed " + header
-						contigs.add(Contig(header, seq)) 
+					print "Parsed " + header
+					contigs.add(Contig(header, seq)) 
 				header = line.rstrip("\n").lstrip(">")	
 			else:
  				seq += line.translate(None,string.ascii_lowercase).rstrip("\n")
-		if len(seq) > 3000000: 
-			print "Parsed " + header
-			contigs.add(Contig(header, seq)) 
+		print "Parsed " + header
+		contigs.add(Contig(header, seq)) 
 	return contigs
 
 def align_fasta(contig_file):
