@@ -18,7 +18,7 @@ import subprocess
 def parse_contigs_to_dict(contig_file):
 	contigs = {}
 	header, seq = '', ''
-	with open(infile) as fh:
+	with open(contig_file) as fh:
 		for line in fh:
 			if line.startswith(">"):
 				if (seq):
