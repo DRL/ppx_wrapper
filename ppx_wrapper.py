@@ -15,9 +15,10 @@ import time
 import multiprocessing as mp 
 import subprocess
 
-class Contig(header, seq):
-	self.header = header
-	self.seq = seq
+class Contig():
+	def __init__(self, header, seq):
+		self.header = header
+		self.seq = seq
 
 def parse_contigs_to_dict(contig_file):
 	contigs = set()
