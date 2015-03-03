@@ -64,4 +64,5 @@ if __name__ == "__main__":
 		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE]")
 	
 	contigs = parse_contigs_to_dict(contig_file)
+	print contigs
 	fastblocksearch(contigs, profile_file)
