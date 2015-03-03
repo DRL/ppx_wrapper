@@ -34,7 +34,8 @@ def parse_contigs_to_dict(contig_file):
 					seq = ''
 				header = line.rstrip("\n").lstrip(">")	
 			else:
- 				seq += line.translate(None,string.ascii_lowercase).rstrip("\n")
+ 				#seq += line.translate(None,string.ascii_lowercase).rstrip("\n")
+ 				seq += line.rstrip("\n")
 		print "Parsed " + header
 		contig = ContigObject(header, seq)
 		contigs.add(contig) 
