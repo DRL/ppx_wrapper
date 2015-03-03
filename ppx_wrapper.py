@@ -15,19 +15,22 @@ import time
 import multiprocessing as mp 
 import subprocess
 
+class Contig(header, seq):
+	self.header = header
+	self.seq = seq
+
 def parse_contigs_to_dict(contig_file):
-	contigs = {}
+	contigs = set()
 	header, seq = '', ''
 	with open(contig_file) as fh:
 		for line in fh:
 			if line.startswith(">"):
 				if (seq):
-					contigs[header] = seq
-					seq = ''
+					contigs.add(Contig(header, seq)) 
 				header = line.rstrip("\n").lstrip(">")	
 			else:
 				seq += line.rstrip("\n")
-		contigs[header] = seq
+		contigs.add(Contig(header, seq)) 
 	return contigs
 
 def align_fasta(contig_file):
@@ -37,7 +40,11 @@ def make_msa_profile(contig_file):
 	pass
 
 def run_fastblocksearch(profile, contig):
-	subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + contig + " " + profile, stdout=subprocess.PIPE, shell=True)
+	print "Searching " + profile + " in " + contig.header
+	temp_file = open(header + ".temp", 'w')
+	temp_file.write(">" + contig.header + "\n" + contig.seq)
+	temp_file.close()
+	subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + contig.header + ".result"  , stdout=subprocess.PIPE, shell=True)
 
 def fastblocksearch(profile_file, contigs):
 	pool = mp.Pool(processes=4)
