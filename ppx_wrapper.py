@@ -49,7 +49,7 @@ if __name__ == "__main__":
 		contig_file = sys.argv[1]
 		profile_file = sys.argv[2]
 	except:
-		sys.exit("Usage: ./fastats.py [FASTAFILE]")
+		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE]")
 	
-	contigs = parse_contigs_to_dict(contig_file, profile_file)
-	fastblocksearch(contigs)
+	contigs = parse_contigs_to_dict(contig_file)
+	fastblocksearch(contigs, profile_file)
