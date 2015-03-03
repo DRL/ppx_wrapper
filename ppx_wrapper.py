@@ -30,10 +30,10 @@ def parse_contigs_to_dict(contig_file):
 		contigs[header] = seq
 	return contigs
 
-def align_fasta(infile):
+def align_fasta(contig_file):
 	pass
 
-def make_msa_profile(aln_file):
+def make_msa_profile(contig_file):
 	pass
 
 def run_fastblocksearch(profile, contig):
