@@ -33,7 +33,7 @@ def parse_contigs_to_dict(contig_file):
 						contig = ContigObject(header, seq)
 						contigs.add(contig) 
 				seq = ''
-				header = line.rstrip("\n").lstrip(">")	
+				header = line.rstrip("\n").lstrip(">").replace(" ","_")	
 			else:
  				#seq += line.translate(None,string.ascii_lowercase).rstrip("\n")
  				seq += line.rstrip("\n")
