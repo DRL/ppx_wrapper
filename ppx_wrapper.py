@@ -56,7 +56,7 @@ def run_fastblocksearch(profile, header, seq):
 	temp = open(temp_file, 'w')
 	temp.write(">" + header + "\n" + seq)
 	temp.close()
-	output = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + header + ".result  &>/dev/null"  , stdout=subprocess.PIPE, shell=True)
+	output = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + header + ".result  &>/dev/null", stderr=STDOUT, stdout=subprocess.PIPE, shell=True)
 
 def fastblocksearch(contigs, profile_file,):
 	print str(len(contigs)) + " contigs"
