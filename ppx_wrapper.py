@@ -57,8 +57,9 @@ def run_fastblocksearch(profile, contig_header, contig_seq):
 	subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + contig_header + ".result"  , stdout=subprocess.PIPE, shell=True)
 
 def fastblocksearch(profile_file, contigs):
+	print str(len(contigs)) + 
 	pool = mp.Pool(processes=4)
-	results = [pool.apply(run_fastblocksearch, args=(profile_file, contig.header, contig.seq)) for contig in contigs]
+	results = [pool.apply(run_fastblocksearch, args=(profile_file, str(contig.header), str(contig.seq)) for contig in contigs]
 	print "Done"
 
 if __name__ == "__main__":
