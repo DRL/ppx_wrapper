@@ -28,7 +28,7 @@ def parse_contigs_to_dict(contig_file):
 		for line in fh:
 			if line.startswith(">"):
 				if (seq):
-					if len(seq) > 2000: 
+					if len(seq) > 100000: 
 						print "Parsed " + header
 						contig = ContigObject(header, seq)
 						contigs.add(contig) 
@@ -37,7 +37,7 @@ def parse_contigs_to_dict(contig_file):
 			else:
  				#seq += line.translate(None,string.ascii_lowercase).rstrip("\n")
  				seq += line.rstrip("\n")
-		if len(seq) > 2000: 
+		if len(seq) > 100000: 
 			print "Parsed " + header
 			contig = ContigObject(header, seq)
 			contigs.add(contig) 
@@ -69,5 +69,5 @@ if __name__ == "__main__":
 		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE]")
 	
 	contigs = parse_contigs_to_dict(contig_file)
-	print contigs
+	#print contigs
 	fastblocksearch(contigs, profile_file)
