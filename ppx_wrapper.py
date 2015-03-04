@@ -63,7 +63,7 @@ def fastblocksearch(contigs, profile_file,):
 	pool = mp.Pool(processes=4)
 	results = [pool.apply_async(run_fastblocksearch, args=(profile_file, contig.header, contig.seq)) for contig in contigs]
 	output = [p.get() for p in results]
-	print(output)
+	#print(output)
 	print "Done"
 
 if __name__ == "__main__":
