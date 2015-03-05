@@ -49,17 +49,18 @@ def align_fasta(contig_file):
 def make_msa_profile(contig_file):
 	pass
 
-def run_fastblocksearch(profile, header, seq):
-	print "Start searching " + profile + " in " + header
-
+def run_fastblocksearch(contig):
+	contig_seq = contigs.seq
+	contig_header = contigs.header
+	print "Start searching " + profile_file + " in " + contig_header
 	temp_file = header + ".temp"
 	temp = open(temp_file, 'w')
 	temp.write(">" + header + "\n" + seq)
 	temp.close()
-	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + header + ".result  &>>log.txt", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile_file + " > " + contig_header + ".result  &>>log.txt", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 	os.remove(temp_file)
 	output, error = process.communicate()
-	print "Finished searching " + profile + " in " + header
+	print "Finished searching " + profile_file + " in " + contig_header
 
 def fastblocksearch(contigs, profile_file):
 	print str(len(contigs)) + " contigs"
