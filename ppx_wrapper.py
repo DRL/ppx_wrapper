@@ -49,24 +49,22 @@ def align_fasta(contig_file):
 def make_msa_profile(contig_file):
 	pass
 
-def run_fastblocksearch(profile, contig):
-	contig_seq = contig.seq
-	contig_header = contig.header
-	print "Start searching " + profile + " in " + contig_header
+def run_fastblocksearch(profile, header, seq):
+	print "Start searching " + profile + " in " + header
 	temp_file = header + ".temp"
 	temp = open(temp_file, 'w')
 	temp.write(">" + header + "\n" + seq)
 	temp.close()
-	#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile_file + " > " + contig_header + ".result ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + contig_header + ".result ", shell=True)
+	#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile_file + " > " + header + ".result ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + header + ".result ", shell=True)
 	os.remove(temp_file)
-	output, error = process.communicate()
-	print "Finished searching " + profile + " in " + contig_header
+	#output, error = process.communicate()
+	print "Finished searching " + profile + " in " + header
 
 def fastblocksearch(profile, contigs):
 	print str(len(contigs)) + " contigs"
 	pool = mp.Pool(processes=10)
-	results = [pool.apply(run_fastblocksearch, args=(profile, contig,)) for contig in contigs]
+	results = [pool.apply(run_fastblocksearch, args=(profile, contig.header, contig.seq,)) for contig in contigs]
 	# pool = mp.Pool(processes=10)
 	# results = [pool.apply_async(run_fastblocksearch, args=(profile_file, contig.header, contig.seq)) for contig in contigs]
 	#output = [p.get() for p in results]
