@@ -50,8 +50,8 @@ def make_msa_profile(contig_file):
 	pass
 
 def run_fastblocksearch(profile, contig):
-	contig_seq = contigs.seq
-	contig_header = contigs.header
+	contig_seq = contig.seq
+	contig_header = contig.header
 	print "Start searching " + profile + " in " + contig_header
 	temp_file = header + ".temp"
 	temp = open(temp_file, 'w')
