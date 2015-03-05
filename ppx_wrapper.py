@@ -10,7 +10,7 @@ To do 		:
 """
 
 from __future__ import division
-import sys
+import sys, os
 import time
 import multiprocessing as mp 
 import subprocess
