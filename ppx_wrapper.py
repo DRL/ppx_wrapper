@@ -64,7 +64,7 @@ def run_fastblocksearch(profile, header, seq):
 
 def fastblocksearch(profile, contigs):
 	print str(len(contigs)) + " contigs"
-	pool = mp.Pool(processes = 10)
+	pool = mp.Pool(processes = 40)
 	for contig in contigs:
 		pool.apply(run_fastblocksearch, args=(profile, contig.header, contig.seq,))
 	# pool = mp.Pool(processes=10)
