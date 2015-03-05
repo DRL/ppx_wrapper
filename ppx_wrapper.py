@@ -49,24 +49,24 @@ def align_fasta(contig_file):
 def make_msa_profile(contig_file):
 	pass
 
-def run_fastblocksearch(contig):
+def run_fastblocksearch(profile, contig):
 	contig_seq = contigs.seq
 	contig_header = contigs.header
-	print "Start searching " + profile_file + " in " + contig_header
+	print "Start searching " + profile + " in " + contig_header
 	temp_file = header + ".temp"
 	temp = open(temp_file, 'w')
 	temp.write(">" + header + "\n" + seq)
 	temp.close()
 	#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile_file + " > " + contig_header + ".result ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile_file + " > " + contig_header + ".result ", shell=True)
+	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + contig_header + ".result ", shell=True)
 	os.remove(temp_file)
 	output, error = process.communicate()
-	print "Finished searching " + profile_file + " in " + contig_header
+	print "Finished searching " + profile + " in " + contig_header
 
-def fastblocksearch(contigs):
+def fastblocksearch(profile, contigs):
 	print str(len(contigs)) + " contigs"
 	pool = mp.Pool(processes=10)
-	results = [pool.apply_async(run_fastblocksearch, args=(contig,)) for contig in contigs]
+	results = [pool.apply_async(run_fastblocksearch, args=(profile, contig,)) for contig in contigs]
 	# pool = mp.Pool(processes=10)
 	# results = [pool.apply_async(run_fastblocksearch, args=(profile_file, contig.header, contig.seq)) for contig in contigs]
 	#output = [p.get() for p in results]
@@ -76,10 +76,10 @@ def fastblocksearch(contigs):
 if __name__ == "__main__":
 	try:
 		contig_file = sys.argv[1]
-		profile_file = sys.argv[2]
+		profile = sys.argv[2]
 	except:
 		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE]")
 	
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
-	fastblocksearch(contigs)
+	fastblocksearch(profile, contigs)
