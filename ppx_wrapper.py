@@ -62,7 +62,7 @@ def run_fastblocksearch(contig):
 	output, error = process.communicate()
 	print "Finished searching " + profile_file + " in " + contig_header
 
-def fastblocksearch(contigs, profile_file):
+def fastblocksearch(contigs):
 	print str(len(contigs)) + " contigs"
 	with mp.Pool(processes=4) as pool:
 		pool.map(run_fastblocksearch, contigs)
@@ -81,4 +81,4 @@ if __name__ == "__main__":
 	
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
-	fastblocksearch(contigs, profile_file)
+	fastblocksearch(contigs)
