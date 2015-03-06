@@ -133,7 +133,7 @@ def parseFastBlockSearchResult(results):
 def selectBestBlock(dict_of_blocks):
 	for score, block in dict_of_blocks.items():
 		print score, str(block.__dict__)
-		
+
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
@@ -187,7 +187,7 @@ def parseProteinsFromGFF3(gff3):
 	temp = ''
 	protein_name = ''
 	protein_seq = ''
-	dict_of_proteins = ''
+	dict_of_proteins = {}
 
 	with open(gff3) as fh:
 		for line in fh:
@@ -195,7 +195,9 @@ def parseProteinsFromGFF3(gff3):
 				read_mode = 1
 				protein_name = line.split(" ")[3].rstrip("\n")
 			elif line.startswith("# end gene "):
-				dict_of_proteins[protein_name]=protein_seq
+
+				dict_of_proteins[protein_name] = protein_seq
+				
 				read_mode = 0
 				protein_name = ''
 				protein_seq = ''
