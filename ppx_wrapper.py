@@ -24,6 +24,7 @@ class ContigObject():
 def parse_contigs_to_dict(contig_file):
 	contigs = set()
 	header, seq = '', ''
+	print "[STATUS] - Parsing contigs : "
 	with open(contig_file) as fh:
 		for line in fh:
 			if line.startswith(">"):
@@ -38,7 +39,6 @@ def parse_contigs_to_dict(contig_file):
  				#seq += line.translate(None,string.ascii_lowercase).rstrip("\n")
  				seq += line.rstrip("\n")
 		if len(seq) > 100000: 
-			print "Parsed " + header
 			contig = ContigObject(header, seq)
 			contigs.add(contig) 
 	return contigs
@@ -50,22 +50,29 @@ def make_msa_profile(contig_file):
 	pass
 
 def run_fastblocksearch(profile, header, seq):
-	print "Start searching " + profile + " in " + header
 	temp_file = ''
 	temp_file = header + ".temp"
 	temp = open(temp_file, 'w')
 	temp.write(">" + header + "\n" + seq)
 	temp.close()
-	#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile_file + " > " + header + ".result ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > fastblocksearch/" + header + ".result ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-	#os.remove(temp_file)
-	#output, error = process.communicate()
-	print "Finished searching " + profile + " in " + header
 
+def progress(counter, max_value):
+	sys.stdout.write('\r')
+	progress = int(counter)/int(max_value)
+	print "Progress:\t" + format(float(progress),'.2%'),
+	sys.stdout.flush()
+	
 def fastblocksearch(profile, contigs):
 	print str(len(contigs)) + " contigs"
 	pool = mp.Pool(processes = 10)
+	counter, max_value = 0, len(contigs)
+
 	for contig in contigs:
+		counter += 1
+		if counter % 25 == 0:
+			progress(counter, max_value)
+		progress(counter)
 		pool.apply(run_fastblocksearch, args=(profile, contig.header, contig.seq,))
 	print "Done"
 
