@@ -172,7 +172,7 @@ def runAugustusPPX():
 				print ">" + protein_name + "\n" + protein_seq
 	print "[STATUS] - Done."
 
-def parseProteinsFromGFF3(gff3, MOTIFS):
+def parseProteinsFromGFF3(gff3):
 	
 	contig, query, outfile = gff3.split("/")[1].split(".")[0], gff3.split("/")[1].split(".")[1], gff3.split(".")[0:-1] + "aa.fa"
 
