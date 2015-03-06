@@ -173,7 +173,7 @@ def runAugustusPPX():
 	print "[STATUS] - Done."
 
 def parseProteinsFromGFF3(gff3):
-	print str(gff3.split(".")[0:-1]) + "aa.fa"
+	print gff3.split(".")[0:-1]).join(".") + "aa.fa"
 	print gff3.split("/")[1].split(".")[1]
 	print gff3.split("/")[1].split(".")[0]
 	contig, query, outfile = gff3.split("/")[1].split(".")[0]
