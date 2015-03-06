@@ -71,6 +71,7 @@ def fastblocksearch(profile, contigs):
 		if counter % 10 == 0:
 			progress(counter, max_value)
 		pool.apply(run_fastblocksearch, args=(profile, contig.header, contig.seq,))
+	sys.stdout.write('\r')
 	print "\tProgress : 100.00%"
 
 
@@ -128,7 +129,7 @@ def selectBestBlock(dict_of_blocks):
 		start = block.get('start')
 		end = block.get('end')
 		strand = block.strand
-		print block.contig + " " + str(start) + " " + str(end) + " " + strand 
+		print str(score) + " " + block.contig + " " + str(start) + " " + str(end) + " " + strand 
 
 
 def runAugustusPPX():
