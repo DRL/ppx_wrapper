@@ -30,6 +30,7 @@ def parse_contigs_to_dict(contig_file):
 			if line.startswith(">"):
 				if (seq):
 					if len(seq) > 1000: 
+						header = species + "." + header
 						contig = ContigObject(header, seq)
 						contigs.add(contig) 
 				seq = ''
@@ -148,7 +149,7 @@ def runAugustusPPX():
 	for result in os.listdir("fastblocksearch/"):
 		# For each FastBlockSearch result file ...
 		result_file = "fastblocksearch/" + result
-		if result_file.endswith(".result"):
+		if result.startswith(species) and result_file.endswith(".result"):
 			#temp_file = "temp/" + result_file.replace(".result", ".temp")
 			# Get results
 			list_of_blocks = parseFastBlockSearchResult(result_file)
@@ -214,6 +215,7 @@ if __name__ == "__main__":
 	try:
 		contig_file = sys.argv[1]
 		profile = sys.argv[2]
+		species = sys.argv[3] # ID for contigs, etc
 	except:
 		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE]")
 	
