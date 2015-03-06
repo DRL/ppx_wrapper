@@ -87,12 +87,12 @@ class Block():
 
 	def get(self, arg, buffer_range):
 		if arg == "start":
-			if self.coordinates[0] <= buffer_range:
+			if self.coordinates[0] <= int(buffer_range):
 				return 0
 			else:
-				return (self.coordinates[0] - buffer_range) 
+				return (self.coordinates[0] - int(buffer_range)) 
 		elif arg == "end":
-			return (self.coordinates[-1] + buffer_range)
+			return (self.coordinates[-1] + int(buffer_range))
 		elif arg == strand:
 			if self.strand == '+':
 				return 'forward'
@@ -138,7 +138,7 @@ def selectBestBlock(dict_of_blocks):
 
 		start = block.get('start', 10000)
 		end = block.get('end', 10000)
-		strand = block.get('strand')
+		strand = block.get('strand', 0)
 
 		return block.contig, str(start), str(end), strand, str(score) 
 		#break
