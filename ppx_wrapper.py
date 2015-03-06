@@ -93,7 +93,7 @@ class Block():
 				return (self.coordinates[0] - int(buffer_range)) 
 		elif arg == "end":
 			return (self.coordinates[-1] + int(buffer_range))
-		elif arg == strand:
+		elif arg == 'strand':
 			if self.strand == '+':
 				return 'forward'
 			elif self.strand == '-':
