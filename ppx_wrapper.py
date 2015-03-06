@@ -165,10 +165,14 @@ def runAugustusPPX():
 	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 	process.wait()
 	print "[STATUS] - Writing proteins"
-	#parseProteinsFromGFF3(outfile)
+	proteins = parseProteinsFromGFF3(outfile)
+	for protein_name, protein_seq in proteins.items():
+		for motif in MOTIFS:
+			if motif in protein_seq:
+				print ">" + protein_name + "\n" + protein_seq
 	print "[STATUS] - Done."
 
-def parseProteinsFromGFF3(gff3):
+def parseProteinsFromGFF3(gff3, MOTIFS):
 	
 	contig, query, outfile = gff3.split("/")[1].split(".")[0], gff3.split("/")[1].split(".")[1], gff3.split(".")[0:-1] + "aa.fa"
 
@@ -178,6 +182,7 @@ def parseProteinsFromGFF3(gff3):
 	temp = ''
 	protein_name = ''
 	protein_seq = ''
+	dict_of_proteins = ''
 
 	with open(infile) as fh:
 		for line in fh:
@@ -185,7 +190,7 @@ def parseProteinsFromGFF3(gff3):
 				read_mode = 1
 				protein_name = line.split(" ")[3].rstrip("\n")
 			elif line.startswith("# end gene "):
-				out_fh.write(">" + protein_name + "\n" + protein_seq + "\n")
+				dict_of_proteins[protein_name]=protein_seq
 				read_mode = 0
 				protein_name = ''
 				protein_seq = ''
@@ -197,6 +202,8 @@ def parseProteinsFromGFF3(gff3):
 				protein_seq += temp
 			else:
 				pass
+
+
 if __name__ == "__main__":
 	try:
 		contig_file = sys.argv[1]
