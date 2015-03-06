@@ -129,7 +129,7 @@ def selectBestBlock(dict_of_blocks):
 		start = block.get('start')
 		end = block.get('end')
 		strand = block.strand
-		return str(score) + " " + block.contig + " " + str(start) + " " + str(end) + " " + strand 
+		yield str(score) + " " + block.contig + " " + str(start) + " " + str(end) + " " + strand 
 		#break
 
 
