@@ -68,7 +68,7 @@ def fastblocksearch(profile, contigs):
 	counter, max_value = 0, len(contigs)
 	for contig in contigs:
 		counter += 1
-		if counter % 10 == 0:
+		if counter % 5 == 0:
 			progress(counter, max_value)
 		pool.apply(run_fastblocksearch, args=(profile, contig.header, contig.seq,))
 	sys.stdout.write('\r')
@@ -129,7 +129,8 @@ def selectBestBlock(dict_of_blocks):
 		start = block.get('start')
 		end = block.get('end')
 		strand = block.strand
-		print str(score) + " " + block.contig + " " + str(start) + " " + str(end) + " " + strand 
+		return str(score) + " " + block.contig + " " + str(start) + " " + str(end) + " " + strand 
+		#break
 
 
 def runAugustusPPX():
@@ -147,7 +148,7 @@ def runAugustusPPX():
 				for block in list_of_blocks:
 					dict_of_blocks[block.score] = block
 
-	selectBestBlock(dict_of_blocks)
+	print selectBestBlock(dict_of_blocks)
 	
 if __name__ == "__main__":
 	try:
