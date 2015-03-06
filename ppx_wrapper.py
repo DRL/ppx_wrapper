@@ -123,6 +123,7 @@ class Block():
 def parseFastBlockSearchResult(results):
 	list_of_blocks = []
 	raw = open(results).read()
+	print raw
 	if len(raw.split("\n")) > 2:
 		blocks = [x.split('\n') for x in raw.split("--")[:-1]] 
 		print blocks
