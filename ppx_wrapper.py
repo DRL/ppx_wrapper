@@ -49,8 +49,7 @@ def make_msa_profile(contig_file):
 	pass
 
 def run_fastblocksearch(profile, header, seq):
-	temp_file = ''
-	temp_file = "temp/" + header + ".temp"
+	temp_file = TEMP_DIR + header + ".temp"
 	temp = open(temp_file, 'w')
 	temp.write(">" + header + "\n" + seq)
 	temp.close()
@@ -160,8 +159,8 @@ def runAugustusPPX():
 					dict_of_blocks[block.score] = block
 
 	contig, start, end, strand, score = selectBestBlock(dict_of_blocks)
-	infile = "genome/" + contig + ".temp"
-	outfile = "augustus/" + contig + "." + protein + ".gff3"
+	infile = TEMP_DIR + contig + ".temp"
+	outfile = AUGUSTUS_DIR + contig + "." + protein + ".gff3"
 	print "[STATUS] - Calling protein \"" + protein + "\" in contig \"" + contig + "\""
 	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 	process.wait()
@@ -175,6 +174,9 @@ if __name__ == "__main__":
 		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE]")
 	
 	protein = profile.split("/")[-1].split(".")[0]
+	
+	GENOME_DIR = 'genome/'
+	TEMP_DIR = 'temp/'
 	FASTBLOCKSEARCH_DIR = 'fastblocksearch/'
 	AUGUSTUS_DIR = 'augustus/'
 
