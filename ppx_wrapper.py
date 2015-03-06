@@ -111,7 +111,7 @@ def parseFastBlockSearchResult(results):
 			elif not line:
 				pass
 			else:
-				print line
+				print line.split("\t")
 				coordinate, strand = line.split("\t")[0], line.split("\t")[2]
 				block.add_coordinate(int(coordinate))
 				block.strand = strand
