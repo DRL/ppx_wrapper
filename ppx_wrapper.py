@@ -30,7 +30,6 @@ def parse_contigs_to_dict(contig_file):
 			if line.startswith(">"):
 				if (seq):
 					if len(seq) > 100000: 
-						print "Parsed " + header
 						contig = ContigObject(header, seq)
 						contigs.add(contig) 
 				seq = ''
@@ -62,7 +61,7 @@ def progress(counter, max_value):
 	progress = int(counter)/int(max_value)
 	print "Progress:\t" + format(float(progress),'.2%'),
 	sys.stdout.flush()
-	
+
 def fastblocksearch(profile, contigs):
 	print str(len(contigs)) + " contigs"
 	pool = mp.Pool(processes = 10)
@@ -72,7 +71,6 @@ def fastblocksearch(profile, contigs):
 		counter += 1
 		if counter % 25 == 0:
 			progress(counter, max_value)
-		progress(counter)
 		pool.apply(run_fastblocksearch, args=(profile, contig.header, contig.seq,))
 	print "Done"
 
