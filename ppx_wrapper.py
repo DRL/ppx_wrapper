@@ -131,6 +131,9 @@ def parseFastBlockSearchResult(results):
 	return list_of_blocks
 
 def selectBestBlock(dict_of_blocks):
+	for score, block in dict_of_blocks.items():
+		print score, str(block.__dict__)
+		
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
@@ -186,7 +189,7 @@ def parseProteinsFromGFF3(gff3):
 	protein_seq = ''
 	dict_of_proteins = ''
 
-	with open(infile) as fh:
+	with open(gff3) as fh:
 		for line in fh:
 			if line.startswith("# start gene "):
 				read_mode = 1
