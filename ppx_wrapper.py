@@ -162,7 +162,7 @@ def runAugustusPPX():
 	contig, start, end, strand, score = selectBestBlock(dict_of_blocks)
 	infile = "genome/" + contig + ".temp"
 	outfile = "augustus/" + contig + "." + protein + ".gff3"
-	print "[STATUS] - Calling " + protein + " in " + contig
+	print "[STATUS] - Calling protein \"" + protein + "\" in contig \"" + contig + "\""
 	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 	process.wait()
 	print "[STATUS] - Done."
