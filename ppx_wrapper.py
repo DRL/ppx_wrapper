@@ -163,7 +163,8 @@ def runAugustusPPX():
 	infile = "genome/" + contig + ".temp"
 	outfile = "augustus/" + contig + "." + protein + ".gff3"
 	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-	
+	print "Done."
+
 if __name__ == "__main__":
 	try:
 		contig_file = sys.argv[1]
