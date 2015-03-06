@@ -176,7 +176,7 @@ def parseProteinsFromGFF3(gff3):
 	#print ".".join(gff3.split(".")[0:-1])) + "aa.fa"
 	#print gff3.split("/")[1].split(".")[1]
 	#print gff3.split("/")[1].split(".")[0]
-	contig, query, outfile = gff3.split("/")[1].split(".")[1], gff3.split("/")[1].split(".")[0], ".".join(gff3.split(".")[0:-1])) + "aa.fa"
+	contig, query, outfile = gff3.split("/")[1].split(".")[1], gff3.split("/")[1].split(".")[0], ".".join(gff3.split(".")[0:-1]) + "aa.fa"
 
 	#fh = open(gff3 + ".proteins.fa", 'w')
 
