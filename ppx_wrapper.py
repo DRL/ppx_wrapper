@@ -106,8 +106,10 @@ def parseFastBlockSearchResult(results):
 			elif line.startswith("Mult. score:"):
 				multi_score = float(line.lstrip("Mult. score:"))
 				block = Block(contig, score, multi_score)
-			elif line. startswith("--"):
+			elif line.startswith("--"):
 				list_of_blocks.append(block)
+			elif len(line) == 0:
+				pass
 			else:
 				coordinate, strand = line.split("\t")[0], line.split("\t")[2]
 				block.add_coordinate(int(coordinate))
