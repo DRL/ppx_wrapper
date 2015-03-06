@@ -57,21 +57,83 @@ def run_fastblocksearch(profile, header, seq):
 	temp.write(">" + header + "\n" + seq)
 	temp.close()
 	#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile_file + " > " + header + ".result ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + header + ".result ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > fastblocksearch/" + header + ".result ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 	#os.remove(temp_file)
 	#output, error = process.communicate()
 	print "Finished searching " + profile + " in " + header
 
 def fastblocksearch(profile, contigs):
 	print str(len(contigs)) + " contigs"
-	pool = mp.Pool(processes = 40)
+	pool = mp.Pool(processes = 10)
 	for contig in contigs:
 		pool.apply(run_fastblocksearch, args=(profile, contig.header, contig.seq,))
-	# pool = mp.Pool(processes=10)
-	# results = [pool.apply_async(run_fastblocksearch, args=(profile_file, contig.header, contig.seq)) for contig in contigs]
-	#output = [p.get() for p in results]
-	#print(output)
 	print "Done"
+
+
+class Block():
+	def __init__(self, contig, score, multi_score):
+		self.contig = contig
+		self.score = float(score)
+		self.multi_score = float(multi_score)
+		self.coordinates = []
+		self.strand = ''
+
+	def add_coordinate(self, coordinate):
+		self.coordinates.append(coordinate)
+
+	def get(self, position):
+		if position == "start":
+			return self.coordinates[0]
+		elif position = "end":
+			return self.coordinates[-1]
+		else:
+			sys.exit("postion... What?")
+
+''' This has to be done for each contig in each species (by species)
+	- create folder for each genome
+	- infer best overall hits	
+'''
+
+def parseFastBlockSearchResult(results):
+	list_of_blocks = []
+	with open(results) as fh:
+		contig, score, multi_score, coordinate, strand = '', 0.0, 0.0, 0, ''
+		for line in fh:
+			if line.startswith("Hits found in "):
+				contig = line.lstrip("Hits found in ")
+			elif line.startswith("Score:"):
+				score = float(line.lstrip("Score:"))
+			elif line.startswith("Mult. score:"):
+				multi_score = float(line.lstrip("Mult. score:"))
+				block = Block(contig, score, multi_score)
+			elif line. startswith("--"):
+				list_of_blocks.append(block)
+			else:
+				coordinate, strand = line.split("\t")[0], line.split("\t")[2]
+				block.add_coordinate(int(coordinate))
+				block.strand = strand
+	return list_of_blocks
+
+def runAugustusPPX():
+	dict_of_blocks = {}
+	for result in os.listdir("fastblocksearch/"):
+		# For each FastBlockSearch result file ...
+		if result.endswith(".result"):
+			temp_file = result.replace(".result", ".temp")
+			# Get results
+			list_of_blocks = parseFastBlockSearchResult(result)
+			if len(list_of_blocks) == 0:
+				pass
+			else:
+				for block in list_of_blocks:
+					dict_of_blocks[block.score] = block
+	
+	for block in sorted(dict_of_blocks, reverse=True):
+		contig = block.contig
+		start = block.get(start)
+		end = block.get(end)
+		strand = block.strand
+		print block.contig + " " + str(start) + " " + str(end) + " " + strand 
 
 if __name__ == "__main__":
 	try:
@@ -80,6 +142,9 @@ if __name__ == "__main__":
 	except:
 		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE]")
 	
+	FASTBLOCKSEARCH_DIR = 'fastblocksearch/'
+	AUGUSTUS_DIR = 'augustus/'
+
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	fastblocksearch(profile, contigs)
