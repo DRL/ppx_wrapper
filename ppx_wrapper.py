@@ -29,7 +29,7 @@ def parse_contigs_to_dict(contig_file):
 		for line in fh:
 			if line.startswith(">"):
 				if (seq):
-					if len(seq) > 100000: 
+					if len(seq) > 1000: 
 						contig = ContigObject(header, seq)
 						contigs.add(contig) 
 				seq = ''
@@ -173,12 +173,12 @@ def runAugustusPPX():
 	print "[STATUS] - Done."
 
 def parseProteinsFromGFF3(gff3):
-	print gff3.split(".")[0:-1]).join(".") + "aa.fa"
-	print gff3.split("/")[1].split(".")[1]
-	print gff3.split("/")[1].split(".")[0]
-	contig, query, outfile = gff3.split("/")[1].split(".")[0]
+	#print ".".join(gff3.split(".")[0:-1])) + "aa.fa"
+	#print gff3.split("/")[1].split(".")[1]
+	#print gff3.split("/")[1].split(".")[0]
+	contig, query, outfile = gff3.split("/")[1].split(".")[1], gff3.split("/")[1].split(".")[0], ".".join(gff3.split(".")[0:-1])) + "aa.fa"
 
-	fh = open(gff3 + ".proteins.fa", 'w')
+	#fh = open(gff3 + ".proteins.fa", 'w')
 
 	read_mode = 0
 	temp = ''
@@ -204,7 +204,7 @@ def parseProteinsFromGFF3(gff3):
 				protein_seq += temp
 			else:
 				pass
-
+	return dict_of_proteins
 
 if __name__ == "__main__":
 	try:
