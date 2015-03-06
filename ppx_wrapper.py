@@ -50,7 +50,7 @@ def make_msa_profile(contig_file):
 
 def run_fastblocksearch(profile, header, seq):
 	temp_file = ''
-	temp_file = header + ".temp"
+	temp_file = "temp/" + header + ".temp"
 	temp = open(temp_file, 'w')
 	temp.write(">" + header + "\n" + seq)
 	temp.close()
@@ -68,8 +68,7 @@ def fastblocksearch(profile, contigs):
 	counter, max_value = 0, len(contigs)
 	for contig in contigs:
 		counter += 1
-		if counter % 5 == 0:
-			progress(counter, max_value)
+		progress(counter, max_value)
 		pool.apply(run_fastblocksearch, args=(profile, contig.header, contig.seq,))
 	sys.stdout.write('\r')
 	print "\tProgress : 100.00%"
@@ -86,11 +85,14 @@ class Block():
 	def add_coordinate(self, coordinate):
 		self.coordinates.append(coordinate)
 
-	def get(self, position):
+	def get(self, position, buffer_range):
 		if position == "start":
-			return self.coordinates[0]
+			if self.coordinates[0] <= buffer_range:
+				return 0
+			else:
+				return (self.coordinates[0] - buffer_range) 
 		elif position == "end":
-			return self.coordinates[-1]
+			return (self.coordinates[-1] + buffer_range)
 		else:
 			sys.exit("postion... What?")
 
@@ -126,10 +128,20 @@ def selectBestBlock(dict_of_blocks):
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
-		start = block.get('start')
-		end = block.get('end')
+
+		start = block.get('start', 10000)
+		end = block.get('end', 10000)
+		if start < buffer_range:
+			start = 0
+		else:
+			start = start - buffer_range
+		end = end + buffer_range
 		strand = block.strand
-		yield str(score) + " " + block.contig + " " + str(start) + " " + str(end) + " " + strand 
+		if strand == '+':
+			strand = 'forward'
+		else:
+			strand = 'backward'
+		return block.contig, str(start), str(end), strand, str(score) 
 		#break
 
 
@@ -139,7 +151,7 @@ def runAugustusPPX():
 		# For each FastBlockSearch result file ...
 		result_file = "fastblocksearch/" + result
 		if result_file.endswith(".result"):
-			temp_file = result_file.replace(".result", ".temp")
+			#temp_file = "temp/" + result_file.replace(".result", ".temp")
 			# Get results
 			list_of_blocks = parseFastBlockSearchResult(result_file)
 			if len(list_of_blocks) == 0:
@@ -148,7 +160,8 @@ def runAugustusPPX():
 				for block in list_of_blocks:
 					dict_of_blocks[block.score] = block
 
-	print selectBestBlock(dict_of_blocks)
+	contig, start, end, strand, score = selectBestBlock(dict_of_blocks)
+	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --proteinprofile " + profile +" --predictionStart=" + start + " --predictionEnd= " + end +" --strand=" + strand + " " + temp_file, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 	
 if __name__ == "__main__":
 	try:
