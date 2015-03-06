@@ -128,7 +128,7 @@ def runAugustusPPX():
 	for result in os.listdir("fastblocksearch/"):
 		# For each FastBlockSearch result file ...
 		result_file = "fastblocksearch/" + result
-		if results_file.endswith(".result"):
+		if result_file.endswith(".result"):
 			temp_file = result_file.replace(".result", ".temp")
 			# Get results
 			list_of_blocks = parseFastBlockSearchResult(result_file)
