@@ -131,9 +131,6 @@ def parseFastBlockSearchResult(results):
 	return list_of_blocks
 
 def selectBestBlock(dict_of_blocks):
-	for score, block in dict_of_blocks.items():
-		print score, str(block.__dict__)
-
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
@@ -173,6 +170,8 @@ def runAugustusPPX():
 		for motif in MOTIFS:
 			if motif in protein_seq:
 				print ">" + protein_name + "\n" + protein_seq
+				break
+
 	print "[STATUS] - Done."
 
 def parseProteinsFromGFF3(gff3):
@@ -197,7 +196,7 @@ def parseProteinsFromGFF3(gff3):
 			elif line.startswith("# end gene "):
 
 				dict_of_proteins[protein_name] = protein_seq
-				
+
 				read_mode = 0
 				protein_name = ''
 				protein_seq = ''
