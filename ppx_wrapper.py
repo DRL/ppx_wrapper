@@ -85,14 +85,21 @@ class Block():
 	def add_coordinate(self, coordinate):
 		self.coordinates.append(coordinate)
 
-	def get(self, position, buffer_range):
-		if position == "start":
+	def get(self, arg, buffer_range):
+		if arg == "start":
 			if self.coordinates[0] <= buffer_range:
 				return 0
 			else:
 				return (self.coordinates[0] - buffer_range) 
-		elif position == "end":
+		elif arg == "end":
 			return (self.coordinates[-1] + buffer_range)
+		elif arg == strand:
+			if self.strand == '+':
+				return 'forward'
+			elif self.strand == '-':
+				return 'backward'
+			else:
+				sys.exit("[ERROR] - Strand : " + self.strand)
 		else:
 			sys.exit("postion... What?")
 
@@ -131,16 +138,8 @@ def selectBestBlock(dict_of_blocks):
 
 		start = block.get('start', 10000)
 		end = block.get('end', 10000)
-		if start < buffer_range:
-			start = 0
-		else:
-			start = start - buffer_range
-		end = end + buffer_range
-		strand = block.strand
-		if strand == '+':
-			strand = 'forward'
-		else:
-			strand = 'backward'
+		strand = block.get('strand')
+
 		return block.contig, str(start), str(end), strand, str(score) 
 		#break
 
