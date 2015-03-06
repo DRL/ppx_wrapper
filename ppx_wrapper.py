@@ -95,15 +95,15 @@ class Block():
 	def get(self, arg, buffer_range):
 		if arg == "start":
 			coordinates = self.coordinates[:]
-			sort(coordinates)
+			coordinates = sorted(coordinates)
 			if coordinates[0] <= int(buffer_range):
 				return 0
 			else:
-				return (self.coordinates[0] - int(buffer_range)) 
+				return (coordinates[0] - int(buffer_range)) 
 		elif arg == "end":
 			coordinates = self.coordinates[:]
-			sort(coordinates)
-			return (self.coordinates[-1] + int(buffer_range))
+			coordinates = sorted(coordinates)
+			return (coordinates[-1] + int(buffer_range))
 		elif arg == 'strand':
 			if self.strand == '+':
 				return 'forward'
