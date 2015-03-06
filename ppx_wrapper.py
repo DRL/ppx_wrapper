@@ -142,7 +142,7 @@ def runAugustusPPX():
 				for block in list_of_blocks:
 					dict_of_blocks[block.score] = block
 
-	selectBestBlock()
+	selectBestBlock(dict_of_blocks)
 	
 if __name__ == "__main__":
 	try:
