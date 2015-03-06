@@ -160,8 +160,8 @@ def runAugustusPPX():
 					dict_of_blocks[block.score] = block
 
 	contig, start, end, strand, score = selectBestBlock(dict_of_blocks)
-
-	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " temp/" + contig + ".temp " > " augustus/" + contig + "." + protein + ".gff3" , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+	outfile = 
+	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " temp/" + contig + ".temp > augustus/" + contig + "." + protein + ".gff3" , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 	
 if __name__ == "__main__":
 	try:
