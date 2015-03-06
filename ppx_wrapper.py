@@ -6,7 +6,7 @@ File    	: ppx_wrapper.py
 Author  	: 
 Version 	: 0.1
 Description : 
-To do 		: 
+To do 		: Make global scoring for fastblocks for all profiles ...
 """
 
 from __future__ import division
@@ -15,6 +15,7 @@ import time
 import multiprocessing as mp 
 import subprocess
 import string
+
 
 class ContigObject():
 	def __init__(self, header, seq):
@@ -45,7 +46,7 @@ def parse_contigs_to_dict(contig_file):
 			else:
  				#seq += line.translate(None,string.ascii_lowercase).rstrip("\n")
  				seq += line.rstrip("\n")
-		if len(seq) > 100000: 
+		if len(seq) > 1000: 
 			contig = ContigObject(header, seq)
 			contigs.add(contig) 
 	return contigs
@@ -230,7 +231,7 @@ if __name__ == "__main__":
 		profile = sys.argv[2]
 		species = sys.argv[3] # ID for contigs, etc
 	except:
-		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE]")
+		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE] [SPECIES]")
 	
 	query = profile.split("/")[-1].split(".")[0]
 	
