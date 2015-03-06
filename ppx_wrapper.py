@@ -108,7 +108,7 @@ def parseFastBlockSearchResult(results):
 				block = Block(contig, score, multi_score)
 			elif line.startswith("--"):
 				list_of_blocks.append(block)
-			elif len(line) == 0:
+			elif not line:
 				pass
 			else:
 				print line
