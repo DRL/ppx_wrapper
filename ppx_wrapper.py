@@ -21,6 +21,13 @@ class ContigObject():
 		self.header = header
 		self.seq = seq
 
+	def get_region(self, start, stop, strand):
+		region = self.seq[start:stop]
+		if strand == '-':
+			complement = {'A':'T','C':'G','G':'C','T':'A','N':'N'}
+			region = "".join([complement.get(nt.upper(), '') for nt in region[::-1]])
+		return region
+
 def parse_contigs_to_dict(contig_file):
 	contigs = set()
 	header, seq = '', ''
@@ -132,6 +139,8 @@ def parseFastBlockSearchResult(results):
 	return list_of_blocks
 
 def selectBestBlock(dict_of_blocks):
+	for score in sorted(dict_of_blocks, reverse=True):
+		print score, dict_of_blocks[score].__dict__
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
