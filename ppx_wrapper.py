@@ -84,7 +84,7 @@ class Block():
 	def get(self, position):
 		if position == "start":
 			return self.coordinates[0]
-		elif position = "end":
+		elif position == "end":
 			return self.coordinates[-1]
 		else:
 			sys.exit("postion... What?")
