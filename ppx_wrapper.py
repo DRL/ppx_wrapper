@@ -24,7 +24,7 @@ class ContigObject():
 def parse_contigs_to_dict(contig_file):
 	contigs = set()
 	header, seq = '', ''
-	print "[STATUS] - Parsing contigs : "
+	print "[STATUS] - Parsing contigs "
 	with open(contig_file) as fh:
 		for line in fh:
 			if line.startswith(">"):
@@ -59,20 +59,19 @@ def run_fastblocksearch(profile, header, seq):
 def progress(counter, max_value):
 	sys.stdout.write('\r')
 	progress = int(counter)/int(max_value)
-	print "Progress:\t" + format(float(progress),'.2%'),
+	print "\tProgress : " + format(float(progress),'.2%'),
 	sys.stdout.flush()
 
 def fastblocksearch(profile, contigs):
-	print str(len(contigs)) + " contigs"
+	print "[STATUS] - Running FastBlockSearch "
 	pool = mp.Pool(processes = 10)
 	counter, max_value = 0, len(contigs)
-
 	for contig in contigs:
 		counter += 1
-		if counter % 25 == 0:
+		if counter % 10 == 0:
 			progress(counter, max_value)
 		pool.apply(run_fastblocksearch, args=(profile, contig.header, contig.seq,))
-	print "Done"
+	print "\tProgress : 100.00%"
 
 
 class Block():
@@ -126,8 +125,8 @@ def selectBestBlock(dict_of_blocks):
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
-		start = block.get(start)
-		end = block.get(end)
+		start = block.get('start')
+		end = block.get('end')
 		strand = block.strand
 		print block.contig + " " + str(start) + " " + str(end) + " " + strand 
 
