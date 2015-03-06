@@ -114,6 +114,15 @@ def parseFastBlockSearchResult(results):
 				block.strand = strand
 	return list_of_blocks
 
+def selectBestBlock(dict_of_blocks):
+	for block in sorted(dict_of_blocks, reverse=True):
+		contig = block.contig
+		start = block.get(start)
+		end = block.get(end)
+		strand = block.strand
+		print block.contig + " " + str(start) + " " + str(end) + " " + strand 
+
+
 def runAugustusPPX():
 	dict_of_blocks = {}
 	for result in os.listdir("fastblocksearch/"):
@@ -127,14 +136,9 @@ def runAugustusPPX():
 			else:
 				for block in list_of_blocks:
 					dict_of_blocks[block.score] = block
-	
-	for block in sorted(dict_of_blocks, reverse=True):
-		contig = block.contig
-		start = block.get(start)
-		end = block.get(end)
-		strand = block.strand
-		print block.contig + " " + str(start) + " " + str(end) + " " + strand 
 
+	selectBestBlock()
+	
 if __name__ == "__main__":
 	try:
 		contig_file = sys.argv[1]
@@ -148,3 +152,4 @@ if __name__ == "__main__":
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	fastblocksearch(profile, contigs)
+	runAugustusPPX()
