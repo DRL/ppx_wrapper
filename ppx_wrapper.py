@@ -144,8 +144,10 @@ def parseFastBlockSearchResult(results):
 	return list_of_blocks
 
 def selectBestBlock(dict_of_blocks):
+	print str(dict_of_blocks)
 	for score in sorted(dict_of_blocks, reverse=True):
 		print score, dict_of_blocks[score].__dict__
+
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
