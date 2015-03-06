@@ -122,26 +122,42 @@ class Block():
 
 def parseFastBlockSearchResult(results):
 	list_of_blocks = []
-	with open(results) as fh:
+	raw = open(results).read()
+	if len(raw.split("\n")) > 2:
+		blocks = [x.split('\n') for x in raw.split("--")[:-1]] 
+		contig = blocks[0][0].lstrip("Hits found in ")
+		blocks[0] = blocks[0][1:]
 		contig, score, multi_score, coordinate, strand = '', 0.0, 0.0, 0, ''
-		for line in fh:
-			line = line.rstrip("\n")
-			if line.startswith("Hits found in "):
-				contig = line.lstrip("Hits found in ")
-			elif line.startswith("Score:"):
-				score = float(line.lstrip("Score:"))
-			elif line.startswith("Mult. score:"):
-				multi_score = float(line.lstrip("Mult. score:"))
-				block = Block(contig, score, multi_score)
-			elif line.startswith("--"):
-				list_of_blocks.append(block)
-			elif not line:
-				pass
-			else:
-				coordinate, strand = line.split("\t")[0], line.split("\t")[2]
-				block.add_coordinate(int(coordinate))
-				block.strand = strand
+		score = float(block[0].lstrip("Score:"))
+		multi_score = float(block[1].lstrip("Mult. score:"))
+		block = Block(contig, score, multi_score)
+		block.coordinate = [int(x.split()[0]) for x in block[2:]]
+		block.strand = block[-1].split()[2]
+		list_of_blocks.append(block)
+	else:
+		pass
 	return list_of_blocks
+	#with open(results) as fh:
+	#	contig, score, multi_score, coordinate, strand = '', 0.0, 0.0, 0, ''
+	#	
+	#	for line in fh:
+	#		line = line.rstrip("\n")
+	#		if line.startswith("Hits found in "):
+	#			contig = line.lstrip("Hits found in ")
+	#		elif line.startswith("Score:"):
+	#			score = float(line.lstrip("Score:"))
+	#		elif line.startswith("Mult. score:"):
+	#			multi_score = float(line.lstrip("Mult. score:"))
+	#			block = Block(contig, score, multi_score)
+	#		elif line.startswith("--"):
+	#			list_of_blocks.append(block)
+	#		elif not line:
+	#			pass
+	#		else:
+	#			coordinate, strand = line.split("\t")[0], line.split("\t")[2]
+	#			block.add_coordinate(int(coordinate))
+	#			block.strand = strand
+	#return list_of_blocks
 
 def selectBestBlock(dict_of_blocks):
 	print str(dict_of_blocks)
