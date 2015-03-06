@@ -170,7 +170,7 @@ if __name__ == "__main__":
 	except:
 		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE]")
 	
-	protein = profile.split("/")[-1].split["."][0]
+	protein = profile.split("/")[-1].split(".")[0]
 	FASTBLOCKSEARCH_DIR = 'fastblocksearch/'
 	AUGUSTUS_DIR = 'augustus/'
 
