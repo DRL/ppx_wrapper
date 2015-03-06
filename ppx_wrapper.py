@@ -160,12 +160,43 @@ def runAugustusPPX():
 
 	contig, start, end, strand, score = selectBestBlock(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
-	outfile = AUGUSTUS_DIR + contig + "." + protein + ".gff3"
-	print "[STATUS] - Calling protein \"" + protein + "\" in contig \"" + contig + "\""
+	outfile = AUGUSTUS_DIR + contig + "." + query + ".gff3"
+	print "[STATUS] - Calling protein \"" + query + "\" in contig \"" + contig + "\""
 	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 	process.wait()
+	print "[STATUS] - Writing proteins"
+	#parseProteinsFromGFF3(outfile)
 	print "[STATUS] - Done."
 
+def parseProteinsFromGFF3(gff3):
+	
+	contig, query, outfile = gff3.split("/")[1].split(".")[0], gff3.split("/")[1].split(".")[1], gff3.split(".")[0:-1] + "aa.fa"
+
+	fh = open(gff3 + ".proteins.fa", 'w')
+
+	read_mode = 0
+	temp = ''
+	protein_name = ''
+	protein_seq = ''
+
+	with open(infile) as fh:
+		for line in fh:
+			if line.startswith("# start gene "):
+				read_mode = 1
+				protein_name = line.split(" ")[3].rstrip("\n")
+			elif line.startswith("# end gene "):
+				out_fh.write(">" + protein_name + "\n" + protein_seq + "\n")
+				read_mode = 0
+				protein_name = ''
+				protein_seq = ''
+			elif read_mode == 1 and line.startswith("#"):
+				temp = line.lstrip("# protein sequence = [")
+				temp = temp.lstrip("# ")
+				temp = temp.rstrip("\n")
+				temp = temp.rstrip("]")
+				protein_seq += temp
+			else:
+				pass
 if __name__ == "__main__":
 	try:
 		contig_file = sys.argv[1]
@@ -173,13 +204,13 @@ if __name__ == "__main__":
 	except:
 		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE]")
 	
-	protein = profile.split("/")[-1].split(".")[0]
+	query = profile.split("/")[-1].split(".")[0]
 	
 	GENOME_DIR = 'genome/'
 	TEMP_DIR = 'temp/'
 	FASTBLOCKSEARCH_DIR = 'fastblocksearch/'
 	AUGUSTUS_DIR = 'augustus/'
-
+	MOTIFS = ["ELEKEF", "WFQNRR"]
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	fastblocksearch(profile, contigs)
