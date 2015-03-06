@@ -99,6 +99,7 @@ def parseFastBlockSearchResult(results):
 	with open(results) as fh:
 		contig, score, multi_score, coordinate, strand = '', 0.0, 0.0, 0, ''
 		for line in fh:
+			line = line.rstrip("\n")
 			if line.startswith("Hits found in "):
 				contig = line.lstrip("Hits found in ")
 			elif line.startswith("Score:"):
