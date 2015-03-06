@@ -118,7 +118,8 @@ def parseFastBlockSearchResult(results):
 	return list_of_blocks
 
 def selectBestBlock(dict_of_blocks):
-	for block in sorted(dict_of_blocks, reverse=True):
+	for score in sorted(dict_of_blocks, reverse=True):
+		block = dict_of_blocks[score]
 		contig = block.contig
 		start = block.get(start)
 		end = block.get(end)
