@@ -124,9 +124,8 @@ def parseFastBlockSearchResult(results):
 	list_of_blocks = []
 	raw = open(results).read()
 	print raw
-	if len(raw.split("\n")) > 2:
+	if len(raw.split("\n")) > 3:
 		blocks = [x.split('\n') for x in raw.split("--")[:-1]] 
-		print blocks
 		contig = blocks[0][0].lstrip("Hits found in ")
 		blocks[0] = blocks[0][1:]
 		contig, score, multi_score, coordinate, strand = '', 0.0, 0.0, 0, ''
@@ -139,7 +138,7 @@ def parseFastBlockSearchResult(results):
 	else:
 		pass
 	return list_of_blocks
-	
+
 	#with open(results) as fh:
 	#	contig, score, multi_score, coordinate, strand = '', 0.0, 0.0, 0, ''
 	#	
@@ -250,12 +249,14 @@ if __name__ == "__main__":
 	try:
 		contig_file = sys.argv[1]
 		profile = sys.argv[2]
+		# profile_folder = sys.argv[2]
 		species = sys.argv[3] # ID for contigs, etc
 	except:
 		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE] [SPECIES]")
 	
 	query = profile.split("/")[-1].split(".")[0]
 	
+
 	GENOME_DIR = 'genome/'
 	TEMP_DIR = 'temp/'
 	FASTBLOCKSEARCH_DIR = 'fastblocksearch/'
