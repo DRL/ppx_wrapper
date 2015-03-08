@@ -129,11 +129,11 @@ def parseFastBlockSearchResult(results):
 		contig = blocks[0][0].lstrip("Hits found in ")
 		blocks[0] = blocks[0][1:]
 		contig, score, multi_score, coordinate, strand = '', 0.0, 0.0, 0, ''
-		score = float(block[0].lstrip("Score:"))
-		multi_score = float(block[1].lstrip("Mult. score:"))
+		score = float(blocks[0].lstrip("Score:"))
+		multi_score = float(blocks[1].lstrip("Mult. score:"))
 		block = Block(contig, score, multi_score)
-		block.coordinate = [int(x.split()[0]) for x in block[2:]]
-		block.strand = block[-1].split()[2]
+		block.coordinate = [int(x.split()[0]) for x in blocks[2:]]
+		block.strand = blocks[-1].split()[2]
 		list_of_blocks.append(block)
 	else:
 		pass
