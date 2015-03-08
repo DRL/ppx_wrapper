@@ -139,6 +139,7 @@ def parseFastBlockSearchResult(results):
 	else:
 		pass
 	return list_of_blocks
+	
 	#with open(results) as fh:
 	#	contig, score, multi_score, coordinate, strand = '', 0.0, 0.0, 0, ''
 	#	
