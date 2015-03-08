@@ -127,7 +127,7 @@ def parseFastBlockSearchResult(results):
 		blocks = [x.split('\n') for x in raw.split("--")[:-1]] 
 		contig = blocks[0][0].lstrip("Hits found in ")
 		blocks[0] = blocks[0][1:]
-		for block in blocks[0]:
+		for block in blocks:
 			print block
 			score, multi_score, coordinate, strand = 0.0, 0.0, 0, ''
 			score = float(blocks[0].lstrip("Score:"))
