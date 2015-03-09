@@ -127,6 +127,7 @@ def parseFastBlockSearchResult(results):
 	raw = open(results).read()
 	if len(raw.split("\n")) > 3:
 		blocks = [x.split('\n') for x in raw.split("--")[:-2]] 
+		print blocks
 		header = blocks[0].pop(0)
 		contig = header.lstrip("Hits found in ")
 		for hit in blocks:
