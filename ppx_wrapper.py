@@ -125,6 +125,7 @@ def run_fastblocksearch(profile, contig):
 def parseFastBlockSearchResult(results):
 	list_of_blocks = []
 	raw = open(results).read()
+	print raw
 	if (raw):
 		blocks = [x.split('\n') for x in raw.split("--")[:-2]] 
 		print blocks
