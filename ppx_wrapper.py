@@ -143,8 +143,9 @@ def parseFastBlockSearchResult(results):
 	return list_of_blocks
 
 def selectBestBlock(dict_of_blocks):
-	for score in sorted(dict_of_blocks, reverse=True):
-		print score, dict_of_blocks[score].__dict__
+	for profile in sorted(dict_of_blocks, reverse=True):
+		for score in sorted(dict_of_blocks[profile, reverse=True):
+			print profile, dict_of_blocks[profile][score].__dict__
 
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
@@ -156,7 +157,7 @@ def selectBestBlock(dict_of_blocks):
 		return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
 def runAugustusPPX():
-	dict_of_blocks = {}
+	dict_of_blocks = collections.defaultdict
 	for result in os.listdir("fastblocksearch/"):
 		# For each FastBlockSearch result file ...
 		if result.startswith(species) and result.endswith(".result"):
@@ -164,12 +165,9 @@ def runAugustusPPX():
 			#temp_file = "temp/" + result_file.replace(".result", ".temp")
 			# Get results
 			list_of_blocks = parseFastBlockSearchResult(result_file)
-			print list_of_blocks
-			if len(list_of_blocks) == 0:
-				pass
-			else:
-				for block in list_of_blocks:
-					dict_of_blocks[block.score] = block
+
+	for block in list_of_blocks:
+		dict_of_blocks[block.profile][block.score]=block
 
 	contig, start, end, strand, score, profile = selectBestBlock(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
