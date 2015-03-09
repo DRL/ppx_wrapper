@@ -16,6 +16,38 @@ import multiprocessing as mp
 import subprocess
 import string
 
+class Block():
+	def __init__(self, contig, score, multi_score):
+		self.contig = contig
+		self.score = float(score)
+		self.multi_score = float(multi_score)
+		self.coordinates = []
+		self.strand = ''
+
+	def add_coordinate(self, coordinate):
+		self.coordinates.append(coordinate)
+
+	def get(self, arg, buffer_range):
+		if arg == "start":
+			coordinates = self.coordinates[:]
+			coordinates = sorted(coordinates)
+			if coordinates[0] <= int(buffer_range):
+				return 0
+			else:
+				return (coordinates[0] - int(buffer_range)) 
+		elif arg == "end":
+			coordinates = self.coordinates[:]
+			coordinates = sorted(coordinates)
+			return (coordinates[-1] + int(buffer_range))
+		elif arg == 'strand':
+			if self.strand == '+':
+				return 'forward'
+			elif self.strand == '-':
+				return 'backward'
+			else:
+				sys.exit("[ERROR] - Strand : " + self.strand)
+		else:
+			sys.exit("postion... What?")
 
 class ContigObject():
 	def __init__(self, header, seq):
@@ -58,14 +90,6 @@ def align_fasta(contig_file):
 def make_msa_profile(contig_file):
 	pass
 
-def run_fastblocksearch(profile, contig):
-	outfile_name = contig.header + "." + profile.split("/")[-1].split(".")[0] + ".result"
-	temp_file = TEMP_DIR + contig.header + ".temp"
-	temp = open(temp_file, 'w')
-	temp.write(">" + contig.header + "\n" + contig.seq)
-	temp.close()
-	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > fastblocksearch/" + outfile_name + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-
 def progress(counter, max_value):
 	sys.stdout.write('\r')
 	progress = int(counter)/int(max_value)
@@ -75,7 +99,6 @@ def progress(counter, max_value):
 def fastblocksearch(profile, contigs):
 	pool = mp.Pool(processes = 10)
 	counter, max_value = 0, len(contigs)
-	profile_name = profile.split("/")[-1].split(".")[0]
 	print "[STATUS] - Running FastBlockSearch with profile : " + profile_name
 	for contig in contigs:
 		counter += 1
@@ -84,39 +107,14 @@ def fastblocksearch(profile, contigs):
 	sys.stdout.write('\r')
 	print "\tProgress : 100.00%"
 
+def run_fastblocksearch(profile, contig):
+	outfile_name = contig.header + "." + profile.split("/")[-1].split(".")[0] + ".result"
+	temp_file = TEMP_DIR + "/" + SPECIES + "." + contig.header + ".temp"
+	temp = open(temp_file, 'w')
+	temp.write(">" + contig.header + "\n" + contig.seq)
+	temp.close()
+	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > fastblocksearch/" + outfile_name + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 
-class Block():
-	def __init__(self, contig, score, multi_score):
-		self.contig = contig
-		self.score = float(score)
-		self.multi_score = float(multi_score)
-		self.coordinates = []
-		self.strand = ''
-
-	def add_coordinate(self, coordinate):
-		self.coordinates.append(coordinate)
-
-	def get(self, arg, buffer_range):
-		if arg == "start":
-			coordinates = self.coordinates[:]
-			coordinates = sorted(coordinates)
-			if coordinates[0] <= int(buffer_range):
-				return 0
-			else:
-				return (coordinates[0] - int(buffer_range)) 
-		elif arg == "end":
-			coordinates = self.coordinates[:]
-			coordinates = sorted(coordinates)
-			return (coordinates[-1] + int(buffer_range))
-		elif arg == 'strand':
-			if self.strand == '+':
-				return 'forward'
-			elif self.strand == '-':
-				return 'backward'
-			else:
-				sys.exit("[ERROR] - Strand : " + self.strand)
-		else:
-			sys.exit("postion... What?")
 
 ''' This has to be done for each contig in each species (by species)
 	- create folder for each genome
@@ -144,28 +142,6 @@ def parseFastBlockSearchResult(results):
 	else:
 		pass
 	return list_of_blocks
-
-	#with open(results) as fh:
-	#	contig, score, multi_score, coordinate, strand = '', 0.0, 0.0, 0, ''
-	#	
-	#	for line in fh:
-	#		line = line.rstrip("\n")
-	#		if line.startswith("Hits found in "):
-	#			contig = line.lstrip("Hits found in ")
-	#		elif line.startswith("Score:"):
-	#			score = float(line.lstrip("Score:"))
-	#		elif line.startswith("Mult. score:"):
-	#			multi_score = float(line.lstrip("Mult. score:"))
-	#			block = Block(contig, score, multi_score)
-	#		elif line.startswith("--"):
-	#			list_of_blocks.append(block)
-	#		elif not line:
-	#			pass
-	#		else:
-	#			coordinate, strand = line.split("\t")[0], line.split("\t")[2]
-	#			block.add_coordinate(int(coordinate))
-	#			block.strand = strand
-	#return list_of_blocks
 
 def selectBestBlock(dict_of_blocks):
 	print str(dict_of_blocks)
