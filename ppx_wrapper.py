@@ -23,6 +23,7 @@ class Block():
 		self.multi_score = float(multi_score)
 		self.coordinates = []
 		self.strand = ''
+		self.profile = ''
 
 	def get(self, arg, buffer_range):
 		if arg == "start":
@@ -121,11 +122,11 @@ def run_fastblocksearch(profile, contig):
 
 def parseFastBlockSearchResult(results):
 	list_of_blocks = []
+	contig, profile = results.split("/")[1].split(".")[1], results.split("/")[1].split(".")[2]
 	raw = open(results).read()
 	if len(raw.split("\n")) > 4:
 		blocks = [filter(None, x.split('\n')) for x in raw.split("--") if len(x) > 2 ] 
 		header = blocks[0].pop(0)
-		contig = header.lstrip("Hits found in ")
 		#print blocks
 		for hit in blocks:
 			#print "New hit \n" + str(hit)
@@ -135,6 +136,7 @@ def parseFastBlockSearchResult(results):
 			block = Block(contig, score, multi_score)
 			block.coordinates = sorted([int(x.split("\t")[0]) for x in hit[2:] if len(x.split("\t")) > 1])
 			block.strand = hit[-2].split("\t")[2]
+			block.profile = profile
 		list_of_blocks.append(block)
 	else:
 		pass
@@ -169,7 +171,7 @@ def runAugustusPPX():
 
 	contig, start, end, strand, score = selectBestBlock(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
-	outfile = AUGUSTUS_DIR + contig + "." + query + ".gff3"
+	outfile = AUGUSTUS_DIR + contig + + ".gff3"
 	print "[STATUS] - Calling protein \"" + query + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
 	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 	process.wait()
