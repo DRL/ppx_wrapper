@@ -168,7 +168,7 @@ def analyseBlocks(dict_of_blocks, dict_of_contigs):
 		for profile in dict_of_contigs[contig]:
 			print "\t" + profile,
 			for score in dict_of_contigs[contig][profile]:
-				print str(score)
+				print str(score) + str(dict_of_contigs[contig][profile][score].__dict__)
 
 	#return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
@@ -180,15 +180,13 @@ def runAugustusPPX():
 		# For each FastBlockSearch result file ...
 		if result.startswith(species) and result.endswith(".result"):
 			result_file = "fastblocksearch/" + result
-			#temp_file = "temp/" + result_file.replace(".result", ".temp")
-			# Get results
 			list_of_blocks = parseFastBlockSearchResult(result_file)
 			if (list_of_blocks):
 				for block in list_of_blocks:
 					dict_of_blocks[block.profile][block.score] = block
 					dict_of_contigs[block.contig][block.profile][block.score] = block
 
-	analyseBlocks(dict_of_blocks, dict_of_contigs)
+	analyseBlocks(dict_of_contigs)
 
 	infile = TEMP_DIR + contig + ".temp"
 	outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
