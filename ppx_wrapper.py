@@ -247,8 +247,8 @@ def runAugustusPPX():
 	for profile in profile_hits:
 		for hit in profile_hits[profile]:
 			contig = hit.contig
-			start = hit.get('start', 10000)
-			end = hit.get('end', 10000)
+			start = str(hit.get('start', 10000))
+			end = str(hit.get('end', 10000))
 			strand = hit.get('strand', 0)
 
 			infile = TEMP_DIR + contig + ".temp"
