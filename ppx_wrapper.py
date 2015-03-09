@@ -57,12 +57,13 @@ def align_fasta(contig_file):
 def make_msa_profile(contig_file):
 	pass
 
-def run_fastblocksearch(profile, header, seq):
-	temp_file = TEMP_DIR + header + ".temp"
+def run_fastblocksearch(profile, contig):
+	outfile_name = species + "." + contig.header + "." + profile.split("/")[-1].split(".")[0] + ".result"
+	temp_file = TEMP_DIR + contig.header + ".temp"
 	temp = open(temp_file, 'w')
-	temp.write(">" + header + "\n" + seq)
+	temp.write(">" + contig.header + "\n" + contig.seq)
 	temp.close()
-	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > fastblocksearch/" + header + ".result ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > fastblocksearch/" + outfile_name + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 
 def progress(counter, max_value):
 	sys.stdout.write('\r')
@@ -71,13 +72,14 @@ def progress(counter, max_value):
 	sys.stdout.flush()
 
 def fastblocksearch(profile, contigs):
-	print "[STATUS] - Running FastBlockSearch "
 	pool = mp.Pool(processes = 10)
 	counter, max_value = 0, len(contigs)
+	profile_name = profile.split("/")[-1].split(".")[0]
+	print "[STATUS] - Running FastBlockSearch with profile : " + profile_name
 	for contig in contigs:
 		counter += 1
 		progress(counter, max_value)
-		pool.apply(run_fastblocksearch, args=(profile, contig.header, contig.seq,))
+		pool.apply(run_fastblocksearch, args=(profile, contig,))
 	sys.stdout.write('\r')
 	print "\tProgress : 100.00%"
 
@@ -273,7 +275,5 @@ if __name__ == "__main__":
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	for profile in list_of_profiles:
-		profile_name = profile.split("/")[-1].split(".")[0]
-		print "Searching for " + profile_name 
 		fastblocksearch(profile, contigs)
 	runAugustusPPX()
