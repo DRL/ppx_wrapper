@@ -125,7 +125,7 @@ def run_fastblocksearch(profile, contig):
 def parseFastBlockSearchResult(results):
 	list_of_blocks = []
 	raw = open(results).read()
-	if raw.split("\n")) > 4:
+	if raw.split("\n") > 4:
 		blocks = [x.split('\n') for x in raw.split("--")] 
 		print blocks
 		header = blocks[0].pop(0)
