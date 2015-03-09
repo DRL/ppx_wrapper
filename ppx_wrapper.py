@@ -168,6 +168,7 @@ def runAugustusPPX():
 			list_of_blocks = parseFastBlockSearchResult(result_file)
 
 			for block in list_of_blocks:
+				print block.__dict__
 				dict_of_blocks[block.profile][block.score] = block
 
 	contig, start, end, strand, score, profile = selectBestBlock(dict_of_blocks)
