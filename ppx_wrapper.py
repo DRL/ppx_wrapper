@@ -251,7 +251,6 @@ if __name__ == "__main__":
 	AUGUSTUS_DIR = 'augustus/'
 	MOTIFS = ["ELEKEF", "WFQNRR"]
 	RESULTS_DIR = 'results/'
-	PRIF
 
 	list_of_profiles = getProfiles(profile_dir)
 	contigs = parse_contigs_to_dict(contig_file)
