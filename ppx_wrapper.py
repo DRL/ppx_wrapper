@@ -152,23 +152,44 @@ def parseFastBlockSearchResult(results):
 		pass
 	return list_of_blocks
 
-def analyseBlocks(dict_of_blocks, dict_of_contigs):
+def analyseBlocks(dict_of_blocks):
 
-	for profile in sorted(dict_of_blocks, reverse=True):
-		for score in sorted(dict_of_blocks[profile], reverse=True):
-			block = dict_of_blocks[profile][score]
-			contig = block.contig
-			start = block.get('start', 10000)
-			end = block.get('end', 10000)
-			strand = block.get('strand', 0)
-			profile = block.profile
 
-	for contig in dict_of_contigs:
-		print contig 
-		for profile in dict_of_contigs[contig]:
-			print "\t" + profile,
-			for score in dict_of_contigs[contig][profile]:
-				print str(score) + str(dict_of_contigs[contig][profile][score].__dict__)
+	# check those that overlap -> yes/no
+	fastblockresults_dict = AutoVivification()
+
+	for score in sorted(dict_of_blocks, reverse=True):
+		for profile in sorted(dict_of_blocks[score], reverse=True):
+			for contig in dict_of_blocks[score][profile]:
+				block = dict_of_blocks[score][profile][contig]
+				print block.__dict__
+				#if not block.contig in fastblockresults_dict:
+				#	fastblockresults_dict[contig] = block
+				#else:
+				#	pass
+				#	#if fastblockresults_dict[contig].start > block.start and fastblockresults_dict[contig].end < block.start
+				#block = dict_of_blocks[profile][score]
+				#contig = block.contig
+				#start = block.get('start', 10000)
+				#end = block.get('end', 10000)
+				#strand = block.get('strand', 0)
+				#profile = block.profile
+
+			#if not profile in fastblockresults_dict:
+			#	fastblockresults_dict[profile] = block
+			#else:
+			#	if score > fastblockresults_dict[profile].score:
+			#		fastblockresults_dict[profile] = block
+#
+				
+			
+
+	#for contig in dict_of_contigs:
+	#	print contig 
+	#	for profile in dict_of_contigs[contig]:
+	#		print "\t" + profile,
+	#		for score in dict_of_contigs[contig][profile]:
+	#			print str(score) + str(dict_of_contigs[contig][profile][score].__dict__)
 
 	#return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
@@ -183,10 +204,10 @@ def runAugustusPPX():
 			list_of_blocks = parseFastBlockSearchResult(result_file)
 			if (list_of_blocks):
 				for block in list_of_blocks:
-					dict_of_blocks[block.profile][block.score] = block
-					dict_of_contigs[block.contig][block.profile][block.score] = block
+					dict_of_blocks[block.score][block.profile][block.contig] = block
+					#dict_of_contigs[block.contig][block.profile][block.score] = block
 
-	analyseBlocks(dict_of_blocks, dict_of_contigs)
+	analyseBlocks(dict_of_blocks)
 
 	infile = TEMP_DIR + contig + ".temp"
 	outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
