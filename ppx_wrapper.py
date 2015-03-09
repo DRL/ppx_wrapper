@@ -175,10 +175,14 @@ def analyseBlocks(dict_of_blocks):
 				coordinates = [hits_start, hit_end, block_start, block_end]
 				sum_A = hit_start + hit_end
 				sum_B = block_start, block_end
-				if (sum_A + sum_B) <= max(coordinates) - min(coordinates)
-				print "Overlap"
-				print hit.__dict__
-				print block.__dict__
+				if (sum_A + sum_B) <= (max(coordinates) - min(coordinates)):
+					print "Overlap"
+					print hit.__dict__
+					print block.__dict__
+				else:
+					print "No Overlap"
+					print hit.__dict__
+					print block.__dict__
 
 				#if not block.contig in fastblockresults_dict:
 				#	fastblockresults_dict[contig] = block
