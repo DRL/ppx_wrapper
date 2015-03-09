@@ -152,21 +152,30 @@ def parseFastBlockSearchResult(results):
 		os.remove(results)
 	return list_of_blocks
 
-def selectBestBlock(dict_of_blocks):
-	for profile in sorted(dict_of_blocks, reverse=True):
-		for score in sorted(dict_of_blocks[profile], reverse=True):
-			print profile, dict_of_blocks[profile][score].__dict__
+def analyseBlocks(dict_of_blocks):
+
+	hits_on_contigs = AutoVivification()
 
 	for profile in sorted(dict_of_blocks, reverse=True):
-		for profile in sorted(dict_of_blocks, reverse=True):
+		for score in sorted(dict_of_blocks, reverse=True):
 			print profile, dict_of_blocks[profile][score].__dict__
-			block = dict_of_blocks[score]
+			block = dict_of_blocks[profile][score]
 			contig = block.contig
 			start = block.get('start', 10000)
 			end = block.get('end', 10000)
 			strand = block.get('strand', 0)
 			profile = block.profile
-	return block.contig, str(start), str(end), strand, str(score), profile 		#break
+			hits_on_contigs[contig][profile][score] = block
+
+	for contig in hits_on_contigs:
+		for profile in hits_on_contigs[contig]:
+			for score in hits_on_contigs[contig][profile]:
+				print contig
+				print "\t" + profile
+				print "\t\t" + score
+				print "\t\t\t" + hits_on_contigs[contig][profile].__dict__ 
+	return ""
+	#return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
 def runAugustusPPX():
 	dict_of_blocks = AutoVivification()
@@ -182,7 +191,7 @@ def runAugustusPPX():
 					#dict_of_blocks[block.profile] = block
 					dict_of_blocks[block.profile][block.score] = block
 
-	contig, start, end, strand, score, profile = selectBestBlock(dict_of_blocks)
+	contig, start, end, strand, score, profile = analyseBlocks(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
 	outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
 	print "[STATUS] - Calling protein \"" + profile + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
