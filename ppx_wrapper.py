@@ -149,7 +149,7 @@ def parseFastBlockSearchResult(results):
 			block.profile = profile
 		list_of_blocks.append(block)
 	else:
-		os.remove(results)
+		pass
 	return list_of_blocks
 
 def analyseBlocks(dict_of_blocks):
@@ -270,5 +270,5 @@ if __name__ == "__main__":
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	for profile in list_of_profiles:
-		#fastblocksearch(profile, contigs)
+		fastblocksearch(profile, contigs)
 		runAugustusPPX()
