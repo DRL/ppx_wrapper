@@ -169,6 +169,7 @@ def runAugustusPPX():
 
 			for block in list_of_blocks:
 				print block.profile, block.score
+				print block
 				dict_of_blocks[block.profile][block.score] = block
 
 	contig, start, end, strand, score, profile = selectBestBlock(dict_of_blocks)
