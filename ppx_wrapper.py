@@ -17,6 +17,15 @@ import subprocess
 import string
 import collections
 
+class AutoVivification(dict):
+    """Implementation of perl's autovivification feature."""
+    def __getitem__(self, item):
+        try:
+            return dict.__getitem__(self, item)
+        except KeyError:
+            value = self[item] = type(self)()
+            return value
+
 class Block():
 	def __init__(self, contig, score, multi_score):
 		self.contig = contig
@@ -158,7 +167,7 @@ def selectBestBlock(dict_of_blocks):
 		return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
 def runAugustusPPX():
-	dict_of_blocks = collections.defaultdict
+	dict_of_blocks = AutoVivification()
 	for result in os.listdir("fastblocksearch/"):
 		# For each FastBlockSearch result file ...
 		if result.startswith(species) and result.endswith(".result"):
@@ -168,8 +177,8 @@ def runAugustusPPX():
 			list_of_blocks = parseFastBlockSearchResult(result_file)
 			if (list_of_blocks):
 				for block in list_of_blocks:
-					dict_of_blocks[block.profile] = block
-					#dict_of_blocks[block.profile][block.score] = block
+					#dict_of_blocks[block.profile] = block
+					dict_of_blocks[block.profile][block.score] = block
 
 	contig, start, end, strand, score, profile = selectBestBlock(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
