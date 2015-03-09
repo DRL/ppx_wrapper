@@ -263,8 +263,6 @@ if __name__ == "__main__":
 	except:
 		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE_DIR] [SPECIES]")
 	
-	query = profile.split("/")[-1].split(".")[0]
-	
 	GENOME_DIR = 'genome/'
 	TEMP_DIR = 'temp/'
 	FASTBLOCKSEARCH_DIR = 'fastblocksearch/'
@@ -275,5 +273,6 @@ if __name__ == "__main__":
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	for profile in list_of_profiles:
+		query = profile.split("/")[-1].split(".")[0]
 		fastblocksearch(profile, contigs)
 	runAugustusPPX()
