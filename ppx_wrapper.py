@@ -159,6 +159,8 @@ def analyseBlocks(dict_of_blocks):
 	for profile in sorted(dict_of_blocks, reverse=True):
 		for score in sorted(dict_of_blocks, reverse=True):
 			block = dict_of_blocks[profile][score]
+			print block
+			print block.__dict__
 			contig = block.contig
 			start = block.get('start', 10000)
 			end = block.get('end', 10000)
@@ -193,7 +195,7 @@ def runAugustusPPX():
 					dict_of_contigs[block.contig][block.profile][block.score] = block
 
 	analyseBlocks(dict_of_blocks)
-	
+
 	infile = TEMP_DIR + contig + ".temp"
 	outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
 	print "[STATUS] - Calling protein \"" + profile + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
