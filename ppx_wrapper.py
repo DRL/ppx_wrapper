@@ -166,9 +166,10 @@ def runAugustusPPX():
 			#temp_file = "temp/" + result_file.replace(".result", ".temp")
 			# Get results
 			list_of_blocks = parseFastBlockSearchResult(result_file)
-			if len(list_of_blocks):
+			if (list_of_blocks):
 				for block in list_of_blocks:
-					dict_of_blocks[block.profile][block.score] = block
+					dict_of_blocks[block.profile] = block
+					#dict_of_blocks[block.profile][block.score] = block
 
 	contig, start, end, strand, score, profile = selectBestBlock(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
