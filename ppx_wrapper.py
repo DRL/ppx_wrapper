@@ -210,7 +210,8 @@ def analyseBlocks(dict_of_blocks):
 	#		for score in dict_of_contigs[contig][profile]:
 	#			print str(score) + str(dict_of_contigs[contig][profile][score].__dict__)
 	for contig in fastblockresults_dict:
-		print fastblockresults_dict[contig].__dict__
+		for block in fastblockresults_dict:
+			print fastblockresults_dict[contig][block].__dict__
 	#return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
 def runAugustusPPX():
