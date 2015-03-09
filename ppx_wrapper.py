@@ -199,7 +199,7 @@ def runAugustusPPX():
 				print contig
 				print "\t" + profile
 				print "\t\t" + str(score)
-				print "\t\t\t" + dict_of_contigs[contig][profile].__dict__ 
+				print "\t\t\t" + str(dict_of_contigs[contig][profile].__dict__)
 	#analyseBlocks(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
 	outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
@@ -279,5 +279,5 @@ if __name__ == "__main__":
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	for profile in list_of_profiles:
-		fastblocksearch(profile, contigs)
+		#fastblocksearch(profile, contigs)
 		runAugustusPPX()
