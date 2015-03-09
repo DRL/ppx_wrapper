@@ -167,7 +167,7 @@ def analyseBlocks(dict_of_blocks):
 		profile = block.profile
 		if not contig in fastblockresults_dict:
 			fastblockresults_dict[contig] = []
-			fastblockresults_dict[contig].append[block]
+			fastblockresults_dict[contig].append(block)
 		else: 
 			for hit in fastblockresults_dict[contig]:
 				hit_start, hit_end = hit.get('start', 10000), hit.get('end', 10000)
