@@ -194,8 +194,7 @@ def analyseBlocks(dict_of_blocks):
 	#return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
 def runAugustusPPX():
-	dict_of_blocks = AutoVivification()
-	dict_of_contigs = AutoVivification()
+	dict_of_blocks = {}
 
 	for result in os.listdir("fastblocksearch/"):
 		# For each FastBlockSearch result file ...
@@ -204,7 +203,7 @@ def runAugustusPPX():
 			list_of_blocks = parseFastBlockSearchResult(result_file)
 			if (list_of_blocks):
 				for block in list_of_blocks:
-					dict_of_blocks[block.score][block.profile][block.contig] = block
+					dict_of_blocks[block.score] = block
 					#dict_of_contigs[block.contig][block.profile][block.score] = block
 
 	analyseBlocks(dict_of_blocks)
