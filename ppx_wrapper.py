@@ -248,25 +248,32 @@ def parseProteinsFromGFF3(gff3):
 				pass
 	return dict_of_proteins
 
+def getProfiles(profile_dir):
+	list_of_profiles = []
+	for profile in os.listdir(profile_dir + "/"):
+		list_of_profiles.append(profile)
+	return list_of_profiles
+
 if __name__ == "__main__":
 	try:
 		contig_file = sys.argv[1]
-		profile = sys.argv[2]
-		# profile_folder = sys.argv[2]
+		#profile = sys.argv[2]
+		profile_dir = sys.argv[2]
 		species = sys.argv[3] # ID for contigs, etc
 	except:
-		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE] [SPECIES]")
+		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE_DIR] [SPECIES]")
 	
 	query = profile.split("/")[-1].split(".")[0]
 	
-
 	GENOME_DIR = 'genome/'
 	TEMP_DIR = 'temp/'
 	FASTBLOCKSEARCH_DIR = 'fastblocksearch/'
 	AUGUSTUS_DIR = 'augustus/'
 	MOTIFS = ["ELEKEF", "WFQNRR"]
-	parse_profiles
+	RESULTS_DIR = 'results/'
+	list_of_profiles = getProfiles(profile_dir)
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
-	fastblocksearch(profile, contigs)
+	for profile in list_of_profiles:
+		fastblocksearch(profile, contigs)
 	runAugustusPPX()
