@@ -71,7 +71,7 @@ def parse_contigs_to_dict(contig_file):
 				if (seq):
 					if len(seq) > 1000: 
 						header = species + "." + header
-						contig = ContigObject(header, seq)
+						contig = ContigObject(header, seq.upper())
 						contigs.add(contig) 
 				seq = ''
 				header = line.rstrip("\n").lstrip(">").replace(" ","_")	
@@ -114,8 +114,6 @@ def run_fastblocksearch(profile, contig):
 	temp = open(temp_file, 'w')
 	temp.write(">" + contig.header + "\n" + contig.seq)
 	temp.close()
-	print temp_file
-	print out_file
 	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 
 
