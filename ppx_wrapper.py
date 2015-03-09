@@ -134,7 +134,7 @@ def parseFastBlockSearchResult(results):
 			block = Block(contig, score, multi_score)
 			print hit[2:]
 			block.coordinate = [int(x.split("\t")[0]) for x in hit[2:] if len(x.split("\t")) > 1]
-			block.strand = [hit[-1].split("\t")[2] if len(hit.split("\t")) > 1]
+			block.strand = hit[-2].split("\t")[2]
 		list_of_blocks.append(block)
 	else:
 		pass
