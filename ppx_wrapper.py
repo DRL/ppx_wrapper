@@ -167,9 +167,9 @@ def analyseBlocks(dict_of_blocks):
 		strand = block.get('strand', 0)
 		profile = block.profile
 		if not contig in fastblockresults_dict:
-			fastblockresults_dict[contig] = []
 			profile_count[profile] = profile_count.get(profile, 0) + 1
 			if profile_count[profile] <= max_profile_count:
+				fastblockresults_dict[contig] = []
 				fastblockresults_dict[contig].append(block)
 		else: 
 			for hit in fastblockresults_dict[contig]:
