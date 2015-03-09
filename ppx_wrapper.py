@@ -129,7 +129,9 @@ def parseFastBlockSearchResult(results):
 		contig = header.lstrip("Hits found in ")
 		for hit in blocks:
 			score, multi_score, coordinate, strand = 0.0, 0.0, 0, ''
+			print hit[0]
 			score = float(hit[0].lstrip("Score:"))
+			print hit[1]
 			multi_score = float(hit[1].lstrip("Mult. score:"))
 			block = Block(contig, score, multi_score)
 			print hit[2:]
@@ -263,6 +265,7 @@ if __name__ == "__main__":
 	FASTBLOCKSEARCH_DIR = 'fastblocksearch/'
 	AUGUSTUS_DIR = 'augustus/'
 	MOTIFS = ["ELEKEF", "WFQNRR"]
+	parse_profiles
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	fastblocksearch(profile, contigs)
