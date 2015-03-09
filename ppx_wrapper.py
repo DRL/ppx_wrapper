@@ -165,6 +165,7 @@ def analyseBlocks(dict_of_blocks):
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
+		profile = block.profile
 		if not contig in fastblockresults_dict:
 			profile_count[profile] = profile_count.get(profile, 0) + 1
 			if profile_count[profile] <= max_profile_count:
