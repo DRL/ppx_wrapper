@@ -172,7 +172,7 @@ def analyseBlocks(dict_of_blocks):
 			for hit in fastblockresults_dict[contig]:
 				hit_start, hit_end = hit.get('start', 10000), hit.get('end', 10000)
 				block_start, block_end = block.get('start', 10000), block.get('end', 10000)
-				coordinates = [hits_start, hit_end, block_start, block_end]
+				coordinates = [hit_start, hit_end, block_start, block_end]
 				sum_A = hit_start + hit_end
 				sum_B = block_start, block_end
 				if (sum_A + sum_B) <= (max(coordinates) - min(coordinates)):
