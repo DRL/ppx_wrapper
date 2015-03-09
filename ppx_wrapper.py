@@ -110,7 +110,7 @@ def fastblocksearch(profile, contigs):
 
 def run_fastblocksearch(profile, contig):
 	out_file = FASTBLOCKSEARCH_DIR + contig.header + "." + profile.split("/")[-1].split(".")[0] + ".result"
-	temp_file = TEMP_DIR + species + "." + contig.header + ".temp"
+	temp_file = TEMP_DIR + contig.header + ".temp"
 	temp = open(temp_file, 'w')
 	temp.write(">" + contig.header + "\n" + contig.seq)
 	temp.close()
