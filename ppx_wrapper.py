@@ -198,7 +198,7 @@ def runAugustusPPX():
 			for score in dict_of_contigs[contig][profile]:
 				print contig
 				print "\t" + profile
-				print "\t\t" + score
+				print "\t\t" + str(score)
 				print "\t\t\t" + dict_of_contigs[contig][profile].__dict__ 
 	#analyseBlocks(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
