@@ -157,14 +157,16 @@ def selectBestBlock(dict_of_blocks):
 		for score in sorted(dict_of_blocks[profile], reverse=True):
 			print profile, dict_of_blocks[profile][score].__dict__
 
-	for score in sorted(dict_of_blocks, reverse=True):
-		block = dict_of_blocks[score]
-		contig = block.contig
-		start = block.get('start', 10000)
-		end = block.get('end', 10000)
-		strand = block.get('strand', 0)
-		profile = block.profile
-		return block.contig, str(start), str(end), strand, str(score), profile 		#break
+	for profile in sorted(dict_of_blocks, reverse=True):
+		for profile in sorted(dict_of_blocks, reverse=True):
+			print profile, dict_of_blocks[profile][score].__dict__
+			block = dict_of_blocks[score]
+			contig = block.contig
+			start = block.get('start', 10000)
+			end = block.get('end', 10000)
+			strand = block.get('strand', 0)
+			profile = block.profile
+	return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
 def runAugustusPPX():
 	dict_of_blocks = AutoVivification()
@@ -179,7 +181,6 @@ def runAugustusPPX():
 				for block in list_of_blocks:
 					#dict_of_blocks[block.profile] = block
 					dict_of_blocks[block.profile][block.score] = block
-					dict_of_contigs[block.contig][block.]
 
 	contig, start, end, strand, score, profile = selectBestBlock(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
