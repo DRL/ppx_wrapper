@@ -114,8 +114,7 @@ def run_fastblocksearch(profile, contig):
 	temp = open(temp_file, 'w')
 	temp.write(">" + contig.header + "\n" + contig.seq)
 	temp.close()
-	#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stdout=subprocess.PIPE, shell=True)
+	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 
 
 ''' This has to be done for each contig in each species (by species)
