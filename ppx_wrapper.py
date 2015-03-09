@@ -131,6 +131,9 @@ def parseFastBlockSearchResult(results):
 		contig = header.lstrip("Hits found in ")
 		print contig
 		for hit in blocks:
+			print hit
+			hit = filter(None, hit)
+			print hit
 			score, multi_score, coordinate, strand = 0.0, 0.0, 0, ''
 			print hit[0]
 			score = float(hit[0].lstrip("Score:"))
