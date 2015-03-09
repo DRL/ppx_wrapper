@@ -172,7 +172,7 @@ def runAugustusPPX():
 
 	contig, start, end, strand, score, profile = selectBestBlock(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
-	outfile = AUGUSTUS_DIR + contig + ".gff3"
+	outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
 	print "[STATUS] - Calling protein \"" + profile + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
 	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 	process.wait()
@@ -249,6 +249,5 @@ if __name__ == "__main__":
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	for profile in list_of_profiles:
-		print profile
-		fastblocksearch(profile, contigs)
-	runAugustusPPX()
+		#fastblocksearch(profile, contigs)
+		runAugustusPPX()
