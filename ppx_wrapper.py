@@ -99,6 +99,7 @@ def progress(counter, max_value):
 def fastblocksearch(profile, contigs):
 	pool = mp.Pool(processes = 10)
 	counter, max_value = 0, len(contigs)
+	profile_name = profile.split("/")[-1].split(".")[0]
 	print "[STATUS] - Running FastBlockSearch with profile : " + profile_name
 	for contig in contigs:
 		counter += 1
