@@ -173,9 +173,9 @@ def analyseBlocks(dict_of_blocks):
 				hit_start, hit_end = int(hit.get('start', 10000)), int(hit.get('end', 10000))
 				block_start, block_end = int(block.get('start', 10000)), int(block.get('end', 10000))
 				coordinates = [hit_start, hit_end, block_start, block_end]
-				sum_A = hit_start + hit_end
-				sum_B = block_start + block_end
-				if (sum_A + sum_B) <= (max(coordinates) - min(coordinates)):
+				sum_lengths = (hit_end - hit_start) + (block_end - block_start)
+
+				if sum_lengths <= (max(coordinates) - min(coordinates)):
 					print "Overlap"
 					print hit.__dict__
 					print block.__dict__
