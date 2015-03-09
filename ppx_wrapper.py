@@ -159,6 +159,9 @@ def analyseBlocks(dict_of_blocks):
 	fastblockresults_dict = {}
 	max_profile_count = 2
 	profile_count = {}
+
+	profile_hits = {}
+
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
@@ -171,6 +174,11 @@ def analyseBlocks(dict_of_blocks):
 			if profile_count[profile] <= max_profile_count:
 				fastblockresults_dict[contig] = []
 				fastblockresults_dict[contig].append(block)
+				if not profile in profile_hits:
+					profile_hits[profile]=[]
+					profile_hits[profile].append(block)
+				else: 
+					profile_hits[profile].append(block)
 		else: 
 			for hit in fastblockresults_dict[contig]:
 				hit_start, hit_end = int(hit.get('start', 10000)), int(hit.get('end', 10000))
@@ -185,7 +193,11 @@ def analyseBlocks(dict_of_blocks):
 					profile_count[profile] = profile_count.get(profile, 0) + 1
 					if profile_count[profile] <= max_profile_count:
 						fastblockresults_dict[contig].append(block)
-					
+						if not profile in profile_hits:
+							profile_hits[profile]=[]
+							profile_hits[profile].append(block)
+						else: 
+							profile_hits[profile].append(block)
 
 				#if not block.contig in fastblockresults_dict:
 				#	fastblockresults_dict[contig] = block
@@ -214,10 +226,9 @@ def analyseBlocks(dict_of_blocks):
 	#		print "\t" + profile,
 	#		for score in dict_of_contigs[contig][profile]:
 	#			print str(score) + str(dict_of_contigs[contig][profile][score].__dict__)
-	for contig in fastblockresults_dict:
-		print contig
-		for block in fastblockresults_dict[contig]:
-			print block.__dict__
+	for profile in profile_hits:
+		print profile
+		print profile_hits[profile].__dict__
 	##return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
 def runAugustusPPX():
