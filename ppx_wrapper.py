@@ -157,7 +157,8 @@ def analyseBlocks(dict_of_blocks):
 
 	# check those that overlap -> yes/no
 	fastblockresults_dict = {}
-
+	max_profile_count = 2
+	profile_count = {}
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
@@ -167,7 +168,9 @@ def analyseBlocks(dict_of_blocks):
 		profile = block.profile
 		if not contig in fastblockresults_dict:
 			fastblockresults_dict[contig] = []
-			fastblockresults_dict[contig].append(block)
+			profile_count[profile] = profile_counts.get(profile, 0) + 1
+			if profile_count[profile] <= max_profile_count:
+				fastblockresults_dict[contig].append(block)
 		else: 
 			for hit in fastblockresults_dict[contig]:
 				hit_start, hit_end = int(hit.get('start', 10000)), int(hit.get('end', 10000))
@@ -179,7 +182,9 @@ def analyseBlocks(dict_of_blocks):
 					pass
 				else:
 					# "No Overlap"
-					fastblockresults_dict[contig].append(block)
+					profile_count[profile] = profile_counts.get(profile, 0) + 1
+					if profile_count[profile] <= max_profile_count:
+						fastblockresults_dict[contig].append(block)
 					
 
 				#if not block.contig in fastblockresults_dict:
@@ -209,11 +214,11 @@ def analyseBlocks(dict_of_blocks):
 	#		print "\t" + profile,
 	#		for score in dict_of_contigs[contig][profile]:
 	#			print str(score) + str(dict_of_contigs[contig][profile][score].__dict__)
-	for contig in fastblockresults_dict:
-		print contig
-		for block in fastblockresults_dict[contig]:
-			print block.__dict__
-	#return block.contig, str(start), str(end), strand, str(score), profile 		#break
+	#for contig in fastblockresults_dict:
+	#	print contig
+	#	for block in fastblockresults_dict[contig]:
+	#		print block.__dict__
+	##return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
 def runAugustusPPX():
 	dict_of_blocks = {}
