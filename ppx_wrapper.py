@@ -158,7 +158,6 @@ def analyseBlocks(dict_of_blocks):
 
 	for profile in sorted(dict_of_blocks, reverse=True):
 		for score in sorted(dict_of_blocks, reverse=True):
-			print profile, dict_of_blocks[profile][score].__dict__
 			block = dict_of_blocks[profile][score]
 			contig = block.contig
 			start = block.get('start', 10000)
@@ -179,6 +178,8 @@ def analyseBlocks(dict_of_blocks):
 
 def runAugustusPPX():
 	dict_of_blocks = AutoVivification()
+	dict_of_contigs = AutoVivification()
+
 	for result in os.listdir("fastblocksearch/"):
 		# For each FastBlockSearch result file ...
 		if result.startswith(species) and result.endswith(".result"):
@@ -190,8 +191,16 @@ def runAugustusPPX():
 				for block in list_of_blocks:
 					#dict_of_blocks[block.profile] = block
 					dict_of_blocks[block.profile][block.score] = block
+					dict_of_contigs[block.contig][block.profile][block.score] = block
 
-	contig, start, end, strand, score, profile = analyseBlocks(dict_of_blocks)
+	for contig in dict_of_contigs:
+		for profile in dict_of_contigs[contig]:
+			for score in dict_of_contigs[contig][profile]:
+				print contig
+				print "\t" + profile
+				print "\t\t" + score
+				print "\t\t\t" + dict_of_contigs[contig][profile].__dict__ 
+	#analyseBlocks(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
 	outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
 	print "[STATUS] - Calling protein \"" + profile + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
