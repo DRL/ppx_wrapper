@@ -228,7 +228,8 @@ def analyseBlocks(dict_of_blocks):
 	#			print str(score) + str(dict_of_contigs[contig][profile][score].__dict__)
 	for profile in profile_hits:
 		print profile
-		print profile_hits[profile].__dict__
+		for hits in profile_hits[profile]:
+			print hits.__dict__
 	##return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
 def runAugustusPPX():
