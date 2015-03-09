@@ -47,6 +47,7 @@ def parse_contigs_to_dict(contig_file):
  				#seq += line.translate(None,string.ascii_lowercase).rstrip("\n")
  				seq += line.rstrip("\n")
 		if len(seq) > 1000: 
+			header = species + "." + header
 			contig = ContigObject(header, seq)
 			contigs.add(contig) 
 	return contigs
@@ -58,7 +59,7 @@ def make_msa_profile(contig_file):
 	pass
 
 def run_fastblocksearch(profile, contig):
-	outfile_name = species + "." + contig.header + "." + profile.split("/")[-1].split(".")[0] + ".result"
+	outfile_name = contig.header + "." + profile.split("/")[-1].split(".")[0] + ".result"
 	temp_file = TEMP_DIR + contig.header + ".temp"
 	temp = open(temp_file, 'w')
 	temp.write(">" + contig.header + "\n" + contig.seq)
