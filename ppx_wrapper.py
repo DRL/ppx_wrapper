@@ -159,10 +159,8 @@ def analyseBlocks(dict_of_blocks):
 	fastblockresults_dict = AutoVivification()
 
 	for score in sorted(dict_of_blocks, reverse=True):
-		for profile in sorted(dict_of_blocks[score], reverse=True):
-			for contig in dict_of_blocks[score][profile]:
-				block = dict_of_blocks[score][profile][contig]
-				print block.__dict__
+		block = dict_of_blocks[score]
+		print block.__dict__
 				#if not block.contig in fastblockresults_dict:
 				#	fastblockresults_dict[contig] = block
 				#else:
