@@ -164,6 +164,7 @@ def runAugustusPPX():
 			#temp_file = "temp/" + result_file.replace(".result", ".temp")
 			# Get results
 			list_of_blocks = parseFastBlockSearchResult(result_file)
+			print list_of_blocks
 			if len(list_of_blocks) == 0:
 				pass
 			else:
