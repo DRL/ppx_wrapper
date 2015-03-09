@@ -168,7 +168,7 @@ def analyseBlocks(dict_of_blocks):
 		profile = block.profile
 		if not contig in fastblockresults_dict:
 			fastblockresults_dict[contig] = []
-			profile_count[profile] = profile_counts.get(profile, 0) + 1
+			profile_count[profile] = profile_count.get(profile, 0) + 1
 			if profile_count[profile] <= max_profile_count:
 				fastblockresults_dict[contig].append(block)
 		else: 
@@ -182,7 +182,7 @@ def analyseBlocks(dict_of_blocks):
 					pass
 				else:
 					# "No Overlap"
-					profile_count[profile] = profile_counts.get(profile, 0) + 1
+					profile_count[profile] = profile_count.get(profile, 0) + 1
 					if profile_count[profile] <= max_profile_count:
 						fastblockresults_dict[contig].append(block)
 					
