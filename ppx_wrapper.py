@@ -232,7 +232,8 @@ def parseProteinsFromGFF3(gff3):
 def getProfiles(profile_dir):
 	list_of_profiles = []
 	for profile in os.listdir(profile_dir + "/"):
-		list_of_profiles.append(profile)
+		if profile.endswith(".prfl"):
+			list_of_profiles.append(profile)
 	return list_of_profiles
 
 if __name__ == "__main__":
@@ -254,5 +255,6 @@ if __name__ == "__main__":
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	for profile in list_of_profiles:
+		print profile
 		fastblocksearch(profile, contigs)
 	runAugustusPPX()
