@@ -163,10 +163,10 @@ def selectBestBlock(dict_of_blocks):
 
 def runAugustusPPX():
 	dict_of_blocks = {}
-	for results in os.listdir("fastblocksearch/"):
+	for result in os.listdir("fastblocksearch/"):
 		# For each FastBlockSearch result file ...
-		result_file = "fastblocksearch/" + result
 		if result.startswith(species) and result_file.endswith(".result"):
+			result_file = "fastblocksearch/" + result
 			#temp_file = "temp/" + result_file.replace(".result", ".temp")
 			# Get results
 			list_of_blocks = parseFastBlockSearchResult(result_file)
