@@ -144,7 +144,7 @@ def parseFastBlockSearchResult(results):
 
 def selectBestBlock(dict_of_blocks):
 	for profile in sorted(dict_of_blocks, reverse=True):
-		for score in sorted(dict_of_blocks[profile, reverse=True):
+		for score in sorted(dict_of_blocks[profile], reverse=True):
 			print profile, dict_of_blocks[profile][score].__dict__
 
 	for score in sorted(dict_of_blocks, reverse=True):
