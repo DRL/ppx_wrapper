@@ -152,7 +152,7 @@ def parseFastBlockSearchResult(results):
 		pass
 	return list_of_blocks
 
-def analyseBlocks(dict_of_blocks):
+def analyseBlocks(dict_of_blocks, dict_of_contigs):
 
 	for profile in sorted(dict_of_blocks, reverse=True):
 		for score in sorted(dict_of_blocks[profile], reverse=True):
