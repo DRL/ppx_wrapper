@@ -162,7 +162,6 @@ def analyseBlocks(dict_of_blocks, dict_of_contigs):
 			end = block.get('end', 10000)
 			strand = block.get('strand', 0)
 			profile = block.profile
-			hits_on_contigs[contig][profile][score] = block
 
 	for contig in dict_of_contigs:
 		print contig 
