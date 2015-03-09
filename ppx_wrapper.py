@@ -167,7 +167,7 @@ def analyseBlocks(dict_of_blocks):
 	for contig in dict_of_contigs:
 		print contig 
 		for profile in dict_of_contigs[contig]:
-			print "\t" profile,
+			print "\t" + profile,
 			for score in dict_of_contigs[contig][profile]:
 				print str(score)
 
