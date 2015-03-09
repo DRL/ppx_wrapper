@@ -165,10 +165,6 @@ def analyseBlocks(dict_of_blocks):
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
-		start = block.get('start', 10000)
-		end = block.get('end', 10000)
-		strand = block.get('strand', 0)
-		profile = block.profile
 		if not contig in fastblockresults_dict:
 			profile_count[profile] = profile_count.get(profile, 0) + 1
 			if profile_count[profile] <= max_profile_count:
@@ -230,7 +226,8 @@ def analyseBlocks(dict_of_blocks):
 		print profile
 		for hits in profile_hits[profile]:
 			print hits.__dict__
-	##return block.contig, str(start), str(end), strand, str(score), profile 		#break
+	
+	return profile_hits
 
 def runAugustusPPX():
 	dict_of_blocks = {}
@@ -245,20 +242,27 @@ def runAugustusPPX():
 					dict_of_blocks[block.score] = block
 					#dict_of_contigs[block.contig][block.profile][block.score] = block
 
-	analyseBlocks(dict_of_blocks)
+	profile_hits = analyseBlocks(dict_of_blocks)
+	for profile in profile_hits:
+		for hit in profile_hits[profile]:
+			contig = hit.contig
+			start = hit.get('start', 10000)
+			end = hit.get('end', 10000)
+			strand = hit.get('strand', 0)
 
-	infile = TEMP_DIR + contig + ".temp"
-	outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
-	print "[STATUS] - Calling protein \"" + profile + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
-	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-	process.wait()
-	print "[STATUS] - Writing proteins"
-	proteins = parseProteinsFromGFF3(outfile)
-	for protein_name, protein_seq in proteins.items():
-		for motif in MOTIFS:
-			if motif in protein_seq:
-				print ">" + protein_name + "\n" + protein_seq
-				break
+			infile = TEMP_DIR + contig + ".temp"
+			outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
+			print "[STATUS] - Calling protein \"" + profile + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
+			process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+			process.wait()
+			print "[STATUS] - Writing proteins"
+			proteins = parseProteinsFromGFF3(outfile)
+			for protein_name, protein_seq in proteins.items():
+				for motif in MOTIFS:
+					if motif in protein_seq:
+						print ">" + protein_name + "\n" + protein_seq
+						break
+			break
 
 	print "[STATUS] - Done."
 
