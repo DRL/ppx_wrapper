@@ -131,16 +131,11 @@ def parseFastBlockSearchResult(results):
 		contig = header.lstrip("Hits found in ")
 		print contig
 		for hit in blocks:
-			print hit
-			hit = filter(None, hit)
-			print hit
+			print "New hit \n" + str(hit)
 			score, multi_score, coordinate, strand = 0.0, 0.0, 0, ''
-			print hit[0]
 			score = float(hit[0].lstrip("Score:"))
-			print hit[1]
 			multi_score = float(hit[1].lstrip("Mult. score:"))
 			block = Block(contig, score, multi_score)
-			print hit[2:]
 			block.coordinate = [int(x.split("\t")[0]) for x in hit[2:] if len(x.split("\t")) > 1]
 			block.strand = hit[-2].split("\t")[2]
 		list_of_blocks.append(block)
