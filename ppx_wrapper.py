@@ -171,8 +171,8 @@ def analyseBlocks(dict_of_blocks):
 			for score in hits_on_contigs[contig][profile]:
 				print contig
 				print "\t" + profile
-				print "\t\t" + score
-				print "\t\t\t" + hits_on_contigs[contig][profile].__dict__ 
+				print "\t\t" + str(score)
+				print "\t\t\t" + str(hits_on_contigs[contig][profile].__dict__)
 	return ""
 	#return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
