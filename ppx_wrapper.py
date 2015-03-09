@@ -126,10 +126,11 @@ def parseFastBlockSearchResult(results):
 	list_of_blocks = []
 	raw = open(results).read()
 	if len(raw.split("\n")) > 3:
-		blocks = [x.split('\n') for x in raw.split("--")[:-1]] 
+		blocks = [x.split('\n') for x in raw.split("--")[:-2]] 
 		header = blocks[0].pop(0)
 		contig = header.lstrip("Hits found in ")
 		for hit in blocks:
+
 			score, multi_score, coordinate, strand = 0.0, 0.0, 0, ''
 			print hit[0]
 			score = float(hit[0].lstrip("Score:"))
@@ -152,14 +153,10 @@ def selectBestBlock(dict_of_blocks):
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
 		contig = block.contig
-
 		start = block.get('start', 10000)
 		end = block.get('end', 10000)
 		strand = block.get('strand', 0)
-
-		return block.contig, str(start), str(end), strand, str(score) 
-		#break
-
+		return block.contig, str(start), str(end), strand, str(score) 		#break
 
 def runAugustusPPX():
 	dict_of_blocks = {}
