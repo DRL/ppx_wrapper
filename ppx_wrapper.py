@@ -174,15 +174,13 @@ def analyseBlocks(dict_of_blocks):
 				block_start, block_end = int(block.get('start', 10000)), int(block.get('end', 10000))
 				coordinates = [hit_start, hit_end, block_start, block_end]
 				sum_lengths = (hit_end - hit_start) + (block_end - block_start)
-
 				if sum_lengths >= (max(coordinates) - min(coordinates)):
-					print "Overlap"
-					print hit.__dict__
-					print block.__dict__
+					# "Overlap"
+					pass
 				else:
-					print "No Overlap"
-					print hit.__dict__
-					print block.__dict__
+					# "No Overlap"
+					fastblockresults_dict[contig].append(block)
+					
 
 				#if not block.contig in fastblockresults_dict:
 				#	fastblockresults_dict[contig] = block
@@ -211,7 +209,8 @@ def analyseBlocks(dict_of_blocks):
 	#		print "\t" + profile,
 	#		for score in dict_of_contigs[contig][profile]:
 	#			print str(score) + str(dict_of_contigs[contig][profile][score].__dict__)
-
+	for contig in fastblockresults_dict:
+		print fastblockresults_dict[contig].__dict__
 	#return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
 def runAugustusPPX():
