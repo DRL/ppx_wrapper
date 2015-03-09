@@ -193,13 +193,7 @@ def runAugustusPPX():
 					dict_of_blocks[block.profile][block.score] = block
 					dict_of_contigs[block.contig][block.profile][block.score] = block
 
-	for contig in dict_of_contigs:
-		for profile in dict_of_contigs[contig]:
-			for score in dict_of_contigs[contig][profile]:
-				print contig
-				print "\t" + profile
-				print "\t\t" + str(score)
-				print "\t\t\t" + str(dict_of_contigs[contig][profile].__dict__)
+	print str(dict_of_contigs)
 	#analyseBlocks(dict_of_blocks)
 	infile = TEMP_DIR + contig + ".temp"
 	outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
