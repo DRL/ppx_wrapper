@@ -156,11 +156,30 @@ def analyseBlocks(dict_of_blocks):
 
 
 	# check those that overlap -> yes/no
-	fastblockresults_dict = AutoVivification()
+	fastblockresults_dict = {}
 
 	for score in sorted(dict_of_blocks, reverse=True):
 		block = dict_of_blocks[score]
-		print block.__dict__
+		contig = block.contig
+		start = block.get('start', 10000)
+		end = block.get('end', 10000)
+		strand = block.get('strand', 0)
+		profile = block.profile
+		if not contig in fastblockresults_dict:
+			fastblockresults_dict[contig] = []
+			fastblockresults_dict[contig].append[block]
+		else: 
+			for hit in fastblockresults_dict[contig]:
+				hit_start, hit_end = hit.get('start', 10000), hit.get('end', 10000)
+				block_start, block_end = block.get('start', 10000), block.get('end', 10000)
+				coordinates = [hits_start, hit_end, block_start, block_end]
+				sum_A = hit_start + hit_end
+				sum_B = block_start, block_end
+				if (sum_A + sum_B) <= max(coordinates) - min(coordinates)
+				print "Overlap"
+				print hit.__dict__
+				print block.__dict__
+
 				#if not block.contig in fastblockresults_dict:
 				#	fastblockresults_dict[contig] = block
 				#else:
