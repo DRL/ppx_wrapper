@@ -183,7 +183,7 @@ def selectBestBlock(dict_of_blocks):
 
 def runAugustusPPX():
 	dict_of_blocks = {}
-	for result in os.listdir("fastblocksearch/"):
+	for results in os.listdir("fastblocksearch/"):
 		# For each FastBlockSearch result file ...
 		result_file = "fastblocksearch/" + result
 		if result.startswith(species) and result_file.endswith(".result"):
@@ -273,6 +273,7 @@ if __name__ == "__main__":
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	for profile in list_of_profiles:
-		query = profile.split("/")[-1].split(".")[0]
+		profile_name = profile.split("/")[-1].split(".")[0]
+		print "Searching for " + profile_name 
 		fastblocksearch(profile, contigs)
 	runAugustusPPX()
