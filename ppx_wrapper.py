@@ -233,7 +233,7 @@ def getProfiles(profile_dir):
 	list_of_profiles = []
 	for profile in os.listdir(profile_dir + "/"):
 		if profile.endswith(".prfl"):
-			list_of_profiles.append(profile)
+			list_of_profiles.append(profile_dir + profile)
 	return list_of_profiles
 
 if __name__ == "__main__":
@@ -251,6 +251,8 @@ if __name__ == "__main__":
 	AUGUSTUS_DIR = 'augustus/'
 	MOTIFS = ["ELEKEF", "WFQNRR"]
 	RESULTS_DIR = 'results/'
+	PRIF
+
 	list_of_profiles = getProfiles(profile_dir)
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
