@@ -154,8 +154,6 @@ def parseFastBlockSearchResult(results):
 
 def analyseBlocks(dict_of_blocks):
 
-	hits_on_contigs = AutoVivification()
-
 	for profile in sorted(dict_of_blocks, reverse=True):
 		for score in sorted(dict_of_blocks[profile], reverse=True):
 			block = dict_of_blocks[profile][score]
@@ -166,14 +164,13 @@ def analyseBlocks(dict_of_blocks):
 			profile = block.profile
 			hits_on_contigs[contig][profile][score] = block
 
-	for contig in hits_on_contigs:
-		for profile in hits_on_contigs[contig]:
-			for score in hits_on_contigs[contig][profile]:
-				print contig
-				print "\t" + profile
-				print "\t\t" + str(score)
-				print "\t\t\t" + str(hits_on_contigs[contig][profile][score].__dict__)
-	return ""
+	for contig in dict_of_contigs:
+		print contig 
+		for profile in dict_of_contigs[contig]:
+			print "\t" profile,
+			for score in dict_of_contigs[contig][profile]:
+				print str(score)
+
 	#return block.contig, str(start), str(end), strand, str(score), profile 		#break
 
 def runAugustusPPX():
@@ -192,7 +189,7 @@ def runAugustusPPX():
 					dict_of_blocks[block.profile][block.score] = block
 					dict_of_contigs[block.contig][block.profile][block.score] = block
 
-	analyseBlocks(dict_of_blocks)
+	analyseBlocks(dict_of_blocks, dict_of_contigs)
 
 	infile = TEMP_DIR + contig + ".temp"
 	outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
