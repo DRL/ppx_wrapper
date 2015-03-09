@@ -15,6 +15,7 @@ import time
 import multiprocessing as mp 
 import subprocess
 import string
+import collections
 
 class Block():
 	def __init__(self, contig, score, multi_score):
