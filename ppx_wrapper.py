@@ -333,6 +333,5 @@ if __name__ == "__main__":
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	for profile in dict_of_profiles:
-		#fastblocksearch(dict_of_profiles[profile], contigs)
-		pass
+		fastblocksearch(dict_of_profiles[profile], contigs)
 	runAugustusPPX()
