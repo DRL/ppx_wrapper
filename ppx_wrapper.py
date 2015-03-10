@@ -187,14 +187,21 @@ def analyseBlocks(dict_of_blocks):
 					pass
 				else:
 					# "No Overlap"
-					profile_count[profile] = profile_count.get(profile, 0) + 1
-					if profile_count[profile] <= max_profile_count:
-						fastblockresults_dict[contig].append(block)
-						if not profile in profile_hits:
-							profile_hits[profile]=[]
-							profile_hits[profile].append(block)
-						else: 
-							profile_hits[profile].append(block)
+					if (coordinates[0] >= coordinates[2] and coordinates[1] <= coordinates[3]):
+						# hit in block
+						pass
+					elif (coordinates[2] >= coordinates[0] and coordinates[3] <= coordinates[1]):
+						# block in hit
+						pass
+					else:
+						profile_count[profile] = profile_count.get(profile, 0) + 1
+						if profile_count[profile] <= max_profile_count:
+							fastblockresults_dict[contig].append(block)
+							if not profile in profile_hits:
+								profile_hits[profile]=[]
+								profile_hits[profile].append(block)
+							else: 
+								profile_hits[profile].append(block)
 
 				#if not block.contig in fastblockresults_dict:
 				#	fastblockresults_dict[contig] = block
