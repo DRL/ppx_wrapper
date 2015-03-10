@@ -253,9 +253,12 @@ def runAugustusPPX():
 
 			infile = TEMP_DIR + species + "." + contig + ".temp"
 			outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
-			print "[STATUS] - Calling protein \"" + profile + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
+			for prof in list_of_profiles:
+				if prof.startswith(profile):
+					profile_file = prof
+			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
 			#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-			process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stdout=subprocess.PIPE, shell=True)
+			process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stdout=subprocess.PIPE, shell=True)
 			process.wait()
 			print "[STATUS] - Writing proteins"
 			proteins = parseProteinsFromGFF3(outfile)
