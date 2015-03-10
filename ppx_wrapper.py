@@ -255,7 +255,7 @@ def runAugustusPPX():
 			outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
 			profile_file = ''
 			for prof in list_of_profiles:
-				if prof.startswith(profile):
+				if prof in profile:
 					profile_file = prof
 			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
 			#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
