@@ -331,4 +331,5 @@ if __name__ == "__main__":
 	#print contigs
 	for profile in list_of_profiles:
 		#fastblocksearch(profile, contigs)
-		runAugustusPPX()
+		pass
+	runAugustusPPX()
