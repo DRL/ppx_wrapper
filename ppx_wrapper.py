@@ -253,10 +253,7 @@ def runAugustusPPX():
 			
 			infile = TEMP_DIR + species + "." + contig + ".temp"
 			outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
-			profile_file = ''
-			for prof in list_of_profiles:
-				if prof in profile:
-					profile_file = prof
+			profile_file = dict_of_profiles[profile]
 			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
 			#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 			process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stdout=subprocess.PIPE, shell=True)
@@ -309,11 +306,12 @@ def parseProteinsFromGFF3(gff3):
 	return dict_of_proteins
 
 def getProfiles(profile_dir):
-	list_of_profiles = []
+	dict_of_profiles = {}
 	for profile in os.listdir(profile_dir + "/"):
 		if profile.endswith(".prfl"):
-			list_of_profiles.append(profile_dir + profile)
-	return list_of_profiles
+			profile_name = profile.split(".")[0]
+			dict_of_profiles[profile_name]= profile_dir + profile
+	return dict_of_profiles
 
 if __name__ == "__main__":
 	try:
@@ -331,10 +329,10 @@ if __name__ == "__main__":
 	MOTIFS = ["ELEKEF", "WFQNRR"]
 	RESULTS_DIR = 'results/'
 
-	list_of_profiles = getProfiles(profile_dir)
+	dict_of_profiles = getProfiles(profile_dir)
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
-	for profile in list_of_profiles:
-		#fastblocksearch(profile, contigs)
+	for profile in dict_of_profiles:
+		#fastblocksearch(dict_of_profiles[profile], contigs)
 		pass
 	runAugustusPPX()
