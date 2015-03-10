@@ -250,9 +250,10 @@ def runAugustusPPX():
 			start = str(hit.get('start', 10000))
 			end = str(hit.get('end', 10000))
 			strand = hit.get('strand', 0)
-
+			
 			infile = TEMP_DIR + species + "." + contig + ".temp"
 			outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
+			profile_file = ''
 			for prof in list_of_profiles:
 				if prof.startswith(profile):
 					profile_file = prof
