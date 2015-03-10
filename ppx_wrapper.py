@@ -145,11 +145,11 @@ def parseFastBlockSearchResult(results):
 			multi_score = float(hit[1].lstrip("Mult. score:"))
 			block = Block(contig, score, multi_score)
 			block.coordinates = sorted([int(x.split("\t")[0]) for x in hit[2:] if len(x.split("\t")) > 1])
-			block.strand = hit[-2].split("\t")[2]
+			block.strand = hit[-1].split("\t")[2]
 			block.profile = profile
 		list_of_blocks.append(block)
 	else:
-		pass
+		os.remove(results)
 	return list_of_blocks
 
 def analyseBlocks(dict_of_blocks):
@@ -319,8 +319,9 @@ if __name__ == "__main__":
 		#profile = sys.argv[2]
 		profile_dir = sys.argv[2]
 		species = sys.argv[3] # ID for contigs, etc
+		modus = sys.argv[4] 
 	except:
-		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE_DIR] [SPECIES]")
+		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE_DIR] [SPECIES] [SEARCH|NOSEARCH]")
 	
 	GENOME_DIR = 'genome/'
 	TEMP_DIR = 'temp/'
@@ -333,5 +334,8 @@ if __name__ == "__main__":
 	contigs = parse_contigs_to_dict(contig_file)
 	#print contigs
 	for profile in dict_of_profiles:
-		fastblocksearch(dict_of_profiles[profile], contigs)
+		if modus == "SEARCH":
+			fastblocksearch(dict_of_profiles[profile], contigs)
+		else: 
+			pass
 	runAugustusPPX()
