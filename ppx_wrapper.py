@@ -263,7 +263,7 @@ def runAugustusPPX():
 			for protein_name, protein_seq in proteins.items():
 				for motif in MOTIFS:
 					if motif in protein_seq:
-						print ">" + protein_name + "\n" + protein_seq
+						print ">" + species + "." + profile + "." + contig + "." + protein_name + "\n" + protein_seq
 						break
 			break
 
