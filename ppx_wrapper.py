@@ -7,6 +7,7 @@ Author  	:
 Version 	: 0.1
 Description : 
 To do 		: Make global scoring for fastblocks for all profiles ...
+Bugs 		: Contig names in assemblies can't have "."
 """
 
 from __future__ import division
@@ -178,8 +179,8 @@ def analyseBlocks(dict_of_blocks):
 					profile_hits[profile].append(block)
 		else: 
 			for hit in fastblockresults_dict[contig]:
-				hit_start, hit_end = int(hit.get('start', 10000)), int(hit.get('end', 10000))
-				block_start, block_end = int(block.get('start', 10000)), int(block.get('end', 10000))
+				hit_start, hit_end = int(hit.get('start', buffer_range)), int(hit.get('end', buffer_range))
+				block_start, block_end = int(block.get('start', buffer_range)), int(block.get('end', buffer_range))
 				coordinates = [hit_start, hit_end, block_start, block_end]
 				sum_lengths = (hit_end - hit_start) + (block_end - block_start)
 				if sum_lengths >= (max(coordinates) - min(coordinates)):
@@ -210,8 +211,8 @@ def analyseBlocks(dict_of_blocks):
 				#	#if fastblockresults_dict[contig].start > block.start and fastblockresults_dict[contig].end < block.start
 				#block = dict_of_blocks[profile][score]
 				#contig = block.contig
-				#start = block.get('start', 10000)
-				#end = block.get('end', 10000)
+				#start = block.get('start', buffer_range)
+				#end = block.get('end', buffer_range)
 				#strand = block.get('strand', 0)
 				#profile = block.profile
 
@@ -254,12 +255,12 @@ def runAugustusPPX():
 	for profile in profile_hits:
 		for hit in profile_hits[profile]:
 			contig = hit.contig
-			start = str(hit.get('start', 10000))
-			end = str(hit.get('end', 10000))
+			start = str(hit.get('start', buffer_range))
+			end = str(hit.get('end', buffer_range))
 			strand = hit.get('strand', 0)
 			
 			infile = TEMP_DIR + species + "." + contig + ".temp"
-			outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3"
+			outfile = AUGUSTUS_DIR + species + "." + contig + "." + profile + ".gff3"
 			profile_file = dict_of_profiles[profile]
 			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
 			#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
@@ -321,14 +322,16 @@ def getProfiles(profile_dir):
 	return dict_of_profiles
 
 if __name__ == "__main__":
+	buffer_range = 10000
 	try:
 		contig_file = sys.argv[1]
 		#profile = sys.argv[2]
 		profile_dir = sys.argv[2]
 		species = sys.argv[3] # ID for contigs, etc
 		modus = sys.argv[4] 
+		buffer_range = sys.argv[5] 
 	except:
-		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE_DIR] [SPECIES] [SEARCH|NOSEARCH]")
+		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE_DIR] [SPECIES] [SEARCH|NOSEARCH] [BUFFERRANGE]")
 	
 	GENOME_DIR = 'genome/'
 	TEMP_DIR = 'temp/'
