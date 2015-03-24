@@ -137,6 +137,7 @@ def parseFastBlockSearchResult(result_file):
 	list_of_blocks = []
 	contig, profile = result_file.split("/")[1].split(".")[1], result_file.split("/")[1].split(".")[2]
 	print contig, profile, result_file
+	raw = ''
 	raw = open(result_file).read()
 	try:
 		number_of_hits = len(raw.split("--"))
