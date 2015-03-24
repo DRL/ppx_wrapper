@@ -163,7 +163,9 @@ def analyseBlocks(dict_of_blocks):
 
 	profile_hits = {}
 
+
 	for score in sorted(dict_of_blocks, reverse=True):
+		print str(score) + "\t" +  str(dict_of_blocks[score].__dict__)
 		block = dict_of_blocks[score]
 		contig = block.contig
 		profile = block.profile
@@ -322,7 +324,7 @@ def getProfiles(profile_dir):
 	return dict_of_profiles
 
 if __name__ == "__main__":
-	buffer_range = 10000
+	buffer_range = 1000
 	try:
 		contig_file = sys.argv[1]
 		#profile = sys.argv[2]
