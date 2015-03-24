@@ -133,8 +133,7 @@ def fastblocksearch(profile, contigs):
 		progress(counter, max_value)
 		if i % 5 == 0:
 			for process in processes:			
-				while not (process.poll() == None):
-					time.sleep(1)
+				print process.poll():
 
 
 	#for contig in contigs:
