@@ -116,6 +116,8 @@ def fastblocksearch(profile, contigs):
 		counter += 1
 		progress(counter, max_value)
 		pool.apply(run_fastblocksearch, args=(profile, contig,))
+		pool.join()
+		pool.close()
 	sys.stdout.write('\r')
 	print "\tProgress : 100.00%"
 
@@ -126,7 +128,7 @@ def run_fastblocksearch(profile, contig):
 	temp.write(">" + contig.header + "\n" + contig.seq)
 	temp.close()
 	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-	process.wait()
+	#process.wait()
 
 ''' This has to be done for each contig in each species (by species)
 	- create folder for each genome
