@@ -116,7 +116,6 @@ def fastblocksearch(profile, contigs):
 		counter += 1
 		progress(counter, max_value)
 		pool.apply(run_fastblocksearch, args=(profile, contig,))
-		pool.join()
 	sys.stdout.write('\r')
 	print "\tProgress : 100.00%"
 
@@ -135,15 +134,14 @@ def run_fastblocksearch(profile, contig):
 '''
 
 def parseFastBlockSearchResult(result_file):
+	time.sleep(2)
 	list_of_blocks = []
 	contig, profile = result_file.split("/")[1].split(".")[1], result_file.split("/")[1].split(".")[2]
-	print contig, profile, result_file
 	raw = open(result_file).read()
 	try:
 		number_of_hits = len(raw.split("--"))
 	except:
 		number_of_hits = 0
-	print number_of_hits, str(len(raw.split("--")))
 	if number_of_hits >= 2:
 		blocks = [filter(None, x.split('\n')) for x in raw.split("--") if len(x) > 2 ] 
 		header = blocks[0].pop(0)
@@ -159,7 +157,6 @@ def parseFastBlockSearchResult(result_file):
 			block.profile = profile
 		list_of_blocks.append(block)
 	else:
-		pass
 		#print raw
 		os.remove(result_file)
 	print list_of_blocks 
