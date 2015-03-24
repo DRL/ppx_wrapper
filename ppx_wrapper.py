@@ -280,6 +280,8 @@ def runAugustusPPX():
 					#dict_of_contigs[block.contig][block.profile][block.score] = block
 
 	profile_hits = analyseBlocks(dict_of_blocks)
+
+	ppx_results = open(RESULTS_DIR + species + ".fa", "w")
 	for profile in profile_hits:
 		for hit in profile_hits[profile]:
 			contig = hit.contig
@@ -300,8 +302,10 @@ def runAugustusPPX():
 				for motif in MOTIFS:
 					if motif in protein_seq:
 						print ">" + species + "." + profile + "." + contig + "." + protein_name + "\n" + protein_seq
+						ppx_results.write(">" + species + "." + profile + "." + contig + "." + protein_name + "\n" + protein_seq + "\n")
 						break
 			break
+	ppx_results.close()
 
 	print "[STATUS] - Done."
 
