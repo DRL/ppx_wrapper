@@ -137,6 +137,7 @@ def parseFastBlockSearchResult(results):
 	list_of_blocks = []
 	contig, profile = results.split("/")[1].split(".")[1], results.split("/")[1].split(".")[2]
 	raw = open(results).read()
+	print raw
 	if len(raw.split("\n")) > 4:
 		blocks = [filter(None, x.split('\n')) for x in raw.split("--") if len(x) > 2 ] 
 		header = blocks[0].pop(0)
@@ -152,9 +153,9 @@ def parseFastBlockSearchResult(results):
 			block.profile = profile
 		list_of_blocks.append(block)
 	else:
-		pass
+		#pass
 		#print raw
-		#os.remove(results)
+		os.remove(results)
 	return list_of_blocks
 
 def analyseBlocks(dict_of_blocks):
@@ -253,7 +254,7 @@ def runAugustusPPX():
 			result_file = "fastblocksearch/" + result
 			print "[STATUS] - Parsing : " + result_file
 			list_of_blocks = parseFastBlockSearchResult(result_file)
-			print str(list_of_blocks)
+			print str(list_of_blocks.__dict__)
 			if (list_of_blocks):
 				for block in list_of_blocks:
 					dict_of_blocks[block.score] = block
