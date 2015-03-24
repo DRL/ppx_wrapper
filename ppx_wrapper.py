@@ -133,13 +133,13 @@ def run_fastblocksearch(profile, contig):
 	- infer best overall hits	
 '''
 
-def parseFastBlockSearchResult(results):
+def parseFastBlockSearchResult(result_file):
 	list_of_blocks = []
-	contig, profile = results.split("/")[1].split(".")[1], results.split("/")[1].split(".")[2]
-	print contig, profile, results
-	raw = open(results).read()
-	print str(len(raw.split("\n"))), raw.split("\n")
-	if len(raw.split("\n")) > 3:
+	contig, profile = result_file.split("/")[1].split(".")[1], result_file.split("/")[1].split(".")[2]
+	print contig, profile, result_file
+	raw = open(result_file).read()
+
+	if len(raw.split("\n")) >= 4:
 		blocks = [filter(None, x.split('\n')) for x in raw.split("--") if len(x) > 2 ] 
 		header = blocks[0].pop(0)
 		#print blocks
@@ -156,7 +156,7 @@ def parseFastBlockSearchResult(results):
 	else:
 		pass
 		#print raw
-		#os.remove(results)
+		#os.remove(result_file)
 	return list_of_blocks
 
 def analyseBlocks(dict_of_blocks):
