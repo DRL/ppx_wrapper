@@ -153,7 +153,7 @@ def parseFastBlockSearchResult(results):
 			block.profile = profile
 		list_of_blocks.append(block)
 	else:
-		#pass
+		pass
 		#print raw
 		#os.remove(results)
 	return list_of_blocks
