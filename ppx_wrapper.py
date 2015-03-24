@@ -136,8 +136,8 @@ def run_fastblocksearch(profile, contig):
 def parseFastBlockSearchResult(results):
 	list_of_blocks = []
 	contig, profile = results.split("/")[1].split(".")[1], results.split("/")[1].split(".")[2]
+	print contig, profile
 	raw = open(results).read()
-	print raw
 	if len(raw.split("\n")) > 4:
 		blocks = [filter(None, x.split('\n')) for x in raw.split("--") if len(x) > 2 ] 
 		header = blocks[0].pop(0)
@@ -155,7 +155,7 @@ def parseFastBlockSearchResult(results):
 	else:
 		#pass
 		#print raw
-		os.remove(results)
+		#os.remove(results)
 	return list_of_blocks
 
 def analyseBlocks(dict_of_blocks):
