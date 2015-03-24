@@ -158,14 +158,14 @@ def analyseBlocks(dict_of_blocks):
 
 	# check those that overlap -> yes/no
 	fastblockresults_dict = {}
-	max_profile_count = 1
+	max_profile_count = 2
 	profile_count = {}
 
 	profile_hits = {}
 
 
 	for score in sorted(dict_of_blocks, reverse=True):
-		print str(score) + "\t" +  str(dict_of_blocks[score].__dict__)
+		print str(score) + "\t" + str(dict_of_blocks[score].__dict__)
 		block = dict_of_blocks[score]
 		contig = block.contig
 		profile = block.profile
@@ -253,7 +253,7 @@ def runAugustusPPX():
 					dict_of_blocks[block.score] = block
 
 					#dict_of_contigs[block.contig][block.profile][block.score] = block
-	print str(dict_of_blocks)
+
 	profile_hits = analyseBlocks(dict_of_blocks)
 	for profile in profile_hits:
 		for hit in profile_hits[profile]:
