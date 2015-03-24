@@ -123,7 +123,7 @@ def run_fastblocksearch(profile, contig):
 	temp = open(temp_file, 'w')
 	temp.write(">" + contig.header + "\n" + contig.seq)
 	temp.close()
-	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.25 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 
 
 ''' This has to be done for each contig in each species (by species)
@@ -251,8 +251,9 @@ def runAugustusPPX():
 			if (list_of_blocks):
 				for block in list_of_blocks:
 					dict_of_blocks[block.score] = block
-					#dict_of_contigs[block.contig][block.profile][block.score] = block
 
+					#dict_of_contigs[block.contig][block.profile][block.score] = block
+	print str(dict_of_blocks)
 	profile_hits = analyseBlocks(dict_of_blocks)
 	for profile in profile_hits:
 		for hit in profile_hits[profile]:
