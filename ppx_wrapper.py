@@ -142,8 +142,8 @@ def parseFastBlockSearchResult(result_file):
 		number_of_hits = len(raw.split("--"))
 	except:
 		number_of_hits = 0
-	print number_of_hits
-	if number_of_hits >= 1:
+	print number_of_hits, str(len(raw.split("--"))
+	if number_of_hits >= 2:
 		blocks = [filter(None, x.split('\n')) for x in raw.split("--") if len(x) > 2 ] 
 		header = blocks[0].pop(0)
 		#print blocks
