@@ -117,7 +117,6 @@ def fastblocksearch(profile, contigs):
 		progress(counter, max_value)
 		pool.apply(run_fastblocksearch, args=(profile, contig,))
 		pool.join()
-		pool.close()
 	sys.stdout.write('\r')
 	print "\tProgress : 100.00%"
 
