@@ -140,6 +140,7 @@ def parseFastBlockSearchResult(results):
 	raw = open(results).read()
 	if len(raw.split("\n")) > 4:
 		blocks = [filter(None, x.split('\n')) for x in raw.split("--") if len(x) > 2 ] 
+		print blocks
 		header = blocks[0].pop(0)
 		#print blocks
 		for hit in blocks:
