@@ -122,8 +122,9 @@ def fastblocksearch(profile, contigs):
 	profile_name = profile.split("/")[-1].split(".")[0]
 	print "[STATUS] - Running FastBlockSearch with profile : " + profile_name
 	processes = []
-	
+
 	for contig in contigs:
+		time.sleep(0.1)
 		temp_file = contigs[contig]
 		out_file = FASTBLOCKSEARCH_DIR + contig + "." + profile.split("/")[-1].split(".")[0] + ".result"
 		process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
