@@ -157,6 +157,7 @@ def parseFastBlockSearchResult(result_file):
 		pass
 		#print raw
 		#os.remove(result_file)
+	print list_of_blocks 
 	return list_of_blocks
 
 def analyseBlocks(dict_of_blocks):
