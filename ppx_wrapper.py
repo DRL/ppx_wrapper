@@ -135,7 +135,6 @@ def run_fastblocksearch(profile, contig):
 '''
 
 def parseFastBlockSearchResult(result_file):
-	time.sleep(5)
 	list_of_blocks = []
 	contig, profile = result_file.split("/")[1].split(".")[1], result_file.split("/")[1].split(".")[2]
 	raw = open(result_file).read()
