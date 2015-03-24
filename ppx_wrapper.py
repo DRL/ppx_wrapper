@@ -92,9 +92,17 @@ def parse_contigs_to_dict(contig_file):
 			header = species + "." + header
 			contig = ContigObject(header, seq)
 			contigs.add(contig)
+	
+	temp_files = []
 
+	for contig in contigs:
+		temp_file = TEMP_DIR + contig.header + ".temp"
+		temp = open(temp_file, 'w')
+		temp.write(">" + contig.header + "\n" + contig.seq)
+		temp.close()
+		temp_files.append(temp_file)
 	print "[STATUS] - %s contigs found " %len(contigs)
-	return contigs
+	return temp_files
 
 def align_fasta(contig_file):
 	pass
@@ -116,10 +124,6 @@ def fastblocksearch(profile, contigs):
 	processes = []
 	for contig in contigs:
 		out_file = FASTBLOCKSEARCH_DIR + contig.header + "." + profile.split("/")[-1].split(".")[0] + ".result"
-		temp_file = TEMP_DIR + contig.header + ".temp"
-		temp = open(temp_file, 'w')
-		temp.write(">" + contig.header + "\n" + contig.seq)
-		temp.close()
 		process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 		processes.append(process)
 
