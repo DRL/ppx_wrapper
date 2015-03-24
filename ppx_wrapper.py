@@ -113,7 +113,7 @@ def fastblocksearch(profile, contigs):
 	counter, max_value = 0, len(contigs)
 	profile_name = profile.split("/")[-1].split(".")[0]
 	print "[STATUS] - Running FastBlockSearch with profile : " + profile_name
-	processes = [Popen([run_fastblocksearch, profile, contig],) for contig in contigs]
+	processes = [Popen([run_fastblocksearch(profile, contig)]) for contig in contigs]
 	for p in processes:
 		p.wait()
 	#for contig in contigs:
