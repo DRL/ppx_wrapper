@@ -133,7 +133,8 @@ def fastblocksearch(profile, contigs):
 		counter += 1
 		if counter % 100 == 0:
 			for process in processes:
-				process.wait()
+				while (process.wait() == None):
+					time.sleep(0.1)
 	#for contig in contigs:
 	#	counter += 1
 	#	progress(counter, max_value)
