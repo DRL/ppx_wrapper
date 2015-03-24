@@ -102,7 +102,7 @@ def parse_contigs_to_dict(contig_file):
 		temp.close()
 		temp_dict[contig.header]=temp_file
 	print "[STATUS] - %s contigs found " %len(contigs)
-	return temp_files
+	return temp_dict
 
 def align_fasta(contig_file):
 	pass
