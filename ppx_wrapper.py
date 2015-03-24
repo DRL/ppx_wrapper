@@ -90,7 +90,9 @@ def parse_contigs_to_dict(contig_file):
 		if len(seq) > 1000: 
 			header = species + "." + header
 			contig = ContigObject(header, seq)
-			contigs.add(contig) 
+			contigs.add(contig)
+
+	print "[STATUS] - %s contigs found " %len(contigs)
 	return contigs
 
 def align_fasta(contig_file):
