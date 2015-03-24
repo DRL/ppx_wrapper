@@ -251,6 +251,7 @@ def runAugustusPPX():
 		# For each FastBlockSearch result file ...
 		if result.startswith(species) and result.endswith(".result"):
 			result_file = "fastblocksearch/" + result
+			print "[STATUS] - Parsing : " + result_file
 			list_of_blocks = parseFastBlockSearchResult(result_file)
 			if (list_of_blocks):
 				for block in list_of_blocks:
