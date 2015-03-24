@@ -127,14 +127,13 @@ def fastblocksearch(profile, contigs):
 		time.sleep(0.1)
 		temp_file = contigs[contig]
 		out_file = FASTBLOCKSEARCH_DIR + contig + "." + profile.split("/")[-1].split(".")[0] + ".result"
-		process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+		process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, close_fds=True)
 		processes.append(process)
 		progress(counter, max_value)
 		counter += 1
 		if counter % 100 == 0:
 			for process in processes:
 				process.wait()
-				time.sleep(1)
 	#for contig in contigs:
 	#	counter += 1
 	#	progress(counter, max_value)
