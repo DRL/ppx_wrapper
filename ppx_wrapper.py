@@ -253,6 +253,7 @@ def runAugustusPPX():
 			result_file = "fastblocksearch/" + result
 			print "[STATUS] - Parsing : " + result_file
 			list_of_blocks = parseFastBlockSearchResult(result_file)
+			print str(list_of_blocks)
 			if (list_of_blocks):
 				for block in list_of_blocks:
 					dict_of_blocks[block.score] = block
