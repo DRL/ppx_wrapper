@@ -112,13 +112,15 @@ def fastblocksearch(profile, contigs):
 	counter, max_value = 0, len(contigs)
 	profile_name = profile.split("/")[-1].split(".")[0]
 	print "[STATUS] - Running FastBlockSearch with profile : " + profile_name
-	for contig in contigs:
-		counter += 1
-		progress(counter, max_value)
-		jobs = pool.apply(run_fastblocksearch, args=(profile, contig,))
-	while(jobs._number_left):
-		time.sleep(1)
-	pool.close()
+	processes = [Popen([run_fastblocksearch, profile, contig]) for contig in contigs]
+	for p in processes:
+		p.wait()
+	#for contig in contigs:
+	#	counter += 1
+	#	progress(counter, max_value)
+	#	jobs = pool.apply(run_fastblocksearch, args=(profile, contig,))
+	#	time.sleep(1)
+	#pool.close()
 	sys.stdout.write('\r')
 	print "\tProgress : 100.00%"
 
