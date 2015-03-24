@@ -6,7 +6,7 @@ File    	: ppx_wrapper.py
 Author  	: 
 Version 	: 0.1
 Description : 
-To do 		: Make global scoring for fastblocks for all profiles ...
+To do 		:  ...
 Bugs 		: Contig names in assemblies can't have "."
 """
 
@@ -150,6 +150,7 @@ def parseFastBlockSearchResult(results):
 			block.profile = profile
 		list_of_blocks.append(block)
 	else:
+		print raw
 		os.remove(results)
 	return list_of_blocks
 
@@ -293,7 +294,6 @@ def parseProteinsFromGFF3(gff3):
 	protein_name = ''
 	protein_seq = ''
 	dict_of_proteins = {}
-
 	with open(gff3) as fh:
 		for line in fh:
 			if line.startswith("# start gene "):
@@ -325,7 +325,6 @@ def getProfiles(profile_dir):
 	return dict_of_profiles
 
 if __name__ == "__main__":
-	buffer_range = 1000
 	try:
 		contig_file = sys.argv[1]
 		#profile = sys.argv[2]
