@@ -123,7 +123,7 @@ def fastblocksearch(profile, contigs):
 		process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 		progress(counter, max_value)
 		counter += 1
-		processes.append(p)
+		processes.append(process)
 
 	for process in processes:
 		process.wait()
