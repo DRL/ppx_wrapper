@@ -138,8 +138,9 @@ def parseFastBlockSearchResult(results):
 	contig, profile = results.split("/")[1].split(".")[1], results.split("/")[1].split(".")[2]
 	print contig, profile
 	raw = open(results).read()
-	if len(raw.split("\n")) > 4:
+	if len(raw.split("\n")) >= 4:
 		blocks = [filter(None, x.split('\n')) for x in raw.split("--") if len(x) > 2 ] 
+		print blocks
 		header = blocks[0].pop(0)
 		#print blocks
 		for hit in blocks:
