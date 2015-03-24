@@ -242,7 +242,7 @@ def analyseBlocks(dict_of_blocks):
 
 def runAugustusPPX():
 	dict_of_blocks = {}
-
+	print "Buffer range : " + str(buffer_range) 
 	for result in os.listdir("fastblocksearch/"):
 		# For each FastBlockSearch result file ...
 		if result.startswith(species) and result.endswith(".result"):
