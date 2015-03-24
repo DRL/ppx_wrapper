@@ -126,7 +126,7 @@ def run_fastblocksearch(profile, contig):
 	temp.write(">" + contig.header + "\n" + contig.seq)
 	temp.close()
 	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-
+	process.wait()
 
 ''' This has to be done for each contig in each species (by species)
 	- create folder for each genome
@@ -134,11 +134,9 @@ def run_fastblocksearch(profile, contig):
 '''
 
 def parseFastBlockSearchResult(result_file):
-	time.sleep(2)
 	list_of_blocks = []
 	contig, profile = result_file.split("/")[1].split(".")[1], result_file.split("/")[1].split(".")[2]
 	print contig, profile, result_file
-	raw = ''
 	raw = open(result_file).read()
 	try:
 		number_of_hits = len(raw.split("--"))
