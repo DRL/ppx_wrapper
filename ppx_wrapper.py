@@ -17,6 +17,7 @@ import multiprocessing as mp
 import subprocess
 import string
 import collections
+from subprocess import Popen
 
 class AutoVivification(dict):
     """Implementation of perl's autovivification feature."""
@@ -108,7 +109,7 @@ def progress(counter, max_value):
 	sys.stdout.flush()
 
 def fastblocksearch(profile, contigs):
-	pool = mp.Pool(processes = 10)
+	#pool = mp.Pool(processes = 10)
 	counter, max_value = 0, len(contigs)
 	profile_name = profile.split("/")[-1].split(".")[0]
 	print "[STATUS] - Running FastBlockSearch with profile : " + profile_name
