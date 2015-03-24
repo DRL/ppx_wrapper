@@ -139,7 +139,7 @@ def parseFastBlockSearchResult(result_file):
 	print contig, profile, result_file
 	raw = open(result_file).read()
 
-	if len(raw.split("--")) >= 4:
+	if len(raw.split("--")) >= 1:
 		blocks = [filter(None, x.split('\n')) for x in raw.split("--") if len(x) > 2 ] 
 		header = blocks[0].pop(0)
 		#print blocks
