@@ -115,8 +115,8 @@ def fastblocksearch(profile, contigs):
 	for contig in contigs:
 		counter += 1
 		progress(counter, max_value)
-		pool.apply_async(run_fastblocksearch, args=(profile, contig,))
-	while(pool.is_alive()):
+		jobs = pool.apply_async(run_fastblocksearch, args=(profile, contig,))
+	while(jobs._number_left):
 		time.sleep(1)
 	pool.close()
 	sys.stdout.write('\r')
