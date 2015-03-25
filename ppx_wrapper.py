@@ -131,8 +131,7 @@ def fastblocksearch(profile, contigs):
 		progress(counter, max_value)
 		counter += 1
 		if counter % 100 == 0:
-			stdoutdata, stderrdata = process.communicate()
-			print process.returncode
+			process.communicate()
 
 	for process in processes:
 		process.wait()
