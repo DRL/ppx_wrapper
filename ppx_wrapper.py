@@ -79,7 +79,7 @@ def parse_contigs_to_dict(contig_file):
 		for line in fh:
 			if line.startswith(">"):
 				if (seq):
-					if len(seq) > 1000: 
+					if len(seq) > 5000: 
 						header = species + "." + header
 						contig = ContigObject(header, seq.upper())
 						contigs.add(contig) 
@@ -88,7 +88,7 @@ def parse_contigs_to_dict(contig_file):
 			else:
  				#seq += line.translate(None,string.ascii_lowercase).rstrip("\n")
  				seq += line.rstrip("\n")
-		if len(seq) > 1000: 
+		if len(seq) > 5000: 
 			header = species + "." + header
 			contig = ContigObject(header, seq)
 			contigs.add(contig)
@@ -130,9 +130,7 @@ def fastblocksearch(profile, contigs):
 		processes.append(process)
 		progress(counter, max_value)
 		counter += 1
-		if counter % 250 == 0:
-			time.sleep(120)
-	
+
 	for process in processes:
 		process.wait()
 	
