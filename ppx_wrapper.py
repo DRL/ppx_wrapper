@@ -118,31 +118,79 @@ def progress(counter, max_value):
 
 def fastblocksearch(profile, contigs):
 	#pool = mp.Pool(processes = 10)
-	counter, max_value = 0, len(contigs)
+	
 	profile_name = profile.split("/")[-1].split(".")[0]
 	print "[STATUS] - Running FastBlockSearch with profile : " + profile_name
 	processes = []
 
+	#for contig in contigs:
+	#	temp_file = contigs[contig]
+	#	out_file = FASTBLOCKSEARCH_DIR + contig + "." + profile.split("/")[-1].split(".")[0] + ".result"
+	#	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, close_fds=True)
+	#	processes.append(process)
+	#	progress(counter, max_value)
+	#	counter += 1
+	#	process.communicate()
+    #
+	#for process in processes:
+	#	process.wait()
+	
+	jobs = []
 	for contig in contigs:
 		temp_file = contigs[contig]
 		out_file = FASTBLOCKSEARCH_DIR + contig + "." + profile.split("/")[-1].split(".")[0] + ".result"
-		process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, close_fds=True)
-		processes.append(process)
-		progress(counter, max_value)
-		counter += 1
-		process.communicate()
+		cmd = "/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " "
+		jobs.append(cmd)
 
-	for process in processes:
-		process.wait()
+	results = run_jobs(jobs, 24, pause = 2, verbose = False)
 	
-	#for contig in contigs:
-	#	counter += 1
-	#	progress(counter, max_value)
-	#	jobs = pool.apply(run_fastblocksearch, args=(profile, contig,))
-	#	time.sleep(1)
-	#pool.close()
+	print results
+	#progress(counter, max_value)
+	#counter += 1
+
+	#sys.stdout.write('\r')
+	#print "\tProgress : 100.00%"
+
+def run_jobs(jobs, threads, pause=2, verbose=False):
+	"""Takes list of cmd strings, returns dict with error levels."""
+	counter, max_value = 0, len(jobs)
+	pending = jobs[:]
+	running = []
+	results = {}
+	#if threads == 1:
+       #Special case this for speed, don't need the waits
+	#	for cmd in jobs:
+	#		results[cmd] = subprocess.call(cmd, shell=True)
+	#	return results
+
+	while pending or running:
+	#See if any have finished
+		for (cmd, process) in running:
+			return_code = process.poll() #non-blocking
+			if return_code is not None:
+				results[cmd] = return_code
+		running = [(cmd, process) for (cmd, process) in running if cmd not in results]
+	
+		if verbose:
+			print "%i jobs pending, %i running, %i completed" % (len(pending), len(running), len(results))
+		#See if we can start any new threads
+	
+		while pending and len(running) < threads:
+			progress(counter, max_value)
+			counter += 1
+			cmd = pending.pop(0)
+			if verbose:
+				print cmd
+			process = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+			running.append((cmd, process))
+		#Loop...
+		time.sleep(pause)
+	if verbose:
+		print "%i jobs completed" % len(results)
+	assert set(jobs) == set(results)
 	sys.stdout.write('\r')
 	print "\tProgress : 100.00%"
+	return results
 
 #def run_fastblocksearch(profile, contig):
 #	out_file = FASTBLOCKSEARCH_DIR + contig.header + "." + profile.split("/")[-1].split(".")[0] + ".result"
