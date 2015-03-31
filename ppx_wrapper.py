@@ -143,8 +143,6 @@ def fastblocksearch(profile, contigs):
 		jobs.append(cmd)
 
 	results = run_jobs(jobs, 24, pause = 2, verbose = False)
-	
-	print results
 	#progress(counter, max_value)
 	#counter += 1
 
@@ -347,6 +345,7 @@ def runAugustusPPX():
 			
 			infile = TEMP_DIR + species + "." + contig + ".temp"
 			outfile = AUGUSTUS_DIR + species + "." + contig + "." + profile + ".gff3"
+			gff_of_gene_file = RESULTS_DIR + species + "." + contig + "." + profile + ".gff3"
 			profile_file = dict_of_profiles[profile]
 			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
 			#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
@@ -357,6 +356,7 @@ def runAugustusPPX():
 			for protein_name, protein_seq in proteins.items():
 				for motif in MOTIFS:
 					if motif in protein_seq:
+						parseGFFFromGFF3(outfile, gff_of_gene_file)
 						print ">" + species + "." + profile + "." + contig + "." + str(start) + "-" + str(end) + "." + strand + "." + protein_name + "\n" + protein_seq
 						ppx_results.write(">" + species + "." + profile + "." + contig + "." + str(start) + "-" + str(end) + "." + strand + "." + protein_name + "\n" + protein_seq + "\n")
 						break
@@ -364,6 +364,26 @@ def runAugustusPPX():
 	ppx_results.close()
 
 	print "[STATUS] - Done."
+
+def parseGFFFromGFF3(gff3, gff_of_gene_file):
+	contig, query, outfile = gff3.split("/")[1].split(".")[1], gff3.split("/")[1].split(".")[0], ".".join(gff3.split(".")[0:-1]) + "aa.fa"
+
+	read_mode = 0
+	fh_out = open(gff_of_gene_file, 'w')
+	fh_out.write("##gff-version 3\n")
+	with open(gff3) as fh:
+		for line in fh:
+			if line.startswith("# start gene "):
+				read_mode = 1
+				fh_out.write(line)
+			elif line.startswith("# end gene "):
+				read_mode = 0
+				fh_out.write(line)
+			elif read_mode == 1:
+				fh_out.write(line)
+			else:
+				pass
+	fh_out.close()
 
 def parseProteinsFromGFF3(gff3):
 	#print ".".join(gff3.split(".")[0:-1])) + "aa.fa"
