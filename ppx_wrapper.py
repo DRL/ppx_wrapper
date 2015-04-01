@@ -232,91 +232,79 @@ def parseFastBlockSearchResult(result_file):
 	return list_of_blocks
 
 def analyseBlocks(dict_of_blocks):
+	# dict_of_blocks contains all blocks found on each sequence ... can have multiple block per profile per sequence
+	
 
+	fastblockresults_dict = {} # where the "good" blocks (hits) are stored, archived by contig (dict of lists)
+	profile_hits = {} # where the "good" blocks (hits) are stored, archived by profile (dict of lists)
+	
+	max_profile_count = 1 # number of how many "good" blocks are stored per profile
 
-	# check those that overlap -> yes/no
-	fastblockresults_dict = {}
-	max_profile_count = 1
-	profile_count = {}
-
-	profile_hits = {}
-
+	profile_count = {}	# number of blocks stored per profile 
 
 	for score in sorted(dict_of_blocks, reverse=True):
-		print str(score) + "\t" + str(dict_of_blocks[score].__dict__)
-		block = dict_of_blocks[score]
-		contig = block.contig
-		profile = block.profile
+		# for every score (in decreasing numerical order)
+		
+		# print str(score) + "\t" + str(dict_of_blocks[score].__dict__) # for debugging
+		
+		block = dict_of_blocks[score] # get the block
+
+		contig = block.contig # get the name of the contig
+		profile = block.profile # get the name of the profile
+
+		# THIS IS NEW ... change back if bad idea
+		overlap_threshold = 1000 # buffer range for getting coordinates, changed this to allow for less distance between blocks competing for the same region
+
 		if not contig in fastblockresults_dict:
-			profile_count[profile] = profile_count.get(profile, 0) + 1
-			if profile_count[profile] <= max_profile_count:
-				fastblockresults_dict[contig] = []
-				fastblockresults_dict[contig].append(block)
-				if not profile in profile_hits:
-					profile_hits[profile]=[]
-					profile_hits[profile].append(block)
-				else: 
-					profile_hits[profile].append(block)
-		else: 
-			for hit in fastblockresults_dict[contig]:
-				hit_start, hit_end = int(hit.get('start', buffer_range)), int(hit.get('end', buffer_range))
-				block_start, block_end = int(block.get('start', buffer_range)), int(block.get('end', buffer_range))
-				coordinates = [hit_start, hit_end, block_start, block_end]
-				sum_lengths = (hit_end - hit_start) + (block_end - block_start)
-				if sum_lengths >= (max(coordinates) - min(coordinates)):
-					# "Overlap"
-					pass
-				else:
-					# "No Overlap"
-					if (coordinates[0] >= coordinates[2] and coordinates[1] <= coordinates[3]):
-						# hit in block
-						pass
-					elif (coordinates[2] >= coordinates[0] and coordinates[3] <= coordinates[1]):
-						# block in hit
-						pass
-					else:
-						profile_count[profile] = profile_count.get(profile, 0) + 1
-						if profile_count[profile] <= max_profile_count:
-							fastblockresults_dict[contig].append(block)
-							if not profile in profile_hits:
-								profile_hits[profile]=[]
-								profile_hits[profile].append(block)
-							else: 
-								profile_hits[profile].append(block)
-
-				#if not block.contig in fastblockresults_dict:
-				#	fastblockresults_dict[contig] = block
-				#else:
-				#	pass
-				#	#if fastblockresults_dict[contig].start > block.start and fastblockresults_dict[contig].end < block.start
-				#block = dict_of_blocks[profile][score]
-				#contig = block.contig
-				#start = block.get('start', buffer_range)
-				#end = block.get('end', buffer_range)
-				#strand = block.get('strand', 0)
-				#profile = block.profile
-
-			#if not profile in fastblockresults_dict:
-			#	fastblockresults_dict[profile] = block
-			#else:
-			#	if score > fastblockresults_dict[profile].score:
-			#		fastblockresults_dict[profile] = block
-#
+			# if we haven't seen this contig before  
+			profile_count[profile] = profile_count.get(profile, 0) + 1 # increase count of blocks for this profile
+			if profile_count[profile] <= max_profile_count: 
+				# as long as we have not exceeded max_profile_count
 				
-			
+				fastblockresults_dict[contig] = [] # populate fastblockresults_dict : key = contig, value = an empty list  
+				fastblockresults_dict[contig].append(block) # add current block to the list in fastblockresults_dict  
+				if not profile in profile_hits:
+					# if we haven't seen a hit for this profile before 
+					profile_hits[profile]=[] # populate profile_hits : key = profile, value = an empty list
+				profile_hits[profile].append(block) # add current block to the list in profile_hits   
+		else: 
+			# if we have seen this contig before 
+			for hit in fastblockresults_dict[contig]:
+				# for each hit ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
+				hit_start, hit_end = int(hit.get('start', overlap_threshold)), int(hit.get('end', overlap_threshold)) # get coordinates of hit
+				block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block
+				coordinates = [hit_start, hit_end, block_start, block_end] # make a list with the coordinates 
+				sum_lengths = (hit_end - hit_start) + (block_end - block_start) # sum up the lengths of bot regions (existing hit on contig and new block to be added)
+				if sum_lengths >= (max(coordinates) - min(coordinates)):
+					# "overlap between the two" if the sum of the lengths is greater or equal to the difference between maximal and minimal coordinate 
+					pass # do nothing (there is already one hit with a higher score in that region)
+				else:
+					# There either complete overlap or none at all
+					if (hit_start >= block_start and hit_end <= block_end):
+						# Hit is contained within block
+						pass # do nothing (although the region of the new block is bigger than the hit) 
+						# IDEA: one could consider making the hit longer using the coordinates of the block
+					elif (block_start >= hit_start and block_end <= hit_end):
+						# Block is contained within hit
+						pass # do nothing (the hit is longer than the block)
+					else:
+						# There is no overlap
+						profile_count[profile] = profile_count.get(profile, 0) + 1  # increase count of blocks for this profile
+						if profile_count[profile] <= max_profile_count:
+							# as long as we have not exceeded max_profile_count
+							fastblockresults_dict[contig].append(block) # add current block to the list in fastblockresults_dict  
+							if not profile in profile_hits:
+								# if we haven't seen a hit for this profile before 
+								profile_hits[profile]=[] # populate profile_hits : key = profile, value = an empty list
+							profile_hits[profile].append(block) # add current block to the list in profile_hits   
 
-	#for contig in dict_of_contigs:
-	#	print contig 
-	#	for profile in dict_of_contigs[contig]:
-	#		print "\t" + profile,
-	#		for score in dict_of_contigs[contig][profile]:
-	#			print str(score) + str(dict_of_contigs[contig][profile][score].__dict__)
+	# Debugging
 	for profile in profile_hits:
 		print profile
 		for hits in profile_hits[profile]:
 			print hits.__dict__
 	
-	return profile_hits
+	return profile_hits # return dict of lists with the hits archived by profile
 
 def runAugustusPPX():
 	dict_of_blocks = {}
@@ -335,44 +323,53 @@ def runAugustusPPX():
 
 	profile_hits = analyseBlocks(dict_of_blocks)
 
-	ppx_results = open(RESULTS_DIR + species + ".fa", "w")
+	ppx_results = open(RESULTS_DIR + species + ".fa", "w") # file to which to write the resulting proteins for all profiles
+
 	for profile in profile_hits:
+		# for each profile 
 		for hit in profile_hits[profile]:
-			contig = hit.contig
-			start = str(hit.get('start', buffer_range))
-			end = str(hit.get('end', buffer_range))
-			strand = hit.get('strand', 0)
+			# for each hit (block object)
+			contig = hit.contig # get contig name
+			start = str(hit.get('start', buffer_range)) # get start with buffer range
+			end = str(hit.get('end', buffer_range)) # get stop with buffer range
+			strand = hit.get('strand', 0) # get strand
 			
-			infile = TEMP_DIR + species + "." + contig + ".temp"
-			outfile = AUGUSTUS_DIR + species + "." + contig + "." + profile + ".gff3"
-			gff_of_gene_file = RESULTS_DIR + species + "." + contig + "." + profile + ".gff3"
-			profile_file = dict_of_profiles[profile]
+			infile = TEMP_DIR + species + "." + contig + ".temp" # file containing sequence of contig
+			outfile = AUGUSTUS_DIR + species + "." + contig + "." + profile + ".gff3" # file to which the output gff3 is written
+			gff_of_gene_file = RESULTS_DIR + species + "." + contig + "." + profile + ".gff3" # other gff3 file to which only the good (motif-containing) gene models are written
+			profile_file = dict_of_profiles[profile] # get filename of profile
 			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
-			#process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+			# Start running the processes for gene finding by prociding start, stop, strand, contig sequence, profile, and output file
 			process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 			process.wait()
 			print "[STATUS] - Writing proteins"
-			proteins = parseProteinsFromGFF3(outfile)
+			proteins = parseProteinsFromGFF3(outfile) # parse proteins from the GFF3 output file
+
+			# screening for motifs in proteins
 			for protein_name, protein_seq in proteins.items():
+				# for (protein name, protein seq) pair in proteins 
 				for motif in MOTIFS:
+					# for each MOTIF
 					if motif in protein_seq:
-						parseGFFFromGFF3(outfile, gff_of_gene_file)
+						# if motif appeas in protein seq
+						parseGFFFromGFF3(outfile, gff_of_gene_file) # parse relevant part about this gene model from the gff3 output file
+						# printing sequence to screen
 						print ">" + species + "." + profile + "." + contig + "." + str(start) + "-" + str(end) + "." + strand + "." + protein_name + "\n" + protein_seq
-						ppx_results.write(">" + species + "." + profile + "." + contig + "." + str(start) + "-" + str(end) + "." + strand + "." + protein_name + "\n" + protein_seq + "\n")
-						break
-			break
+						ppx_results.write(">" + species + "." + profile + "." + contig + "." + str(start) + "-" + str(end) + "." + strand + "." + protein_name + "\n" + protein_seq + "\n") # file to which to write the resulting proteins for all profiles
+						break # if you found a protein with one motif stop there, do not do twice because both motifs are present
+			break # only do one (best) hit
 	ppx_results.close()
 
 	print "[STATUS] - Done."
 
-def parseGFFFromGFF3(gff3, gff_of_gene_file):
+def parseGFFFromGFF3(gff3, gff_of_gene_file): # (augustus gff3, gff3 output file containing the ones that passed motif filtering )
 	contig, query, outfile = gff3.split("/")[1].split(".")[1], gff3.split("/")[1].split(".")[0], ".".join(gff3.split(".")[0:-1]) + "aa.fa"
 
-	read_mode = 0
-	fh_out = open(gff_of_gene_file, 'w')
-	fh_out.write("##gff-version 3\n")
-	with open(gff3) as fh:
-		for line in fh:
+	read_mode = 0 # reading flag
+	fh_out = open(gff_of_gene_file, 'w') 
+	fh_out.write("##gff-version 3\n") # write header
+	with open(gff3) as fh: 
+		for line in fh: 
 			if line.startswith("# start gene "):
 				read_mode = 1
 				fh_out.write(line)
@@ -386,39 +383,37 @@ def parseGFFFromGFF3(gff3, gff_of_gene_file):
 	fh_out.close()
 
 def parseProteinsFromGFF3(gff3):
-	#print ".".join(gff3.split(".")[0:-1])) + "aa.fa"
-	#print gff3.split("/")[1].split(".")[1]
-	#print gff3.split("/")[1].split(".")[0]
 	contig, query, outfile = gff3.split("/")[1].split(".")[1], gff3.split("/")[1].split(".")[0], ".".join(gff3.split(".")[0:-1]) + "aa.fa"
 
-	#fh = open(gff3 + ".proteins.fa", 'w')
-
-	read_mode = 0
-	temp = ''
-	protein_name = ''
+	read_mode = 0 # reading flag
+	temp = '' # 
+	protein_name = '' 
 	protein_seq = ''
-	dict_of_proteins = {}
+	dict_of_proteins = {} # dict : key = protein name, vale = protein seq
+
 	with open(gff3) as fh:
-		for line in fh:
-			if line.startswith("# start gene "):
-				read_mode = 1
-				protein_name = line.split(" ")[3].rstrip("\n")
+		# while reading the gff3 file
+		for line in fh: # for each line
+			if line.startswith("# start gene "): 
+				# if you see "# start gene " at the beginning of the line
+				read_mode = 1 # read mode on
+				protein_name = line.split(" ")[3].rstrip("\n") # get protein name
 			elif line.startswith("# end gene "):
-
-				dict_of_proteins[protein_name] = protein_seq
-
-				read_mode = 0
-				protein_name = ''
-				protein_seq = ''
+				# if you see "# end gene " at the beginning of the line
+				dict_of_proteins[protein_name] = protein_seq # add key = protein name, value = protein seq to dict_of_proteins
+				read_mode = 0 # read mode off
+				protein_name = '' # empty protein name
+				protein_seq = '' # empty protein seq
 			elif read_mode == 1 and line.startswith("#"):
-				temp = line.lstrip("# protein sequence = [")
-				temp = temp.lstrip("# ")
-				temp = temp.rstrip("\n")
-				temp = temp.rstrip("]")
-				protein_seq += temp
+				# if read mode is on and the line starts with "#" (that where the AA's are)
+				temp = line.lstrip("# protein sequence = [") # remove clutter from string
+				temp = temp.lstrip("# ") # remove clutter from string
+				temp = temp.rstrip("\n") # remove clutter from string
+				temp = temp.rstrip("]") # remove clutter from string
+				protein_seq += temp # add AA to protein seq
 			else:
-				pass
-	return dict_of_proteins
+				pass # do nothing
+	return dict_of_proteins # return dict : key = protein name, vale = protein seq
 
 def getProfiles(profile_dir):
 	dict_of_profiles = {}
@@ -455,3 +450,35 @@ if __name__ == "__main__":
 		else: 
 			pass
 	runAugustusPPX()
+
+
+		#########
+		# JUNK  #
+		#########
+				#if not block.contig in fastblockresults_dict:
+				#	fastblockresults_dict[contig] = block
+				#else:
+				#	pass
+				#	#if fastblockresults_dict[contig].start > block.start and fastblockresults_dict[contig].end < block.start
+				#block = dict_of_blocks[profile][score]
+				#contig = block.contig
+				#start = block.get('start', buffer_range)
+				#end = block.get('end', buffer_range)
+				#strand = block.get('strand', 0)
+				#profile = block.profile
+
+			#if not profile in fastblockresults_dict:
+			#	fastblockresults_dict[profile] = block
+			#else:
+			#	if score > fastblockresults_dict[profile].score:
+			#		fastblockresults_dict[profile] = block
+#
+				
+			
+
+	#for contig in dict_of_contigs:
+	#	print contig 
+	#	for profile in dict_of_contigs[contig]:
+	#		print "\t" + profile,
+	#		for score in dict_of_contigs[contig][profile]:
+	#			print str(score) + str(dict_of_contigs[contig][profile][score].__dict__)
