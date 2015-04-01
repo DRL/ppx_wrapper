@@ -252,8 +252,9 @@ def analyseBlocks(dict_of_blocks):
 		contig = block.contig # get the name of the contig
 		profile = block.profile # get the name of the profile
 
-		# THIS IS NEW ... change back if bad idea
-		overlap_threshold = 1000 # buffer range for getting coordinates, changed this to allow for less distance between blocks competing for the same region
+		# THIS IS NEW ...
+		overlap_threshold = 5000 # buffer range for getting coordinates (was previously the same as buffer range for predicting)
+		# IDEA : change this to 1000 to allow for less distance between blocks competing for the same region, tested it and looked okay on C. elegans ...
 
 		if not contig in fastblockresults_dict:
 			# if we haven't seen this contig before  
