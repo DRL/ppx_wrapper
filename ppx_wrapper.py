@@ -4,7 +4,7 @@
 """
 File    	: ppx_wrapper.py
 Author  	: 
-Version 	: 0.1
+Version 	: 0.2
 Description : 
 To do 		:  ...
 Bugs 		: Contig names in assemblies can't have "."
