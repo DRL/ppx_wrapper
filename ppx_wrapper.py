@@ -26,7 +26,7 @@ class Filenames():
 		self.contig = contig
 		self.contig_file = "temp/" + contig 
 		self.profile = profile
-		self.profile_file "profile/" + profile + ".prfl"
+		self.profile_file = "profile/" + profile + ".prfl"
 		self.fastblockfile = "fastblocksearch/" + contig + "." + profile + ".result"
 		self.gff3 = "augustus/" + contig + "." + profile + ".gff3"
 		self.protein = "results/" + contig + "." + profile + ".faa"
