@@ -191,10 +191,9 @@ def progress(counter, max_value):
 	print "\tProgress : " + format(float(progress),'.2%'),
 	sys.stdout.flush()
 
-def parseFastBlockSearchResult(result_file):
+def parseFastBlockSearchResult(result_file, contig_name):
 	list_of_blocks = []
-	profile = os.path.basename(result_file).rstrip(".result").split(".")[-1]
-	contig = os.path.basename(result_file).rstrip("."+ profile +".result")
+	contig = contig_name
 	raw = open(result_file).read()
 	try:
 		number_of_hits = len(raw.split("--"))
@@ -221,7 +220,6 @@ def parseFastBlockSearchResult(result_file):
 
 def analyseBlocks(dict_of_blocks):
 	# dict_of_blocks contains all blocks found on each sequence ... can have multiple block per profile per sequence
-	
 
 	fastblockresults_dict = {} # where the "good" blocks (hits) are stored, archived by contig (dict of lists)
 	profile_hits = {} # where the "good" blocks (hits) are stored, archived by profile (dict of lists)
@@ -303,7 +301,9 @@ def runAugustusPPX(files):
 		if result.startswith(species) and result.endswith(".result"):
 			result_file = "fastblocksearch/" + result
 			print "[STATUS] - Parsing : " + result_file
-			list_of_blocks = parseFastBlockSearchResult(result_file)
+			profile_name = result.rstrip(".result").split(".")[-1]
+			contig_name = result.rstrip(profile_name + ".result")
+			list_of_blocks = parseFastBlockSearchResult(result_file, contig_name)
 			if (list_of_blocks):
 				for block in list_of_blocks:
 					dict_of_blocks[block.score] = block
