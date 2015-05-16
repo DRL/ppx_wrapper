@@ -19,14 +19,7 @@ import string
 import collections
 from subprocess import Popen
 
-class AutoVivification(dict):
-    """Implementation of perl's autovivification feature."""
-    def __getitem__(self, item):
-        try:
-            return dict.__getitem__(self, item)
-        except KeyError:
-            value = self[item] = type(self)()
-            return value
+#######################################
 
 class Block():
 	def __init__(self, contig, score, multi_score):
@@ -59,6 +52,8 @@ class Block():
 		else:
 			sys.exit("postion... What?")
 
+#######################################
+
 class ContigObject():
 	def __init__(self, header, seq):
 		self.header = header
@@ -70,6 +65,16 @@ class ContigObject():
 			complement = {'A':'T','C':'G','G':'C','T':'A','N':'N'}
 			region = "".join([complement.get(nt.upper(), '') for nt in region[::-1]])
 		return region
+
+#######################################
+
+def getProfiles(profile_dir):
+	dict_of_profiles = {}
+	for profile in os.listdir(profile_dir + "/"):
+		if profile.endswith(".prfl"):
+			profile_name = profile.split(".")[0]
+			dict_of_profiles[profile_name]= profile_dir + profile
+	return dict_of_profiles
 
 def parse_contigs_to_dict(contig_file):
 	contigs = set()
@@ -86,7 +91,6 @@ def parse_contigs_to_dict(contig_file):
 				seq = ''
 				header = line.rstrip("\n").lstrip(">").replace(" ","_")	
 			else:
- 				#seq += line.translate(None,string.ascii_lowercase).rstrip("\n")
  				seq += line.rstrip("\n")
 		if len(seq) > 5000: 
 			header = species + "." + header
@@ -104,36 +108,13 @@ def parse_contigs_to_dict(contig_file):
 	print "[STATUS] - %s contigs found " %len(contigs)
 	return temp_dict
 
-def align_fasta(contig_file):
-	pass
-
-def make_msa_profile(contig_file):
-	pass
-
-def progress(counter, max_value):
-	sys.stdout.write('\r')
-	progress = int(counter)/int(max_value)
-	print "\tProgress : " + format(float(progress),'.2%'),
-	sys.stdout.flush()
+#################################
 
 def fastblocksearch(profile, contigs):
-	#pool = mp.Pool(processes = 10)
 	
 	profile_name = profile.split("/")[-1].split(".")[0]
 	print "[STATUS] - Running FastBlockSearch with profile : " + profile_name
 	processes = []
-
-	#for contig in contigs:
-	#	temp_file = contigs[contig]
-	#	out_file = FASTBLOCKSEARCH_DIR + contig + "." + profile.split("/")[-1].split(".")[0] + ".result"
-	#	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, close_fds=True)
-	#	processes.append(process)
-	#	progress(counter, max_value)
-	#	counter += 1
-	#	process.communicate()
-    #
-	#for process in processes:
-	#	process.wait()
 	
 	jobs = []
 	for contig in contigs:
@@ -143,11 +124,6 @@ def fastblocksearch(profile, contigs):
 		jobs.append(cmd)
 
 	results = run_jobs(jobs, 24, pause = 2, verbose = False)
-	#progress(counter, max_value)
-	#counter += 1
-
-	#sys.stdout.write('\r')
-	#print "\tProgress : 100.00%"
 
 def run_jobs(jobs, threads, pause=2, verbose=False):
 	"""Takes list of cmd strings, returns dict with error levels."""
@@ -155,11 +131,6 @@ def run_jobs(jobs, threads, pause=2, verbose=False):
 	pending = jobs[:]
 	running = []
 	results = {}
-	#if threads == 1:
-       #Special case this for speed, don't need the waits
-	#	for cmd in jobs:
-	#		results[cmd] = subprocess.call(cmd, shell=True)
-	#	return results
 
 	while pending or running:
 	#See if any have finished
@@ -183,21 +154,13 @@ def run_jobs(jobs, threads, pause=2, verbose=False):
 			running.append((cmd, process))
 		#Loop...
 		time.sleep(pause)
+
 	if verbose:
 		print "%i jobs completed" % len(results)
 	assert set(jobs) == set(results)
 	sys.stdout.write('\r')
 	print "\tProgress : 100.00%"
 	return results
-
-#def run_fastblocksearch(profile, contig):
-#	out_file = FASTBLOCKSEARCH_DIR + contig.header + "." + profile.split("/")[-1].split(".")[0] + ".result"
-#	temp_file = TEMP_DIR + contig.header + ".temp"
-#	temp = open(temp_file, 'w')
-#	temp.write(">" + contig.header + "\n" + contig.seq)
-#	temp.close()
-#	process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " ", stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-#	#process.wait()
 
 ''' This has to be done for each contig in each species (by species)
 	- create folder for each genome
@@ -227,7 +190,6 @@ def parseFastBlockSearchResult(result_file):
 			block.profile = profile
 		list_of_blocks.append(block)
 	else:
-		#print raw
 		os.remove(result_file) 
 	return list_of_blocks
 
@@ -341,7 +303,7 @@ def runAugustusPPX():
 			profile_file = dict_of_profiles[profile] # get filename of profile
 			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
 			# Start running the processes for gene finding by prociding start, stop, strand, contig sequence, profile, and output file
-			process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=caenorhabditis --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+			process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=onchocerca_gutturosa --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 			process.wait()
 			print "[STATUS] - Writing proteins"
 			proteins = parseProteinsFromGFF3(outfile) # parse proteins from the GFF3 output file
@@ -416,18 +378,9 @@ def parseProteinsFromGFF3(gff3):
 				pass # do nothing
 	return dict_of_proteins # return dict : key = protein name, vale = protein seq
 
-def getProfiles(profile_dir):
-	dict_of_profiles = {}
-	for profile in os.listdir(profile_dir + "/"):
-		if profile.endswith(".prfl"):
-			profile_name = profile.split(".")[0]
-			dict_of_profiles[profile_name]= profile_dir + profile
-	return dict_of_profiles
-
 if __name__ == "__main__":
 	try:
 		contig_file = sys.argv[1]
-		#profile = sys.argv[2]
 		profile_dir = sys.argv[2]
 		species = sys.argv[3] # ID for contigs, etc
 		modus = sys.argv[4] 
@@ -439,47 +392,18 @@ if __name__ == "__main__":
 	TEMP_DIR = 'temp/'
 	FASTBLOCKSEARCH_DIR = 'fastblocksearch/'
 	AUGUSTUS_DIR = 'augustus/'
-	MOTIFS = ["ELEKEF", "WFQNRR"]
 	RESULTS_DIR = 'results/'
+	MOTIFS = ["ELEKE", "WFQNRR"]
 
+	# 1. Get profiles
 	dict_of_profiles = getProfiles(profile_dir)
+	# 2. parse assemblies
 	contigs = parse_contigs_to_dict(contig_file)
-	#print contigs
+	# 3. Search for blocks	
 	for profile in dict_of_profiles:
 		if modus == "SEARCH":
 			fastblocksearch(dict_of_profiles[profile], contigs)
 		else: 
 			pass
+
 	runAugustusPPX()
-
-
-		#########
-		# JUNK  #
-		#########
-				#if not block.contig in fastblockresults_dict:
-				#	fastblockresults_dict[contig] = block
-				#else:
-				#	pass
-				#	#if fastblockresults_dict[contig].start > block.start and fastblockresults_dict[contig].end < block.start
-				#block = dict_of_blocks[profile][score]
-				#contig = block.contig
-				#start = block.get('start', buffer_range)
-				#end = block.get('end', buffer_range)
-				#strand = block.get('strand', 0)
-				#profile = block.profile
-
-			#if not profile in fastblockresults_dict:
-			#	fastblockresults_dict[profile] = block
-			#else:
-			#	if score > fastblockresults_dict[profile].score:
-			#		fastblockresults_dict[profile] = block
-#
-				
-			
-
-	#for contig in dict_of_contigs:
-	#	print contig 
-	#	for profile in dict_of_contigs[contig]:
-	#		print "\t" + profile,
-	#		for score in dict_of_contigs[contig][profile]:
-	#			print str(score) + str(dict_of_contigs[contig][profile][score].__dict__)
