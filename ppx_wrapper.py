@@ -325,7 +325,7 @@ def runAugustusPPX(files):
 			
 			infile = files[contig].contig_file # file containing sequence of contig
 			outfile = files[contig].gff3 # file to which the output gff3 is written
-			gff_of_gene_file = files[contig].results # other gff3 file to which only the good (motif-containing) gene models are written
+			gff_of_gene_file = files[contig].result # other gff3 file to which only the good (motif-containing) gene models are written
 			profile_file = dict_of_profiles[profile] # get filename of profile
 		
 			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
