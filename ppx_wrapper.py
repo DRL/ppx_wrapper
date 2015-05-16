@@ -21,10 +21,14 @@ from subprocess import Popen
 
 #######################################
 
-class Filenames():
+class ContigFiles():
+	def __init__(self, contig):
+		self.contig = contig
+		self.contig_file = "temp/" + contig + ".fa"
+
+class OutputFiles():
 	def __init__(self, contig, profile):
 		self.contig = contig
-		self.contig_file = "temp/" + contig 
 		self.profile = profile
 		self.profile_file = "profile/" + profile + ".prfl"
 		self.fastblockfile = "fastblocksearch/" + contig + "." + profile + ".result"
@@ -110,7 +114,7 @@ def parse_contigs_to_dict(contig_file):
 	file_dict = {}
 
 	for contig in contigs:
-		filename_obj = Filenames(contig.header, profile)
+		filename_obj = ContigFiles(contig.header)
 		contig_file = filename_obj.contig_file
 		temp = open(contig_file, 'w')
 		temp.write(">" + contig.header + "\n" + contig.seq)
@@ -428,7 +432,6 @@ if __name__ == "__main__":
 	for filename in filenames:
 		print filename, filenames[filename].__dict__ 
 	# 3. Search for blocks	
-	sys.exit()
 	for profile in dict_of_profiles:
 		if modus == "SEARCH":
 			fastblocksearch(dict_of_profiles[profile], contigs)
