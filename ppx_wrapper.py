@@ -292,7 +292,7 @@ def runAugustusPPX():
 					#dict_of_contigs[block.contig][block.profile][block.score] = block
 
 	print dict_of_blocks.__dict__
-	
+
 	profile_hits = analyseBlocks(dict_of_blocks)
 
 	ppx_results = open(RESULTS_DIR + species + ".fa", "w") # file to which to write the resulting proteins for all profiles
@@ -310,6 +310,7 @@ def runAugustusPPX():
 			outfile = AUGUSTUS_DIR + species + "." + contig + "." + profile + ".gff3" # file to which the output gff3 is written
 			gff_of_gene_file = RESULTS_DIR + species + "." + contig + "." + profile + ".gff3" # other gff3 file to which only the good (motif-containing) gene models are written
 			profile_file = dict_of_profiles[profile] # get filename of profile
+		
 			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
 			# Start running the processes for gene finding by prociding start, stop, strand, contig sequence, profile, and output file
 			process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=onchocerca_gutturosa --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
