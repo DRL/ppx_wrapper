@@ -21,19 +21,22 @@ from subprocess import Popen
 
 #######################################
 
-class ContigFiles():
+class Files():
 	def __init__(self, contig):
 		self.contig = contig
 		self.contig_file = "temp/" + contig + ".fa"
+		self.profile = None
+		self.profile_file = None
+		self.fastblockfile = None
+		self.gff3 = None
+		self.protein = None
 
-class OutputFiles():
-	def __init__(self, contig, profile):
-		self.contig = contig
+	def update(self, profile):
 		self.profile = profile
 		self.profile_file = "profile/" + profile + ".prfl"
-		self.fastblockfile = "fastblocksearch/" + contig + "." + profile + ".result"
-		self.gff3 = "augustus/" + contig + "." + profile + ".gff3"
-		self.protein = "results/" + contig + "." + profile + ".faa"
+		self.fastblockfile = "fastblocksearch/" + self.contig + "." + profile + ".result"
+		self.gff3 = "augustus/" + self.contig + "." + profile + ".gff3"
+		self.protein = "results/" + self.contig + "." + profile + ".faa"
 
 class Block():
 	def __init__(self, contig, score, multi_score):
@@ -86,7 +89,7 @@ def getProfiles(profile_dir):
 	dict_of_profiles = {}
 	for profile in os.listdir(profile_dir + "/"):
 		if profile.endswith(".prfl"):
-			profile_name = profile.split(".")[0]
+			profile_name = profile.rstrip(".prfl")
 			dict_of_profiles[profile_name]= profile_dir + profile
 	return dict_of_profiles
 
@@ -114,7 +117,7 @@ def parse_contigs_to_dict(contig_file):
 	file_dict = {}
 
 	for contig in contigs:
-		filename_obj = ContigFiles(contig.header)
+		filename_obj = Files(contig.header)
 		contig_file = filename_obj.contig_file
 		temp = open(contig_file, 'w')
 		temp.write(">" + contig.header + "\n" + contig.seq)
@@ -127,15 +130,15 @@ def parse_contigs_to_dict(contig_file):
 
 def fastblocksearch(profile, contigs):
 	
-	profile_name = profile.split("/")[-1].split(".")[0]
+	profile_name = os.path.basename(profile).rsplit(".prfl")
 	print "[STATUS] - Running FastBlockSearch with profile : " + profile_name
 	processes = []
 	
 	jobs = []
 	for contig in contigs:
-		temp_file = contigs[contig]
-		out_file = FASTBLOCKSEARCH_DIR + contig + "." + profile.split("/")[-1].split(".")[0] + ".result"
-		cmd = "/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=1.1 " + temp_file + " " + profile + " > " + out_file + " "
+		in_file = contigs[contig].contig_file
+		out_file = contigs[contig].fastblockfile
+		cmd = "/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=1.1 " + in_file + " " + profile + " > " + out_file + " "
 		jobs.append(cmd)
 
 	results = run_jobs(jobs, 24, pause = 2, verbose = False)
@@ -292,7 +295,7 @@ def analyseBlocks(dict_of_blocks):
 	
 	return profile_hits # return dict of lists with the hits archived by profile
 
-def runAugustusPPX():
+def runAugustusPPX(files):
 	dict_of_blocks = {}
 	print "Buffer range : " + str(buffer_range) 
 	for result in os.listdir("fastblocksearch/"):
@@ -307,11 +310,9 @@ def runAugustusPPX():
 
 					#dict_of_contigs[block.contig][block.profile][block.score] = block
 
-	
-
 	profile_hits = analyseBlocks(dict_of_blocks)
 
-	ppx_results = open(RESULTS_DIR + species + ".fa", "w") # file to which to write the resulting proteins for all profiles
+	ppx_results = open(RESULTS_DIR + species + ".faa", "w") # file to which to write the resulting proteins for all profiles
 
 	for profile in profile_hits:
 		# for each profile 
@@ -322,9 +323,9 @@ def runAugustusPPX():
 			end = str(hit.get('end', buffer_range)) # get stop with buffer range
 			strand = hit.get('strand', 0) # get strand
 			
-			infile = TEMP_DIR + species + "." + contig + ".temp" # file containing sequence of contig
-			outfile = AUGUSTUS_DIR + species + "." + contig + "." + profile + ".gff3" # file to which the output gff3 is written
-			gff_of_gene_file = RESULTS_DIR + species + "." + contig + "." + profile + ".gff3" # other gff3 file to which only the good (motif-containing) gene models are written
+			infile = files[contig].contig_file # file containing sequence of contig
+			outfile = files[contig].gff3 # file to which the output gff3 is written
+			gff_of_gene_file = files[contig].results # other gff3 file to which only the good (motif-containing) gene models are written
 			profile_file = dict_of_profiles[profile] # get filename of profile
 		
 			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
@@ -424,14 +425,16 @@ if __name__ == "__main__":
 	# 1. Get profiles
 	dict_of_profiles = getProfiles(profile_dir)
 	# 2. parse assemblies
-	contig_files = parse_contigs_to_dict(contig_file)
+	files = parse_contigs_to_dict(contig_file)
 	
 	# 3. Search for blocks	
 	for profile in dict_of_profiles:
-		out
+
+		for contig in files:
+			files[contig].update(profile)
 		if modus == "SEARCH":
-			fastblocksearch(dict_of_profiles[profile], contigs)
+			fastblocksearch(dict_of_profiles[profile], files)
 		else: 
 			pass
 
-	runAugustusPPX()
+	runAugustusPPX(files)
