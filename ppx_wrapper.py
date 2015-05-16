@@ -120,7 +120,7 @@ def fastblocksearch(profile, contigs):
 	for contig in contigs:
 		temp_file = contigs[contig]
 		out_file = FASTBLOCKSEARCH_DIR + contig + "." + profile.split("/")[-1].split(".")[0] + ".result"
-		cmd = "/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + temp_file + " " + profile + " > " + out_file + " "
+		cmd = "/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=1.1 " + temp_file + " " + profile + " > " + out_file + " "
 		print cmd
 		jobs.append(cmd)
 
