@@ -136,7 +136,6 @@ def fastblocksearch(profile, contigs):
 		temp_file = contigs[contig]
 		out_file = FASTBLOCKSEARCH_DIR + contig + "." + profile.split("/")[-1].split(".")[0] + ".result"
 		cmd = "/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=1.1 " + temp_file + " " + profile + " > " + out_file + " "
-		print cmd
 		jobs.append(cmd)
 
 	results = run_jobs(jobs, 24, pause = 2, verbose = False)
@@ -191,11 +190,8 @@ def progress(counter, max_value):
 
 def parseFastBlockSearchResult(result_file):
 	list_of_blocks = []
-	print os.path.basename(result_file)
 	profile = os.path.basename(result_file).rstrip(".result").split(".")[-1]
-	print profile
 	contig = os.path.basename(result_file).rstrip("."+ profile +".result")
-	print contig
 	raw = open(result_file).read()
 	try:
 		number_of_hits = len(raw.split("--"))
@@ -428,11 +424,11 @@ if __name__ == "__main__":
 	# 1. Get profiles
 	dict_of_profiles = getProfiles(profile_dir)
 	# 2. parse assemblies
-	filenames = parse_contigs_to_dict(contig_file)
-	for filename in filenames:
-		print filename, filenames[filename].__dict__ 
+	contig_files = parse_contigs_to_dict(contig_file)
+	
 	# 3. Search for blocks	
 	for profile in dict_of_profiles:
+		out
 		if modus == "SEARCH":
 			fastblocksearch(dict_of_profiles[profile], contigs)
 		else: 
