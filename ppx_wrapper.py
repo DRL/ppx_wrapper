@@ -172,7 +172,7 @@ def progress(counter, max_value):
 	progress = int(counter)/int(max_value)
 	print "\tProgress : " + format(float(progress),'.2%'),
 	sys.stdout.flush()
-	
+
 def parseFastBlockSearchResult(result_file):
 	list_of_blocks = []
 	contig, profile = result_file.split("/")[1].split(".")[1], result_file.split("/")[1].split(".")[2]
@@ -195,8 +195,9 @@ def parseFastBlockSearchResult(result_file):
 			block.strand = hit[-1].split("\t")[2]
 			block.profile = profile
 		list_of_blocks.append(block)
-	else:
-		os.remove(result_file) 
+	#else:
+	#	os.remove(result_file) 
+
 	return list_of_blocks
 
 def analyseBlocks(dict_of_blocks):
@@ -290,6 +291,8 @@ def runAugustusPPX():
 
 					#dict_of_contigs[block.contig][block.profile][block.score] = block
 
+	print dict_of_blocks.__dict__
+	
 	profile_hits = analyseBlocks(dict_of_blocks)
 
 	ppx_results = open(RESULTS_DIR + species + ".fa", "w") # file to which to write the resulting proteins for all profiles
