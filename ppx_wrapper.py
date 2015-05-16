@@ -432,6 +432,7 @@ if __name__ == "__main__":
 
 		for contig in files:
 			files[contig].update(profile)
+			print files[contig].__dict__
 		if modus == "SEARCH":
 			fastblocksearch(dict_of_profiles[profile], files)
 		else: 
