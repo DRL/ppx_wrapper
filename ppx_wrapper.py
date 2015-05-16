@@ -428,7 +428,7 @@ if __name__ == "__main__":
 	for filename in filenames:
 		print filename, filenames[filename].__dict__ 
 	# 3. Search for blocks	
-	break
+	sys.exit()
 	for profile in dict_of_profiles:
 		if modus == "SEARCH":
 			fastblocksearch(dict_of_profiles[profile], contigs)
