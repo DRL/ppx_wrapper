@@ -176,8 +176,11 @@ def progress(counter, max_value):
 
 def parseFastBlockSearchResult(result_file):
 	list_of_blocks = []
+	print os.path.basename(result_file)
 	profile = os.path.basename(result_file).rstrip(".result").split(".")[-1]
-	contig = os.path.basename(result_file).rstrip("."+profile+".result")
+	print profile
+	contig = os.path.basename(result_file).rstrip("."+ profile +".result")
+	print contig
 	raw = open(result_file).read()
 	try:
 		number_of_hits = len(raw.split("--"))
