@@ -21,6 +21,16 @@ from subprocess import Popen
 
 #######################################
 
+class Filenames():
+	def __init__(self, contig, profile):
+		self.contig = contig
+		self.contig_file = "temp/" + contig 
+		self.profile = profile
+		self.profile_file "profile/" + profile + ".prfl"
+		self.fastblockfile = "fastblocksearch/" + contig + "." + profile + ".result"
+		self.gff3 = "augustus/" + contig + "." + profile + ".gff3"
+		self.protein = "results/" + contig + "." + profile + ".faa"
+
 class Block():
 	def __init__(self, contig, score, multi_score):
 		self.contig = contig
@@ -97,16 +107,17 @@ def parse_contigs_to_dict(contig_file):
 			contig = ContigObject(header, seq)
 			contigs.add(contig)
 	
-	temp_dict = {}
+	file_dict = {}
 
 	for contig in contigs:
-		temp_file = TEMP_DIR + contig.header + ".temp"
-		temp = open(temp_file, 'w')
+		filename_obj = Filenames(contig.header, profile)
+		contig_file = filename_obj.contig_file
+		temp = open(contig_file, 'w')
 		temp.write(">" + contig.header + "\n" + contig.seq)
 		temp.close()
-		temp_dict[contig.header]=temp_file
+		file_dict[contig.header]=filename_obj
 	print "[STATUS] - %s contigs found " %len(contigs)
-	return temp_dict
+	return file_dict
 
 #################################
 
@@ -413,8 +424,11 @@ if __name__ == "__main__":
 	# 1. Get profiles
 	dict_of_profiles = getProfiles(profile_dir)
 	# 2. parse assemblies
-	contigs = parse_contigs_to_dict(contig_file)
+	filenames = parse_contigs_to_dict(contig_file)
+	for filename in filenames:
+		print filename, filenames[filename].__dict__ 
 	# 3. Search for blocks	
+	break
 	for profile in dict_of_profiles:
 		if modus == "SEARCH":
 			fastblocksearch(dict_of_profiles[profile], contigs)
