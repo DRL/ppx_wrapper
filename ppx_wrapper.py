@@ -167,6 +167,12 @@ def run_jobs(jobs, threads, pause=2, verbose=False):
 	- infer best overall hits	
 '''
 
+def progress(counter, max_value):
+	sys.stdout.write('\r')
+	progress = int(counter)/int(max_value)
+	print "\tProgress : " + format(float(progress),'.2%'),
+	sys.stdout.flush()
+	
 def parseFastBlockSearchResult(result_file):
 	list_of_blocks = []
 	contig, profile = result_file.split("/")[1].split(".")[1], result_file.split("/")[1].split(".")[2]
