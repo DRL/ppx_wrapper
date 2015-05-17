@@ -307,7 +307,7 @@ def runAugustusPPX(files):
 		if result.startswith(species) and result.endswith(".result"):
 			result_file = FASTBLOCKSEARCH_DIR + result
 			print "[STATUS] - Parsing : " + result_file
-			print result.rstrip(".result").split(".")
+			print result.split(".")
 			profile_name = result.rstrip(".result").split(".")[-1]
 			contig_name = result.rstrip(profile_name + ".result")
 			print profile_name, contig_name
