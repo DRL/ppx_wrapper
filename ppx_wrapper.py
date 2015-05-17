@@ -330,9 +330,9 @@ def runAugustusPPX(files):
 			end = str(hit.get('end', buffer_range)) # get stop with buffer range
 			strand = hit.get('strand', 0) # get strand
 			
-			infile = files[contig].contig_file # file containing sequence of contig
-			outfile = files[contig].augustus # file to which the output gff3 is written
-			gff_of_gene_file = files[contig].gff3 # other gff3 file to which only the good (motif-containing) gene models are written
+			infile = TEMP_DIR + contig + ".fa" # file containing sequence of contig
+			outfile = AUGUSTUS_DIR + contig + "." + profile + ".gff3" # file to which the output gff3 is written
+			gff_of_gene_file = RESULTS_DIR + contig + "." + profile + ".gff3" # other gff3 file to which only the good (motif-containing) gene models are written
 			profile_file = dict_of_profiles[profile] # get filename of profile
 		
 			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end) + " : " + outfile
@@ -342,7 +342,7 @@ def runAugustusPPX(files):
 			process.wait()
 			print "[STATUS] - Writing proteins"
 
-			proteins = parseProteinsFromGFF3(files[contig]) # parse proteins from the GFF3 output file
+			proteins = parseProteinsFromGFF3(outfile) # parse proteins from the GFF3 output file
 
 			# screening for motifs in proteins
 			for protein_name, protein_seq in proteins.items():
@@ -351,7 +351,7 @@ def runAugustusPPX(files):
 					# for each MOTIF
 					if motif in protein_seq:
 						# if motif appeas in protein seq
-						parseGFFFromGFF3(files[contig]) # parse relevant part about this gene model from the gff3 output file
+						parseGFFFromGFF3(outfile, gff_of_gene_file) # parse relevant part about this gene model from the gff3 output file
 						# printing sequence to screen
 						print ">" + species + "." + profile + "." + contig + "." + str(start) + "-" + str(end) + "." + strand + "." + protein_name + "\n" + protein_seq
 						ppx_results.write(">" + species + "." + profile + "." + contig + "." + str(start) + "-" + str(end) + "." + strand + "." + protein_name + "\n" + protein_seq + "\n") # file to which to write the resulting proteins for all profiles
@@ -361,8 +361,7 @@ def runAugustusPPX(files):
 
 	print "[STATUS] - Done."
 
-def parseProteinsFromGFF3(files):
-	contig, query, outfile, augustus = files.contig, files.profile, files.protein, files.augustus 
+def parseProteinsFromGFF3(augustus):
 
 	read_mode = 0 # reading flag
 	temp = '' # 
@@ -396,11 +395,10 @@ def parseProteinsFromGFF3(files):
 				pass # do nothing
 	return dict_of_proteins # return dict : key = protein name, vale = protein seq
 
-def parseGFFFromGFF3(files): # (augustus gff3, gff3 output file containing the ones that passed motif filtering )
-	contig, query, outfile = files.contig, files.profile, files.gff3
+def parseGFFFromGFF3(outfile, gff_of_gene_file): # (augustus gff3, gff3 output file containing the ones that passed motif filtering )
 
 	read_mode = 0 # reading flag
-	fh_out = open(outfile, 'w') 
+	fh_out = open(gff_of_gene_file, 'w') 
 	fh_out.write("##gff-version 3\n") # write header
 	with open(outfile) as fh: 
 		for line in fh: 
