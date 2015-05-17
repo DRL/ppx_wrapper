@@ -11,7 +11,8 @@ Bugs 		: Contig names in assemblies can't have "."
 """
 
 from __future__ import division
-import sys, os
+import sys
+import os
 import time
 import multiprocessing as mp 
 import subprocess
@@ -24,19 +25,21 @@ from subprocess import Popen
 class Files():
 	def __init__(self, contig):
 		self.contig = contig
-		self.contig_file = "temp/" + contig + ".fa"
+		self.contig_file = TEMP_DIR + contig + ".fa"
 		self.profile = None
 		self.profile_file = None
 		self.fastblockfile = None
+		self.augustus = None
 		self.gff3 = None
 		self.protein = None
 
 	def update(self, profile):
 		self.profile = profile
-		self.profile_file = "profile/" + profile + ".prfl"
-		self.fastblockfile = "fastblocksearch/" + self.contig + "." + profile + ".result"
-		self.gff3 = "augustus/" + self.contig + "." + profile + ".gff3"
-		self.protein = "results/" + self.contig + "." + profile + ".faa"
+		self.profile_file = PROFILE_DIR + profile + ".prfl"
+		self.fastblockfile = FASTBLOCKSEARCH_DIR + self.contig + "." + profile + ".result"
+		self.augustus = AUGUSTUS_DIR + self.contig + "." + profile + ".gff3"
+		self.gff3 = RESULTS_DIR + self.contig + "." + profile + ".gff3"
+		self.protein = RESULTS_DIR + self.contig + "." + profile + ".faa"
 
 class Block():
 	def __init__(self, contig, score, multi_score):
@@ -130,7 +133,7 @@ def parse_contigs_to_dict(contig_file):
 
 def fastblocksearch(profile, contigs):
 	
-	profile_name = os.path.basename(profile).rsplit(".prfl")
+	profile_name = os.path.basename(profile).rstrip(".prfl")
 	print "[STATUS] - Running FastBlockSearch with profile : " + profile_name
 	processes = []
 	
@@ -138,7 +141,8 @@ def fastblocksearch(profile, contigs):
 	for contig in contigs:
 		in_file = contigs[contig].contig_file
 		out_file = contigs[contig].fastblockfile
-		cmd = "/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=1.1 " + in_file + " " + profile + " > " + out_file + " "
+		cmd = "/exports/software/augustus/augustus-3.0.3/bin/fastBlockSearch --cutoff=0.5 " + in_file + " " + profile + " > " + out_file + " "
+		#cmd = "fastBlockSearch --cutoff=0.5 " + in_file + " " + profile + " > " + out_file + " "
 		jobs.append(cmd)
 
 	results = run_jobs(jobs, 24, pause = 2, verbose = False)
@@ -296,10 +300,10 @@ def analyseBlocks(dict_of_blocks):
 def runAugustusPPX(files):
 	dict_of_blocks = {}
 	print "Buffer range : " + str(buffer_range) 
-	for result in os.listdir("fastblocksearch/"):
+	for result in os.listdir(FASTBLOCKSEARCH_DIR):
 		# For each FastBlockSearch result file ...
 		if result.startswith(species) and result.endswith(".result"):
-			result_file = "fastblocksearch/" + result
+			result_file = FASTBLOCKSEARCH_DIR + result
 			print "[STATUS] - Parsing : " + result_file
 			profile_name = result.rstrip(".result").split(".")[-1]
 			contig_name = result.rstrip(profile_name + ".result")
@@ -324,16 +328,18 @@ def runAugustusPPX(files):
 			strand = hit.get('strand', 0) # get strand
 			
 			infile = files[contig].contig_file # file containing sequence of contig
-			outfile = files[contig].gff3 # file to which the output gff3 is written
-			gff_of_gene_file = files[contig].result # other gff3 file to which only the good (motif-containing) gene models are written
+			outfile = files[contig].augustus # file to which the output gff3 is written
+			gff_of_gene_file = files[contig].gff3 # other gff3 file to which only the good (motif-containing) gene models are written
 			profile_file = dict_of_profiles[profile] # get filename of profile
 		
 			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
 			# Start running the processes for gene finding by prociding start, stop, strand, contig sequence, profile, and output file
 			process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=onchocerca_gutturosa --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+			#process = subprocess.Popen("augustus --species=onchocerca_gutturosa --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 			process.wait()
 			print "[STATUS] - Writing proteins"
-			proteins = parseProteinsFromGFF3(outfile) # parse proteins from the GFF3 output file
+
+			proteins = parseProteinsFromGFF3(files[contig]) # parse proteins from the GFF3 output file
 
 			# screening for motifs in proteins
 			for protein_name, protein_seq in proteins.items():
@@ -342,7 +348,7 @@ def runAugustusPPX(files):
 					# for each MOTIF
 					if motif in protein_seq:
 						# if motif appeas in protein seq
-						parseGFFFromGFF3(outfile, gff_of_gene_file) # parse relevant part about this gene model from the gff3 output file
+						parseGFFFromGFF3(files[contig]) # parse relevant part about this gene model from the gff3 output file
 						# printing sequence to screen
 						print ">" + species + "." + profile + "." + contig + "." + str(start) + "-" + str(end) + "." + strand + "." + protein_name + "\n" + protein_seq
 						ppx_results.write(">" + species + "." + profile + "." + contig + "." + str(start) + "-" + str(end) + "." + strand + "." + protein_name + "\n" + protein_seq + "\n") # file to which to write the resulting proteins for all profiles
@@ -352,28 +358,8 @@ def runAugustusPPX(files):
 
 	print "[STATUS] - Done."
 
-def parseGFFFromGFF3(gff3, gff_of_gene_file): # (augustus gff3, gff3 output file containing the ones that passed motif filtering )
-	contig, query, outfile = gff3.split("/")[1].split(".")[1], gff3.split("/")[1].split(".")[0], ".".join(gff3.split(".")[0:-1]) + "aa.fa"
-
-	read_mode = 0 # reading flag
-	fh_out = open(gff_of_gene_file, 'w') 
-	fh_out.write("##gff-version 3\n") # write header
-	with open(gff3) as fh: 
-		for line in fh: 
-			if line.startswith("# start gene "):
-				read_mode = 1
-				fh_out.write(line)
-			elif line.startswith("# end gene "):
-				read_mode = 0
-				fh_out.write(line)
-			elif read_mode == 1:
-				fh_out.write(line)
-			else:
-				pass
-	fh_out.close()
-
-def parseProteinsFromGFF3(gff3):
-	contig, query, outfile = gff3.split("/")[1].split(".")[1], gff3.split("/")[1].split(".")[0], ".".join(gff3.split(".")[0:-1]) + "aa.fa"
+def parseProteinsFromGFF3(files):
+	contig, query, outfile, augustus = files.contig, files.profile, files.protein, files.augustus 
 
 	read_mode = 0 # reading flag
 	temp = '' # 
@@ -381,7 +367,7 @@ def parseProteinsFromGFF3(gff3):
 	protein_seq = ''
 	dict_of_proteins = {} # dict : key = protein name, vale = protein seq
 
-	with open(gff3) as fh:
+	with open(augustus) as fh:
 		# while reading the gff3 file
 		for line in fh: # for each line
 			if line.startswith("# start gene "): 
@@ -396,6 +382,8 @@ def parseProteinsFromGFF3(gff3):
 				protein_seq = '' # empty protein seq
 			elif read_mode == 1 and line.startswith("#"):
 				# if read mode is on and the line starts with "#" (that where the AA's are)
+				if "]" in line:
+					read_mode = 0
 				temp = line.lstrip("# protein sequence = [") # remove clutter from string
 				temp = temp.lstrip("# ") # remove clutter from string
 				temp = temp.rstrip("\n") # remove clutter from string
@@ -404,6 +392,26 @@ def parseProteinsFromGFF3(gff3):
 			else:
 				pass # do nothing
 	return dict_of_proteins # return dict : key = protein name, vale = protein seq
+
+def parseGFFFromGFF3(files): # (augustus gff3, gff3 output file containing the ones that passed motif filtering )
+	contig, query, outfile = files.contig, files.profile, files.gff3
+
+	read_mode = 0 # reading flag
+	fh_out = open(outfile, 'w') 
+	fh_out.write("##gff-version 3\n") # write header
+	with open(outfile) as fh: 
+		for line in fh: 
+			if line.startswith("# start gene "):
+				read_mode = 1
+				fh_out.write(line)
+			elif line.startswith("# end gene "):
+				read_mode = 0
+				fh_out.write(line)
+			elif read_mode == 1:
+				fh_out.write(line)
+			else:
+				pass
+	fh_out.close()
 
 if __name__ == "__main__":
 	try:
@@ -415,11 +423,18 @@ if __name__ == "__main__":
 	except:
 		sys.exit("Usage: ./ppx_wrapper.py [CONTIGFILE] [PROFILE_DIR] [SPECIES] [SEARCH|NOSEARCH] [BUFFERRANGE]")
 	
-	GENOME_DIR = 'genome/'
-	TEMP_DIR = 'temp/'
-	FASTBLOCKSEARCH_DIR = 'fastblocksearch/'
-	AUGUSTUS_DIR = 'augustus/'
-	RESULTS_DIR = 'results/'
+	PROFILE_DIR = profile_dir 
+	
+	TEMP_DIR = '_temp/'
+	FASTBLOCKSEARCH_DIR = '_fastblocksearch/'
+	AUGUSTUS_DIR = '_augustus/'
+	RESULTS_DIR = '_results/'
+	DIRS = [TEMP_DIR, FASTBLOCKSEARCH_DIR, AUGUSTUS_DIR, RESULTS_DIR]
+
+	for DIR in DIRS:
+		if not os.path.exists(DIR):
+			os.makedirs(DIR)
+
 	MOTIFS = ["ELEKE", "WFQNRR"]
 
 	# 1. Get profiles
@@ -429,10 +444,8 @@ if __name__ == "__main__":
 	
 	# 3. Search for blocks	
 	for profile in dict_of_profiles:
-
 		for contig in files:
 			files[contig].update(profile)
-			print files[contig].__dict__
 		if modus == "SEARCH":
 			fastblocksearch(dict_of_profiles[profile], files)
 		else: 
