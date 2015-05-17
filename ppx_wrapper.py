@@ -439,7 +439,7 @@ if __name__ == "__main__":
 		if not os.path.exists(DIR):
 			os.makedirs(DIR)
 
-	MOTIFS = ["ELEK", "WFQNRR"]
+	MOTIFS = ["E", "WFQNRR"]
 
 	# 1. Get profiles
 	dict_of_profiles = getProfiles(profile_dir)
