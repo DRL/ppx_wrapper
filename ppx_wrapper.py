@@ -207,7 +207,6 @@ def parseFastBlockSearchResult(result_file, profile_name, contig_name):
 	if number_of_hits >= 2:
 		blocks = [filter(None, x.split('\n')) for x in raw.split("--") if len(x) > 2 ] 
 		header = blocks[0].pop(0)
-		print header
 		#print blocks
 		for hit in blocks:
 			#print "New hit \n" + str(hit)
@@ -336,7 +335,7 @@ def runAugustusPPX(files):
 			gff_of_gene_file = files[contig].gff3 # other gff3 file to which only the good (motif-containing) gene models are written
 			profile_file = dict_of_profiles[profile] # get filename of profile
 		
-			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end)  
+			print "[STATUS] - Calling protein \"" + profile_file + "\" in contig \"" + contig + "\" from " + str(start) + " to " + str(end) + " : " + outfile
 			# Start running the processes for gene finding by prociding start, stop, strand, contig sequence, profile, and output file
 			process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=onchocerca_gutturosa --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 			#process = subprocess.Popen("augustus --species=onchocerca_gutturosa --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
