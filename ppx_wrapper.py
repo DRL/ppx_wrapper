@@ -195,9 +195,10 @@ def progress(counter, max_value):
 	print "\tProgress : " + format(float(progress),'.2%'),
 	sys.stdout.flush()
 
-def parseFastBlockSearchResult(result_file, contig_name):
+def parseFastBlockSearchResult(result_file, profile_name, contig_name):
 	list_of_blocks = []
 	contig = contig_name
+	profile = profile_name
 	raw = open(result_file).read()
 	try:
 		number_of_hits = len(raw.split("--"))
@@ -206,6 +207,7 @@ def parseFastBlockSearchResult(result_file, contig_name):
 	if number_of_hits >= 2:
 		blocks = [filter(None, x.split('\n')) for x in raw.split("--") if len(x) > 2 ] 
 		header = blocks[0].pop(0)
+		print header
 		#print blocks
 		for hit in blocks:
 			#print "New hit \n" + str(hit)
@@ -306,10 +308,9 @@ def runAugustusPPX(files):
 			result_file = FASTBLOCKSEARCH_DIR + result
 			print "[STATUS] - Parsing : " + result_file
 			profile_name = result.rstrip(".result").split(".")[-1]
-			print profile_name, contig_name
-
 			contig_name = result.rstrip(profile_name + ".result")
-			list_of_blocks = parseFastBlockSearchResult(result_file, contig_name)
+			print profile_name, contig_name
+			list_of_blocks = parseFastBlockSearchResult(result_file, profile_name, contig_name)
 			if (list_of_blocks):
 				for block in list_of_blocks:
 					dict_of_blocks[block.score] = block
