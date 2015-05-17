@@ -306,6 +306,7 @@ def runAugustusPPX(files):
 			result_file = FASTBLOCKSEARCH_DIR + result
 			print "[STATUS] - Parsing : " + result_file
 			profile_name = result.rstrip(".result").split(".")[-1]
+			print profile_name
 			contig_name = result.rstrip(profile_name + ".result")
 			list_of_blocks = parseFastBlockSearchResult(result_file, contig_name)
 			if (list_of_blocks):
