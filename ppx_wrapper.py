@@ -323,7 +323,7 @@ def runAugustusPPX(files):
 	for block in list_of_blocks:
 		print str(block.__dict__)
 
-	profile_hits = analyseBlocks(dict_of_blocks)
+	profile_hits = analyseBlocks(list_of_blocks)
 
 	ppx_results = open(RESULTS_DIR + species + ".faa", "w") # file to which to write the resulting proteins for all profiles
 
