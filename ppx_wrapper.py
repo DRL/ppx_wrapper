@@ -246,7 +246,7 @@ def analyseBlocks(dict_of_blocks):
 		# THIS IS NEW ...
 		overlap_threshold = 1000 # buffer range for getting coordinates (was previously the same as buffer range for predicting)
 		# IDEA : change this to 1000 to allow for less distance between blocks competing for the same region, tested it and looked okay on C. elegans ...
-
+		print fastblockresults_dict
 		if not contig in fastblockresults_dict:
 			# if we haven't seen this contig before  
 			profile_count[profile] = profile_count.get(profile, 0) + 1 # increase count of blocks for this profile
@@ -291,10 +291,11 @@ def analyseBlocks(dict_of_blocks):
 							profile_hits[profile].append(block) # add current block to the list in profile_hits   
 
 	# Debugging
+	ppx_log = open(RESULTS_DIR + species + ".log", "w") 
 	for profile in profile_hits:
-		print profile
+		ppx_log.write(profile)
 		for hits in profile_hits[profile]:
-			print hits.__dict__
+			ppx_log.write(hits.__dict__)
 	
 	return profile_hits # return dict of lists with the hits archived by profile
 
@@ -340,7 +341,7 @@ def runAugustusPPX(files):
 			process = subprocess.Popen("/exports/software/augustus/augustus-3.0.3/bin/augustus --species=onchocerca_gutturosa --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 			#process = subprocess.Popen("augustus --species=onchocerca_gutturosa --gff3=on --proteinprofile=" + profile_file + " --predictionStart=" + start + " --predictionEnd=" + end + " --strand=" + strand + " " + infile + " > " + outfile , stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 			process.wait()
-			print "[STATUS] - Writing proteins"
+			
 
 			proteins = parseProteinsFromGFF3(outfile) # parse proteins from the GFF3 output file
 
@@ -350,6 +351,7 @@ def runAugustusPPX(files):
 				for motif in MOTIFS:
 					# for each MOTIF
 					if motif in protein_seq:
+						print "[STATUS] - Writing proteins"
 						# if motif appeas in protein seq
 						parseGFFFromGFF3(outfile, gff_of_gene_file) # parse relevant part about this gene model from the gff3 output file
 						# printing sequence to screen
