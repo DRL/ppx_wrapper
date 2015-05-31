@@ -266,32 +266,32 @@ def analyseBlocks(list_of_blocks):
 			print "Times we have seen this profile : " + str(profile_count[block.profile])				
 			# if we have seen this contig before 
 			block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block
-			print block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end)
+			print block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score)
 			
 			for existingBlock in fastblockresults_dict[block.contig]:
 				print " Comparing coordinates of this block with existing ones ... "
 				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
 				existingBlock_start, existingBlock_end = int(existingBlock.get('start', overlap_threshold)), int(existingBlock.get('end', overlap_threshold)) # get coordinates of existingBlock
-				print existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end)
+				print existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end) + " " + str(block.score)
 				coordinates = [existingBlock_start, existingBlock_start, block_start, block_end] # make a list with the coordinates 
 				sum_lengths = (existingBlock_start - existingBlock_start) + (block_end - block_start) # sum up the lengths of bot regions (existing hit on contig and new block to be added)
 				if sum_lengths >= (max(coordinates) - min(coordinates)):
 					# "overlap between the two" if the sum of the lengths is greater or equal to the difference between maximal and minimal coordinate 
-					print "New block is within better block"
+					print "New block is within better block ... skip"
 					pass # do nothing (there is already one hit with a higher score in that region)
 				else:
 					# There is either complete overlap or none at all
 					if (existingBlock_start >= block_start and existingBlock_start <= block_end):
-						print "New block is completely within better block"
-						# Hit is contained within block
+						print "New block overlapping, but new block is bigger ... "
 						pass # do nothing (although the region of the new block is bigger than the hit) 
 						# IDEA: one could consider making the hit longer using the coordinates of the block
 					elif (block_start >= existingBlock_start and block_end <= existingBlock_start):
+						print "New block overlapping, but another block is bigger ... "
 						# Block is contained within hit
 						pass # do nothing (the hit is longer than the block)
 					else:
 						# There is no overlap
-						print " No overlap between new block and other blocks"
+						print " No overlap between new block and other blocks ... adding to list"
 						fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
 						if not block.profile in profile_hits:
 								# if we haven't seen a hit for this profile before 
