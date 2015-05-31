@@ -238,7 +238,7 @@ def analyseBlocks(list_of_blocks):
 	for block in sorted_list_of_blocks:
 		# for every block
 		
-		print str(block.score) + "\t" + str(block.__dict__) # for debugging
+		#print str(block.score) + "\t" + str(block.__dict__) # for debugging
 
 		# THIS IS NEW ...
 		overlap_threshold = 1000 # buffer range for getting coordinates (was previously the same as buffer range for predicting)
@@ -246,8 +246,8 @@ def analyseBlocks(list_of_blocks):
 		
 		profile_count[block.profile] = profile_count.get(block.profile, 0) + 1 # increase count of blocks for this profile
 
-		print block.contig
-		print str(fastblockresults_dict)
+		#print block.contig
+		#print str(fastblockresults_dict)
 		if not block.contig in fastblockresults_dict:
 			# if we haven't seen this contig before  
 			print "First time we see this contig: " + block.contig
