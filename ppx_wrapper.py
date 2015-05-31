@@ -250,9 +250,10 @@ def analyseBlocks(list_of_blocks):
 		print str(fastblockresults_dict)
 		if not block.contig in fastblockresults_dict:
 			# if we haven't seen this contig before  
-			print 
 			print "First time we see this contig: " + block.contig
-			print "Times we have seen this profile : " + str(profile_count[block.profile])				
+			print "Times we have seen this profile : " + str(profile_count[block.profile])
+			block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block				
+			print block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end)
 			fastblockresults_dict[block.contig] = [] # populate fastblockresults_dict : key = contig, value = an empty list  
 			fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
 			if not block.profile in profile_hits:
@@ -264,14 +265,14 @@ def analyseBlocks(list_of_blocks):
 			print "We have seen this contig: " + block.contig
 			print "Times we have seen this profile : " + str(profile_count[block.profile])				
 			# if we have seen this contig before 
-			
 			block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block
-			print "This block... Start " + str(block_start) + " ... End " + str(block_end)
+			print block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end)
+			
 			for existingBlock in fastblockresults_dict[block.contig]:
 				print " Comparing coordinates of this block with existing ones ... "
 				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
 				existingBlock_start, existingBlock_end = int(existingBlock.get('start', overlap_threshold)), int(existingBlock.get('end', overlap_threshold)) # get coordinates of existingBlock
-				print "Existing block... Start " + str(existingBlock_start) + " ... End " + str(existingBlock_end) + " ... profile " + existingBlock.profile + " .. score " + str(existingBlock.score)	
+				print existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end)
 				coordinates = [existingBlock_start, existingBlock_start, block_start, block_end] # make a list with the coordinates 
 				sum_lengths = (existingBlock_start - existingBlock_start) + (block_end - block_start) # sum up the lengths of bot regions (existing hit on contig and new block to be added)
 				if sum_lengths >= (max(coordinates) - min(coordinates)):
