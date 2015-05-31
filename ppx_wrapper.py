@@ -246,7 +246,6 @@ def analyseBlocks(dict_of_blocks):
 		# THIS IS NEW ...
 		overlap_threshold = 1000 # buffer range for getting coordinates (was previously the same as buffer range for predicting)
 		# IDEA : change this to 1000 to allow for less distance between blocks competing for the same region, tested it and looked okay on C. elegans ...
-		print fastblockresults_dict
 		if not contig in fastblockresults_dict:
 			# if we haven't seen this contig before  
 			profile_count[profile] = profile_count.get(profile, 0) + 1 # increase count of blocks for this profile
@@ -323,6 +322,7 @@ def runAugustusPPX(files):
 	ppx_results = open(RESULTS_DIR + species + ".faa", "w") # file to which to write the resulting proteins for all profiles
 
 	for profile in profile_hits:
+		print profile_hits.__dict__
 		# for each profile 
 		for hit in profile_hits[profile]:
 			# for each hit (block object)
