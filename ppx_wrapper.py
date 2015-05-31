@@ -230,14 +230,99 @@ def analyseBlocks(list_of_blocks):
 
 	fastblockresults_dict = {} # where the "good" blocks (hits) are stored, archived by contig (dict of lists)
 	profile_hits = {} # where the "good" blocks (hits) are stored, archived by profile (dict of lists)
+
+	profile_count = {}	# number of blocks stored per profile 
+
+	print "[STATUS] - Analysing parsed Blocks"
+
+	for block in sorted_list_of_blocks:
+		# for every block
+		
+		print str(block.score) + "\t" + str(block.__dict__) # for debugging
+
+		# THIS IS NEW ...
+		overlap_threshold = 1000 # buffer range for getting coordinates (was previously the same as buffer range for predicting)
+		# IDEA : change this to 1000 to allow for less distance between blocks competing for the same region, tested it and looked okay on C. elegans ...
+		
+		profile_count[block.profile] = profile_count.get(block.profile, 0) + 1 # increase count of blocks for this profile
+
+		if not block.contig in fastblockresults_dict:
+			# if we haven't seen this contig before  
+			print 
+			print "First time we see this contig: " + block.contig
+			print "Times we have seen this profile : " + str(profile_count[block.profile])				
+			fastblockresults_dict[contig] = [] # populate fastblockresults_dict : key = contig, value = an empty list  
+			fastblockresults_dict[contig].append(block) # add current block to the list in fastblockresults_dict  
+			if not profile in profile_hits:
+				# if we haven't seen a hit for this profile before 
+				profile_hits[profile]=[] # populate profile_hits : key = profile, value = an empty list
+			profile_hits[profile].append(block) # add current block to the list in profile_hits   
+		else: 
+			print
+			print "We have seen this contig: " + block.contig
+			print "Times we have seen this profile : " + str(profile_count[block.profile])				
+			# if we have seen this contig before 
+			
+			block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block
+			print "This block... Start " + str(block_start) + " ... End " + str(block_end)
+			for existingBlock in fastblockresults_dict[contig]:
+				print " Comparing coordinates of this block with existing ones ... "
+				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
+				existingBlock_start, existingBlock_end = int(existingBlock.get('start', overlap_threshold)), int(existingBlock.get('end', overlap_threshold)) # get coordinates of existingBlock
+				print "Existing block... Start " + str(existingBlock_start) + " ... End " + str(existingBlock_end) + " ... profile " + existingBlock.profile + " .. score " + str(existingBlock.score)	
+				coordinates = [hit_start, hit_end, block_start, block_end] # make a list with the coordinates 
+				sum_lengths = (hit_end - hit_start) + (block_end - block_start) # sum up the lengths of bot regions (existing hit on contig and new block to be added)
+				if sum_lengths >= (max(coordinates) - min(coordinates)):
+					# "overlap between the two" if the sum of the lengths is greater or equal to the difference between maximal and minimal coordinate 
+					print "New block is within better block"
+					pass # do nothing (there is already one hit with a higher score in that region)
+				else:
+					# There is either complete overlap or none at all
+					if (hit_start >= block_start and hit_end <= block_end):
+						print "New block is completely within better block"
+						# Hit is contained within block
+						pass # do nothing (although the region of the new block is bigger than the hit) 
+						# IDEA: one could consider making the hit longer using the coordinates of the block
+					elif (block_start >= hit_start and block_end <= hit_end):
+						# Block is contained within hit
+						pass # do nothing (the hit is longer than the block)
+					else:
+						# There is no overlap
+						print " No overlap between new block and other blocks"
+						fastblockresults_dict[contig].append(block) # add current block to the list in fastblockresults_dict  
+						if not profile in profile_hits:
+								# if we haven't seen a hit for this profile before 
+							profile_hits[profile]=[] # populate profile_hits : key = profile, value = an empty list
+						profile_hits[profile].append(block) # add current block to the list in profile_hits   
+
+	# Debugging
+	ppx_log = open(RESULTS_DIR + species + ".log", "w") 
+	for profile in profile_hits:
+		ppx_log.write(profile)
+		for hits in profile_hits[profile]:
+			ppx_log.write(str(hits.__dict__) + "\n")
+	
+	return profile_hits # return dict of lists with the hits archived by profile
+
+def OLDanalyseBlocks(list_of_blocks):
+	
+	# list_of_blocks contains all blocks found on each sequence ... can have multiple block per profile per sequence
+	sorted_list_of_blocks = sorted(list_of_blocks, key=lambda x: x.score, reverse=True) # sort by score
+
+	fastblockresults_dict = {} # where the "good" blocks (hits) are stored, archived by contig (dict of lists)
+	profile_hits = {} # where the "good" blocks (hits) are stored, archived by profile (dict of lists)
 	
 	max_profile_count = 1 # number of how many "good" blocks are stored per profile
 
 	profile_count = {}	# number of blocks stored per profile 
 
+	print "[STATUS] - Analysing parsed Blocks"
+
+	allocated_coordinates = {}
+	
 	for block in sorted_list_of_blocks:
 		# for every score (in decreasing numerical order)
-		print "Analysing Blocks"
+		
 		print str(block.score) + "\t" + str(block.__dict__) # for debugging
 		
 		#block = dict_of_blocks[score] # get the block
