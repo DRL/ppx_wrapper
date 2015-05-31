@@ -272,20 +272,20 @@ def analyseBlocks(list_of_blocks):
 				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
 				existingBlock_start, existingBlock_end = int(existingBlock.get('start', overlap_threshold)), int(existingBlock.get('end', overlap_threshold)) # get coordinates of existingBlock
 				print "Existing block... Start " + str(existingBlock_start) + " ... End " + str(existingBlock_end) + " ... profile " + existingBlock.profile + " .. score " + str(existingBlock.score)	
-				coordinates = [hit_start, hit_end, block_start, block_end] # make a list with the coordinates 
-				sum_lengths = (hit_end - hit_start) + (block_end - block_start) # sum up the lengths of bot regions (existing hit on contig and new block to be added)
+				coordinates = [existingBlock_start, existingBlock_start, block_start, block_end] # make a list with the coordinates 
+				sum_lengths = (existingBlock_start - existingBlock_start) + (block_end - block_start) # sum up the lengths of bot regions (existing hit on contig and new block to be added)
 				if sum_lengths >= (max(coordinates) - min(coordinates)):
 					# "overlap between the two" if the sum of the lengths is greater or equal to the difference between maximal and minimal coordinate 
 					print "New block is within better block"
 					pass # do nothing (there is already one hit with a higher score in that region)
 				else:
 					# There is either complete overlap or none at all
-					if (hit_start >= block_start and hit_end <= block_end):
+					if (existingBlock_start >= block_start and existingBlock_start <= block_end):
 						print "New block is completely within better block"
 						# Hit is contained within block
 						pass # do nothing (although the region of the new block is bigger than the hit) 
 						# IDEA: one could consider making the hit longer using the coordinates of the block
-					elif (block_start >= hit_start and block_end <= hit_end):
+					elif (block_start >= existingBlock_start and block_end <= existingBlock_start):
 						# Block is contained within hit
 						pass # do nothing (the hit is longer than the block)
 					else:
