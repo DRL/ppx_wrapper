@@ -291,11 +291,17 @@ def analyseBlocks(list_of_blocks):
 					else:
 						# There is no overlap
 						print " No overlap between new block and other blocks ... adding to list"
-						fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
+						if block in fastblockresults_dict[block.contig]:
+							pass
+						else:
+							fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
 						if not block.profile in profile_hits:
 								# if we haven't seen a hit for this profile before 
 							profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
-						profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
+						if block in profile_hits:
+							pass
+						else:
+							profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
 
 	# Debugging
 	ppx_log = open(RESULTS_DIR + species + ".log", "w") 
