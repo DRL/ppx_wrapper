@@ -271,7 +271,7 @@ def analyseBlocks(dict_of_blocks):
 					# "overlap between the two" if the sum of the lengths is greater or equal to the difference between maximal and minimal coordinate 
 					pass # do nothing (there is already one hit with a higher score in that region)
 				else:
-					# There either complete overlap or none at all
+					# There is either complete overlap or none at all
 					if (hit_start >= block_start and hit_end <= block_end):
 						# Hit is contained within block
 						pass # do nothing (although the region of the new block is bigger than the hit) 
@@ -295,7 +295,7 @@ def analyseBlocks(dict_of_blocks):
 	for profile in profile_hits:
 		ppx_log.write(profile)
 		for hits in profile_hits[profile]:
-			ppx_log.write(str(hits.__dict__))
+			ppx_log.write(str(hits.__dict__) + "\n")
 	
 	return profile_hits # return dict of lists with the hits archived by profile
 
