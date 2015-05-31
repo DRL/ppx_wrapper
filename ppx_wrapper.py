@@ -323,9 +323,9 @@ def runAugustusPPX(files):
 
 	for profile in profile_hits:
 		print '*'
-		print profile_hits.__dict__
 		# for each profile 
 		for hit in profile_hits[profile]:
+			print hit.__dict__
 			# for each hit (block object)
 			contig = hit.contig # get contig name
 			start = str(hit.get('start', buffer_range)) # get start with buffer range
