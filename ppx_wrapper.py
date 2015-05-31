@@ -246,6 +246,8 @@ def analyseBlocks(list_of_blocks):
 		
 		profile_count[block.profile] = profile_count.get(block.profile, 0) + 1 # increase count of blocks for this profile
 
+		print block.contig
+		print str(fastblockresults_dict)
 		if not block.contig in fastblockresults_dict:
 			# if we haven't seen this contig before  
 			print 
