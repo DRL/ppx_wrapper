@@ -250,10 +250,9 @@ def analyseBlocks(list_of_blocks):
 		#print str(fastblockresults_dict)
 		if not block.contig in fastblockresults_dict:
 			# if we haven't seen this contig before  
-			print "First time we see this contig: " + block.contig
-			print "Times we have seen this profile : " + str(profile_count[block.profile])
+			print "Times we have seen " + block.profile + " : " + str(profile_count[block.profile])
 			block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block				
-			print block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end)
+			print block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score)
 			fastblockresults_dict[block.contig] = [] # populate fastblockresults_dict : key = contig, value = an empty list  
 			fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
 			if not block.profile in profile_hits:
