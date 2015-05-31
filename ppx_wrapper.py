@@ -271,7 +271,7 @@ def analyseBlocks(list_of_blocks):
 				print " Comparing coordinates of this block with existing ones ... "
 				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
 				existingBlock_start, existingBlock_end = int(existingBlock.get('start', overlap_threshold)), int(existingBlock.get('end', overlap_threshold)) # get coordinates of existingBlock
-				print existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end) + " " + str(block.score)
+				print existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end) + " " + str(existingBlock.score)
 				coordinates = [existingBlock_start, existingBlock_start, block_start, block_end] # make a list with the coordinates 
 				sum_lengths = (existingBlock_start - existingBlock_start) + (block_end - block_start) # sum up the lengths of bot regions (existing hit on contig and new block to be added)
 				if sum_lengths >= (max(coordinates) - min(coordinates)):
