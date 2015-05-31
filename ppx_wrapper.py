@@ -321,7 +321,7 @@ def runAugustusPPX(files):
 					#list_of_blocks[block.contig][block.profile][block.score] = block
 	
 	for block in list_of_blocks:
-		print str(block.__data__)
+		print str(block.__dict__)
 
 	profile_hits = analyseBlocks(dict_of_blocks)
 
