@@ -253,10 +253,10 @@ def analyseBlocks(list_of_blocks):
 			print "Times we have seen this profile : " + str(profile_count[block.profile])				
 			fastblockresults_dict[contig] = [] # populate fastblockresults_dict : key = contig, value = an empty list  
 			fastblockresults_dict[contig].append(block) # add current block to the list in fastblockresults_dict  
-			if not profile in profile_hits:
+			if not block.profile in profile_hits:
 				# if we haven't seen a hit for this profile before 
-				profile_hits[profile]=[] # populate profile_hits : key = profile, value = an empty list
-			profile_hits[profile].append(block) # add current block to the list in profile_hits   
+				profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
+			profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
 		else: 
 			print
 			print "We have seen this contig: " + block.contig
@@ -290,10 +290,10 @@ def analyseBlocks(list_of_blocks):
 						# There is no overlap
 						print " No overlap between new block and other blocks"
 						fastblockresults_dict[contig].append(block) # add current block to the list in fastblockresults_dict  
-						if not profile in profile_hits:
+						if not block.profile in profile_hits:
 								# if we haven't seen a hit for this profile before 
-							profile_hits[profile]=[] # populate profile_hits : key = profile, value = an empty list
-						profile_hits[profile].append(block) # add current block to the list in profile_hits   
+							profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
+						profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
 
 	# Debugging
 	ppx_log = open(RESULTS_DIR + species + ".log", "w") 
