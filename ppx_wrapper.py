@@ -223,8 +223,10 @@ def parseFastBlockSearchResult(result_file, profile_name, contig_name):
 
 	return list_of_blocks
 
-def analyseBlocks(dict_of_blocks):
-	# dict_of_blocks contains all blocks found on each sequence ... can have multiple block per profile per sequence
+def analyseBlocks(list_of_blocks):
+	
+	# list_of_blocks contains all blocks found on each sequence ... can have multiple block per profile per sequence
+	sorted_list_of_blocks = sorted(list_of_blocks, key=lambda x: x.score, reverse=True) # sort by score
 
 	fastblockresults_dict = {} # where the "good" blocks (hits) are stored, archived by contig (dict of lists)
 	profile_hits = {} # where the "good" blocks (hits) are stored, archived by profile (dict of lists)
@@ -233,12 +235,12 @@ def analyseBlocks(dict_of_blocks):
 
 	profile_count = {}	# number of blocks stored per profile 
 
-	for score in sorted(dict_of_blocks, reverse=True):
+	for block in sorted_list_of_blocks:
 		# for every score (in decreasing numerical order)
 		
-		print str(score) + "\t" + str(dict_of_blocks[score].__dict__) # for debugging
+		print str(block.score) + "\t" + str(block.__dict__) # for debugging
 		
-		block = dict_of_blocks[score] # get the block
+		#block = dict_of_blocks[score] # get the block
 
 		contig = block.contig # get the name of the contig
 		profile = block.profile # get the name of the profile
@@ -299,7 +301,7 @@ def analyseBlocks(dict_of_blocks):
 	return profile_hits # return dict of lists with the hits archived by profile
 
 def runAugustusPPX(files):
-	dict_of_blocks = {}
+	list_of_blocks = []
 	print "Buffer range : " + str(buffer_range) 
 	for result in os.listdir(FASTBLOCKSEARCH_DIR):
 		# For each FastBlockSearch result file ...
@@ -310,12 +312,16 @@ def runAugustusPPX(files):
 			profile_name = result.split(".")[-2]
 			contig_name = ".".join(result.split(".")[0:-2])
 			#print profile_name, contig_name
-			list_of_blocks = parseFastBlockSearchResult(result_file, profile_name, contig_name)
-			if (list_of_blocks):
-				for block in list_of_blocks:
+			parsed_blocks = parseFastBlockSearchResult(result_file, profile_name, contig_name)
+			if (parsed_blocks):
+				for block in parsed_blocks:
+					list_of_blocks.append(block)
 					#dict_of_blocks[block.score] = block
 					#dict_of_blocks[block.multi_score] = block
-					dict_of_blocks[block.contig][block.profile][block.score] = block
+					#list_of_blocks[block.contig][block.profile][block.score] = block
+	
+	for block in list_of_blocks:
+		print str(block.__data__)
 
 	profile_hits = analyseBlocks(dict_of_blocks)
 
