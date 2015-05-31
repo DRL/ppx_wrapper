@@ -262,7 +262,7 @@ def analyseBlocks(list_of_blocks):
 		else: 
 			print
 			print "We have seen this contig: " + block.contig
-			print "Times we have seen this profile : " + str(profile_count[block.profile])				
+			print "Times we have seen " + block.profile + " : " + str(profile_count[block.profile])
 			# if we have seen this contig before 
 			block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block
 			print block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score)
