@@ -322,6 +322,7 @@ def runAugustusPPX(files):
 	ppx_results = open(RESULTS_DIR + species + ".faa", "w") # file to which to write the resulting proteins for all profiles
 
 	for profile in profile_hits:
+		print '*'
 		print profile_hits.__dict__
 		# for each profile 
 		for hit in profile_hits[profile]:
