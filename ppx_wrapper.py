@@ -237,7 +237,7 @@ def analyseBlocks(list_of_blocks):
 
 	for block in sorted_list_of_blocks:
 		# for every score (in decreasing numerical order)
-		
+		print "Analysing Blocks"
 		print str(block.score) + "\t" + str(block.__dict__) # for debugging
 		
 		#block = dict_of_blocks[score] # get the block
@@ -308,10 +308,8 @@ def runAugustusPPX(files):
 		if result.startswith(species) and result.endswith(".result"):
 			result_file = FASTBLOCKSEARCH_DIR + result
 			print "[STATUS] - Parsing : " + result_file
-			#print result.split(".")
 			profile_name = result.split(".")[-2]
 			contig_name = ".".join(result.split(".")[0:-2])
-			#print profile_name, contig_name
 			parsed_blocks = parseFastBlockSearchResult(result_file, profile_name, contig_name)
 			if (parsed_blocks):
 				for block in parsed_blocks:
@@ -319,6 +317,7 @@ def runAugustusPPX(files):
 					#dict_of_blocks[block.score] = block
 					#dict_of_blocks[block.multi_score] = block
 					#list_of_blocks[block.contig][block.profile][block.score] = block
+
 
 	profile_hits = analyseBlocks(list_of_blocks)
 
