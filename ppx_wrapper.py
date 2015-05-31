@@ -295,7 +295,7 @@ def analyseBlocks(dict_of_blocks):
 	for profile in profile_hits:
 		ppx_log.write(profile)
 		for hits in profile_hits[profile]:
-			ppx_log.write(hits.__dict__)
+			ppx_log.write(str(hits.__dict__))
 	
 	return profile_hits # return dict of lists with the hits archived by profile
 
