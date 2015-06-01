@@ -237,17 +237,13 @@ def analyseBlocks(list_of_blocks):
 
 	for block in sorted_list_of_blocks:
 		# for every block
-		
-		#print str(block.score) + "\t" + str(block.__dict__) # for debugging
-
 		# THIS IS NEW ...
 		overlap_threshold = 1000 # buffer range for getting coordinates (was previously the same as buffer range for predicting)
 		# IDEA : change this to 1000 to allow for less distance between blocks competing for the same region, tested it and looked okay on C. elegans ...
-		
 		profile_count[block.profile] = profile_count.get(block.profile, 0) + 1 # increase count of blocks for this profile
 
-		#print block.contig
-		#print str(fastblockresults_dict)
+		collision_flag = 0
+
 		if not block.contig in fastblockresults_dict:
 			# if we haven't seen this contig before  
 			#print "Times we have seen " + block.profile + " : " + str(profile_count[block.profile])
@@ -260,7 +256,6 @@ def analyseBlocks(list_of_blocks):
 				profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
 			profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
 		else: 
-			print
 			#print "We have seen this contig: " + block.contig
 			#print "Times we have seen " + block.profile + " : " + str(profile_count[block.profile])
 			# if we have seen this contig before 
@@ -278,30 +273,30 @@ def analyseBlocks(list_of_blocks):
 				print "Coordinates : " + str(coordinates) + "\t SumLen=" + str(sum_lengths) + "\t MaxMin=" + str(max(coordinates) - min(coordinates))
 
 				if sum_lengths <= (max(coordinates) - min(coordinates)):
-					# no overlap (if equal than they share one coordinate)
-					if not block.profile in profile_hits: # if we haven't seen a hit for this profile before
-						profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
-					if block in profile_hits[block.profile] or block in fastblockresults_dict[block.contig]:
-						print "\tBLOCK HAS BEEN SAVED ALREADY"
-						pass
-					else:
-						print "=> No overlap between current block and existing blocks ... adding to list"
-						profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
-						fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
+					# no overlap (if equal than they share one coordinate), so they are fine
+					pass
 				else:
 					# There is either complete or partial overlap
-
 					if (block_start <= existingBlock_start and existingBlock_end <= block_end):
 						print "=> Existing block completely contained within current block ... (increase length of existing block?) "
-						pass # do nothing (although the region of the new block is bigger than the hit) 
+						collision_flag = 1 # do nothing (although the region of the new block is bigger than the hit) 
 						# IDEA: one could consider making the hit longer using the coordinates of the block
 					elif (existingBlock_start <= block_start and block_end <= existingBlock_end):
 						print "=> Current block completely contained within existing block ... (skip) "
 						# Block is contained within hit
-						pass # do nothing (the hit is longer than the block)
+						collision_flag = 1
+						 # do nothing (the hit is longer than the block)
 					else:
 						# There is no overlap
 						print "???"
+				
+				 not collision_flag == 0:
+					if not block.profile in profile_hits: # if we haven't seen a hit for this profile before
+						profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
+					
+					print "=> Adding to list"
+					profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
+					fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
 
 	# Debugging
 	ppx_log = open(RESULTS_DIR + species + ".log", "w") 
