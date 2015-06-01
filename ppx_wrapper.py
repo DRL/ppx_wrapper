@@ -275,7 +275,7 @@ def analyseBlocks(list_of_blocks):
 				print "EXISTING:\t" + existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end) + " " + str(existingBlock.score)
 				coordinates = [existingBlock_start, existingBlock_end, block_start, block_end] # make a list with the coordinates 
 				sum_lengths = (existingBlock_end - existingBlock_start) + (block_end - block_start) # sum up the lengths of both regions (existing hit on contig and new block to be added)
-				print "Coordinates : " + str(coordinates) + "\t" + str(sum_lengths)
+				print "Coordinates : " + str(coordinates) + "\t SumLen=" + str(sum_lengths) + "\t MaxMin=" + str(max(coordinates) - min(coordinates))
 
 				if sum_lengths <= (max(coordinates) - min(coordinates)):
 					# no overlap (if equal than they share one coordinate)
