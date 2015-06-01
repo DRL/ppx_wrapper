@@ -311,7 +311,7 @@ def analyseBlocks(list_of_blocks):
 					# There is either complete or partial overlap
 					if (block_start <= existingBlock_start and existingBlock_end <= block_end):
 						print "=> Existing block completely contained within current block ... (increase length of existing block) "
-						block_collection.updateCoordinates(contig, index, block_start, block_end) 
+						block_collection.updateCoordinates(existingBlock.contig, index, block_start, block_end) 
 						collision_flag = 1 # but the current block gets not added 
 						# IDEA: one could consider making the hit longer using the coordinates of the block
 					elif (existingBlock_start <= block_start and block_end <= existingBlock_end):
