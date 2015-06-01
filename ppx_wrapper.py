@@ -248,14 +248,14 @@ class BlockCollection():
 		profile = block.profile
 		contig = block.contig
 		print "Updating coordinates",
-		for idx, existingProBlock in self.profile[profile].enumerate():
+		for idx, existingProBlock in enumerate(self.profile[profile]):
 			if existingProBlock == block:
 				new_block = existingProBlock
 				new_block.start = start 
 				new_block.end = end
 				self.profile[profile][idx]=new_block
 				print ".",
-		for idx, existingConBlock in self.contigs[contig]:
+		for idx, existingConBlock in enumerate(self.contigs[contig]):
 			if existingConBlock == block:
 				new_block = existingConBlock
 				existingConBlock.start = start 
