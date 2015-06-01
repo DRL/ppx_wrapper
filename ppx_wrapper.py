@@ -236,6 +236,7 @@ def analyseBlocks(list_of_blocks):
 	print "[STATUS] - Analysing parsed Blocks"
 
 	for block in sorted_list_of_blocks:
+		print " ------------------ "
 		# for every block
 		# THIS IS NEW ...
 		overlap_threshold = 1000 # buffer range for getting coordinates (was previously the same as buffer range for predicting)
