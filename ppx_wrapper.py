@@ -268,11 +268,15 @@ def analyseBlocks(list_of_blocks):
 			print "CURRENT:\t" + block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score)
 			
 			for existingBlock in fastblockresults_dict[block.contig]:
+				if existingBlock == block:
+					print "=> Current block and existing block are identical ... skip "
+					continue
 				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
 				existingBlock_start, existingBlock_end = int(existingBlock.get('start', overlap_threshold)), int(existingBlock.get('end', overlap_threshold)) # get coordinates of existingBlock
 				print "EXISTING:\t" + existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end) + " " + str(existingBlock.score)
 				coordinates = [existingBlock_start, existingBlock_end, block_start, block_end] # make a list with the coordinates 
 				sum_lengths = (existingBlock_end - existingBlock_start) + (block_end - block_start) # sum up the lengths of both regions (existing hit on contig and new block to be added)
+				
 				if sum_lengths <= (max(coordinates) - min(coordinates)):
 					# no overlap (if equal than they share one coordinate)
 					if not block.profile in profile_hits: # if we haven't seen a hit for this profile before
