@@ -293,14 +293,17 @@ def analyseBlocks(list_of_blocks):
 			#print "We have seen this contig: " + block.contig
 			#print "Times we have seen " + block.profile + " : " + str(profile_count[block.profile])
 			# if we have seen this contig before 
-			block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block
+			block_start = int(block.coordinates[0])
+			block_end = int(block.coordinates[-1]) # get coordinates of current block
 			print "CURRENT:\t" + block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score) + " " + block.strand
 			
 			for index, existingBlock in enumerate(block_collection.contigs[block.contig]):
 				if existingBlock == block:
 					continue
 				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
-				existingBlock_start, existingBlock_end = int(existingBlock.get('start', overlap_threshold)), int(existingBlock.get('end', overlap_threshold)) # get coordinates of existingBlock
+				existingBlock_start = int(existingBlock.coordinates[0])
+				existingBlock_end = int(existingBlock.coordinates[-1]) # get coordinates of existingBlock
+				
 				print "EXISTING:\t" + existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end) + " " + str(existingBlock.score) + " " + block.strand
 				coordinates = [existingBlock_start, existingBlock_end, block_start, block_end] # make a list with the coordinates 
 				sum_lengths = (existingBlock_end - existingBlock_start) + (block_end - block_start) # sum up the lengths of both regions (existing hit on contig and new block to be added)
