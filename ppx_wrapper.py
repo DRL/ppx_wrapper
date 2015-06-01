@@ -239,7 +239,7 @@ def analyseBlocks(list_of_blocks):
 		print " ------------------ "
 		# for every block
 		# THIS IS NEW ...
-		overlap_threshold = 1000 # buffer range for getting coordinates (was previously the same as buffer range for predicting)
+		overlap_threshold = 0 # buffer range for getting coordinates (was previously the same as buffer range for predicting)
 		# IDEA : change this to 1000 to allow for less distance between blocks competing for the same region, tested it and looked okay on C. elegans ...
 		profile_count[block.profile] = profile_count.get(block.profile, 0) + 1 # increase count of blocks for this profile
 
@@ -280,8 +280,10 @@ def analyseBlocks(list_of_blocks):
 				else:
 					# There is either complete or partial overlap
 					if (block_start <= existingBlock_start and existingBlock_end <= block_end):
-						print "=> Existing block completely contained within current block ... (increase length of existing block?) "
-						collision_flag = 1 # do nothing (although the region of the new block is bigger than the hit) 
+						print "=> Existing block completely contained within current block ... (increase length of existing block) "
+						fastblockresults_dict[existingBlock].start = block_start
+						fastblockresults_dict[existingBlock].end = block_end 
+						collision_flag = 1 # but the current block gets not added 
 						# IDEA: one could consider making the hit longer using the coordinates of the block
 					elif (existingBlock_start <= block_start and block_end <= existingBlock_end):
 						print "=> Current block completely contained within existing block ... (skip) "
@@ -289,8 +291,10 @@ def analyseBlocks(list_of_blocks):
 						collision_flag = 1
 						 # do nothing (the hit is longer than the block)
 					else:
-						# There is slight overlap
 						print "=> There is overlap "
+
+						# There is slight overlap
+						
 						collision_flag = 1
 				
 			if collision_flag == 0:
