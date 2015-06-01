@@ -246,10 +246,10 @@ class BlockCollection():
 
 	def updateCoordinates(self, contig, index, start, end):
 		print "Updating coordinates",
-		print "Old = [" + str(self.contigs[contig][index].start) + "," + str(self.contigs[contig][index].end)+ "]"
+		print "Old = [" + str(self.contigs[contig][index].coordinates[0]) + "," + str(self.contigs[contig][index].coordinates[-1])+ "]"
 		print "New = [" + str(start) + "," + str(end) + "]"
-		self.contigs[contig][index].start = start
-		self.contigs[contig][index].end = end
+		self.contigs[contig][index].coordinates[0] = start
+		self.contigs[contig][index].coordinates[-1] = end
 
 
 def analyseBlocks(list_of_blocks):
