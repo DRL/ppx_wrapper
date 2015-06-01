@@ -252,7 +252,7 @@ def analyseBlocks(list_of_blocks):
 			# if we haven't seen this contig before  
 			#print "Times we have seen " + block.profile + " : " + str(profile_count[block.profile])
 			block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block				
-			print block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score)
+			print "CURRENT:\t" + block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score)
 			fastblockresults_dict[block.contig] = [] # populate fastblockresults_dict : key = contig, value = an empty list  
 			fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
 			if not block.profile in profile_hits:
@@ -281,18 +281,18 @@ def analyseBlocks(list_of_blocks):
 						print "\tBLOCK HAS BEEN SAVED ALREADY"
 						pass
 					else:
-						print "=> No overlap between new block and other blocks ... adding to list"
+						print "=> No overlap between current block and existing blocks ... adding to list"
 						profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
 						fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
 				else:
 					# There is either complete or partial overlap
 
 					if (existingBlock_start >= block_start and existingBlock_end <= block_end):
-						print "=> New block completely contained within existing block ... skip "
+						print "=> Current block completely contained within existing block ... skip "
 						pass # do nothing (although the region of the new block is bigger than the hit) 
 						# IDEA: one could consider making the hit longer using the coordinates of the block
 					elif (block_start >= existingBlock_start and block_end <= existingBlock_start):
-						print "=> New block completely contains existing block ... (increase length of existing block) "
+						print "=> Current block completely contains existing block ... (increase length of existing block) "
 						# Block is contained within hit
 						pass # do nothing (the hit is longer than the block)
 					else:
