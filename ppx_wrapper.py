@@ -244,7 +244,7 @@ class BlockCollection():
 	def getBlocksByContig(self, contig):
 		return self.profile[contig]
 
-	def updateCoordinates(self, block, start, stop):
+	def updateCoordinates(self, block, start, end):
 		profile = block.profile
 		contig = block.contig
 		print "Updating coordinates",
