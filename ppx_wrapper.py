@@ -344,6 +344,7 @@ def analyseBlocks(list_of_blocks):
 		for hits in profile_hits[profile]:
 			ppx_log.write(str(hits.__dict__) + "\n")
 	
+	print block_collection.__dict__
 	return profile_hits # return dict of lists with the hits archived by profile
 
 def OLDanalyseBlocks(list_of_blocks):
