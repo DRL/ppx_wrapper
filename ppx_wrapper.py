@@ -290,7 +290,7 @@ def analyseBlocks(list_of_blocks):
 						# There is no overlap
 						print "???"
 				
-				if not collision_flag == 0:
+				if collision_flag == 0:
 					if not block.profile in profile_hits: # if we haven't seen a hit for this profile before
 						profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
 					
