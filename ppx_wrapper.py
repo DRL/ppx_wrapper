@@ -347,12 +347,12 @@ def analyseBlocks(list_of_blocks):
 	for profile in block_collection.profile:
 		print profile + " : "
 		for block in block_collection.profile[profile]:
-			print str(block)
+			print str(block.__dict__)
 	for contig in block_collection.contigs:
-		print contigs + " : "
+		print contig + " : "
 		for block in block_collection.contigs[contig]:
-			print str(block)
-	
+			print str(block.__dict__)
+
 	return profile_hits # return dict of lists with the hits archived by profile
 
 def OLDanalyseBlocks(list_of_blocks):
