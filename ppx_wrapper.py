@@ -245,7 +245,7 @@ class BlockCollection():
 		return self.profile[contig]
 
 	def updateCoordinates(self, contig, index, start, end):
-		print "Updating coordinates",
+		print "Updating coordinates"
 		print "Old = [" + str(self.contigs[contig][index].coordinates[0]) + "," + str(self.contigs[contig][index].coordinates[-1])+ "]"
 		print "New = [" + str(start) + "," + str(end) + "]"
 		self.contigs[contig][index].coordinates[0] = start
