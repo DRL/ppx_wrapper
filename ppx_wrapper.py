@@ -253,7 +253,7 @@ class BlockCollection():
 				existingProBlock.start = start 
 				existingProBlock.end = end
 				print ".",
-		for existingConBlock in self.contig[contig]:
+		for existingConBlock in self.contigs[contig]:
 			if existingConBlock == block:
 				existingConBlock.start = start 
 				existingConBlock.end = end
