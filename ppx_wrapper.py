@@ -292,13 +292,13 @@ def analyseBlocks(list_of_blocks):
 						# There is slight overlap
 						print "=> There is overlap "
 				
-				if collision_flag == 0:
-					if not block.profile in profile_hits: # if we haven't seen a hit for this profile before
-						profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
+			if collision_flag == 0:
+				if not block.profile in profile_hits: # if we haven't seen a hit for this profile before
+					profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
 					
-					print "=> Adding to list"
-					profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
-					fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
+				print "=> Adding to list"
+				profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
+				fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
 
 	# Debugging
 	ppx_log = open(RESULTS_DIR + species + ".log", "w") 
