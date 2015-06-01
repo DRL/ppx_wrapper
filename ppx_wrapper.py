@@ -292,11 +292,11 @@ def analyseBlocks(list_of_blocks):
 					# There is either complete or partial overlap
 
 					if (existingBlock_start >= block_start and existingBlock_end <= block_end):
-						print "=> Current block completely contained within existing block ... skip "
+						print "=> Existing block completely contained within current block ... skip "
 						pass # do nothing (although the region of the new block is bigger than the hit) 
 						# IDEA: one could consider making the hit longer using the coordinates of the block
 					elif (block_start >= existingBlock_start and block_end <= existingBlock_start):
-						print "=> Current block completely contains existing block ... (increase length of existing block) "
+						print "=> Current block completely contained within existing block ... (increase length of existing block) "
 						# Block is contained within hit
 						pass # do nothing (the hit is longer than the block)
 					else:
