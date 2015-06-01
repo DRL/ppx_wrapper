@@ -246,8 +246,10 @@ class BlockCollection():
 
 	def updateCoordinates(self, contig, index, start, end):
 		print "Updating coordinates",
-		self.contigs[contig][index].start = int(start)
-		self.contigs[contig][index].end = int(end)
+		print "Old = [" + str(self.contigs[contig][index].start) + "," + str(self.contigs[contig][index].end)+ "]
+		print "New = [" + str(start) + "," + str(end)+ "]"
+		self.contigs[contig][index].start = start
+		self.contigs[contig][index].end = end
 
 
 def analyseBlocks(list_of_blocks):
@@ -257,7 +259,7 @@ def analyseBlocks(list_of_blocks):
 	
 	block_collection = BlockCollection()
 
-	fastblockresults_dict = {} # where the "good" blocks (hits) are stored, archived by contig (dict of lists)
+	#fastblockresults_dict = {} # where the "good" blocks (hits) are stored, archived by contig (dict of lists)
 	profile_hits = {} # where the "good" blocks (hits) are stored, archived by profile (dict of lists)
 
 	profile_count = {}	# number of blocks stored per profile 
@@ -309,22 +311,22 @@ def analyseBlocks(list_of_blocks):
 					pass
 				else:
 					# There is either complete or partial overlap
+					collision_flag = 1
 					if (block_start <= existingBlock_start and existingBlock_end <= block_end):
 						print "=> Existing block completely contained within current block ... (increase length of existing block) "
 						block_collection.updateCoordinates(existingBlock.contig, index, block_start, block_end) 
-						collision_flag = 1 # but the current block gets not added 
+						
 						# IDEA: one could consider making the hit longer using the coordinates of the block
 					elif (existingBlock_start <= block_start and block_end <= existingBlock_end):
 						print "=> Current block completely contained within existing block ... (skip) "
 						# Block is contained within hit
-						collision_flag = 1
+						
 						 # do nothing (the hit is longer than the block)
 					else:
 						print "=> There is overlap "
 
 						# There is slight overlap
 						
-						collision_flag = 1
 				
 			if collision_flag == 0:
 				print "=> Adding to list"
