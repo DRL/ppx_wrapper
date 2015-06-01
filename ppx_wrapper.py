@@ -244,32 +244,10 @@ class BlockCollection():
 	def getBlocksByContig(self, contig):
 		return self.profile[contig]
 
-	def updateCoordinates(self, block, start, end):
-		profile = block.profile
-		contig = block.contig
+	def updateCoordinates(self, contig, index, start, end):
 		print "Updating coordinates",
-		for idx, existingProBlock in enumerate(self.profile[profile]):
-			if existingProBlock == block:
-				new_block = existingProBlock
-				new_block.start = start 
-				new_block.end = end
-				self.profile[profile][idx]=new_block
-				print ".",
-		for idx, existingConBlock in enumerate(self.contigs[contig]):
-			if existingConBlock == block:
-				new_block = existingConBlock
-				existingConBlock.start = start 
-				existingConBlock.end = end
-				self.contigs[contig][idx]=new_block
-				print ".",
-		for existingBlock in self.blocks:
-			if existingBlock == block:
-				new_block = existingBlock
-				self.blocks.remove(existingBlock)
-				new_block.start = start 
-				new_block.end = end
-				self.blocks.add(new_block)
-				print "."
+		self.contigs[contig][index].start = int(start)
+		self.contigs[contig][index].end = int(end)
 
 
 def analyseBlocks(list_of_blocks):
@@ -316,7 +294,7 @@ def analyseBlocks(list_of_blocks):
 			block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block
 			print "CURRENT:\t" + block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score) + " " + block.strand
 			
-			for existingBlock in block_collection.contigs[block.contig]:
+			for index, existingBlock in enumerate(block_collection.contigs[block.contig]):
 				if existingBlock == block:
 					continue
 				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
@@ -333,7 +311,7 @@ def analyseBlocks(list_of_blocks):
 					# There is either complete or partial overlap
 					if (block_start <= existingBlock_start and existingBlock_end <= block_end):
 						print "=> Existing block completely contained within current block ... (increase length of existing block) "
-						block_collection.updateCoordinates(existingBlock, block_start, block_end) 
+						block_collection.updateCoordinates(contig, index, block_start, block_end) 
 						collision_flag = 1 # but the current block gets not added 
 						# IDEA: one could consider making the hit longer using the coordinates of the block
 					elif (existingBlock_start <= block_start and block_end <= existingBlock_end):
