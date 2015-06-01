@@ -261,17 +261,17 @@ def analyseBlocks(list_of_blocks):
 			profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
 		else: 
 			print
-			print "We have seen this contig: " + block.contig
-			print "Times we have seen " + block.profile + " : " + str(profile_count[block.profile])
+			#print "We have seen this contig: " + block.contig
+			#print "Times we have seen " + block.profile + " : " + str(profile_count[block.profile])
 			# if we have seen this contig before 
 			block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block
-			print block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score)
+			print "CURRENT:\t" + block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score)
 			
 			for existingBlock in fastblockresults_dict[block.contig]:
 				print " Comparing coordinates of this block with existing ones ... "
 				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
 				existingBlock_start, existingBlock_end = int(existingBlock.get('start', overlap_threshold)), int(existingBlock.get('end', overlap_threshold)) # get coordinates of existingBlock
-				print existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end) + " " + str(existingBlock.score)
+				print "EXISTING:\t" + existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end) + " " + str(existingBlock.score)
 				coordinates = [existingBlock_start, existingBlock_start, block_start, block_end] # make a list with the coordinates 
 				sum_lengths = (existingBlock_start - existingBlock_start) + (block_end - block_start) # sum up the lengths of bot regions (existing hit on contig and new block to be added)
 				if sum_lengths >= (max(coordinates) - min(coordinates)):
@@ -294,7 +294,7 @@ def analyseBlocks(list_of_blocks):
 								# if we haven't seen a hit for this profile before 
 							profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
 						if block in profile_hits[block.profile] or block in fastblockresults_dict[block.contig]:
-							print " BLOCK HAS BEEN SAVED ALREADY"
+							print "\tBLOCK HAS BEEN SAVED ALREADY"
 							pass
 						else:
 							print "=> No overlap between new block and other blocks ... adding to list"
