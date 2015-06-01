@@ -250,7 +250,7 @@ def analyseBlocks(list_of_blocks):
 		#print str(fastblockresults_dict)
 		if not block.contig in fastblockresults_dict:
 			# if we haven't seen this contig before  
-			print "Times we have seen " + block.profile + " : " + str(profile_count[block.profile])
+			#print "Times we have seen " + block.profile + " : " + str(profile_count[block.profile])
 			block_start, block_end = int(block.get('start', overlap_threshold)), int(block.get('end', overlap_threshold)) # get coordinates of current block				
 			print block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score)
 			fastblockresults_dict[block.contig] = [] # populate fastblockresults_dict : key = contig, value = an empty list  
@@ -268,7 +268,6 @@ def analyseBlocks(list_of_blocks):
 			print "CURRENT:\t" + block.profile + "\t" + block.contig + "\t" + str(block_start) + " " + str(block_end) + " " + str(block.score)
 			
 			for existingBlock in fastblockresults_dict[block.contig]:
-				print " Comparing coordinates of this block with existing ones ... "
 				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
 				existingBlock_start, existingBlock_end = int(existingBlock.get('start', overlap_threshold)), int(existingBlock.get('end', overlap_threshold)) # get coordinates of existingBlock
 				print "EXISTING:\t" + existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end) + " " + str(existingBlock.score)
