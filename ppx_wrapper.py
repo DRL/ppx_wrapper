@@ -271,34 +271,33 @@ def analyseBlocks(list_of_blocks):
 				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
 				existingBlock_start, existingBlock_end = int(existingBlock.get('start', overlap_threshold)), int(existingBlock.get('end', overlap_threshold)) # get coordinates of existingBlock
 				print "EXISTING:\t" + existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end) + " " + str(existingBlock.score)
-				coordinates = [existingBlock_start, existingBlock_start, block_start, block_end] # make a list with the coordinates 
-				sum_lengths = (existingBlock_start - existingBlock_start) + (block_end - block_start) # sum up the lengths of bot regions (existing hit on contig and new block to be added)
-				if sum_lengths >= (max(coordinates) - min(coordinates)):
-					# "overlap between the two" if the sum of the lengths is greater or equal to the difference between maximal and minimal coordinate 
-					print "=> New block is within better block ... skip"
-					pass # do nothing (there is already one hit with a higher score in that region)
-				else:
-					# There is either complete overlap or none at all
-					if (existingBlock_start >= block_start and existingBlock_start <= block_end):
-						print "=> New block overlapping, but new block is bigger ... "
-						pass # do nothing (although the region of the new block is bigger than the hit) 
-						# IDEA: one could consider making the hit longer using the coordinates of the block
-					elif (block_start >= existingBlock_start and block_end <= existingBlock_start):
-						print "=> New block overlapping, but another block is bigger ... "
-						# Block is contained within hit
-						pass # do nothing (the hit is longer than the block)
-					else:
-						# There is no overlap
-						if not block.profile in profile_hits:
-								# if we haven't seen a hit for this profile before 
-							profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
-						if block in profile_hits[block.profile] or block in fastblockresults_dict[block.contig]:
+				coordinates = [existingBlock_start, existingBlock_end, block_start, block_end] # make a list with the coordinates 
+				sum_lengths = (existingBlock_end - existingBlock_start) + (block_end - block_start) # sum up the lengths of both regions (existing hit on contig and new block to be added)
+				if sum_lengths <= (max(coordinates) - min(coordinates)):
+					# no overlap (if equal than they share one coordinate)
+					if not block.profile in profile_hits: # if we haven't seen a hit for this profile before
+						profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
+					if block in profile_hits[block.profile] or block in fastblockresults_dict[block.contig]:
 							print "\tBLOCK HAS BEEN SAVED ALREADY"
 							pass
 						else:
 							print "=> No overlap between new block and other blocks ... adding to list"
 							profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
 							fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
+				else:
+					# There is either complete or partial overlap
+
+					if (existingBlock_start >= block_start and existingBlock_end <= block_end):
+						print "=> New block completely contained within existing block ... skip "
+						pass # do nothing (although the region of the new block is bigger than the hit) 
+						# IDEA: one could consider making the hit longer using the coordinates of the block
+					elif (block_start >= existingBlock_start and block_end <= existingBlock_start):
+						print "=> New block completely contains existing block ... (increase length of existing block) "
+						# Block is contained within hit
+						pass # do nothing (the hit is longer than the block)
+					else:
+						# There is no overlap
+						print "???"
 
 	# Debugging
 	ppx_log = open(RESULTS_DIR + species + ".log", "w") 
