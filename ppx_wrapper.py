@@ -224,7 +224,7 @@ def parseFastBlockSearchResult(result_file, profile_name, contig_name):
 	return list_of_blocks
 
 class BlockCollection():
-	def __init__(self, contig, score, multi_score):
+	def __init__(self):
 		self.profile = {}
 		self.contigs = {}
 		self.blocks = set()
