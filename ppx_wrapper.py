@@ -230,7 +230,11 @@ class BlockCollection():
 		self.blocks = set()
 
 	def addBlock(self, block):
+		if not block.profile in self.profile:
+			self.profile[block.profile] = []
 		self.profile[block.profile].append(block)
+		if not block.contig in self.contigs:
+			self.contigs[block.contig] = []
 		self.contigs[block.contig].append(block)
 		self.blocks.add(block)
 
