@@ -291,6 +291,7 @@ def analyseBlocks(list_of_blocks):
 					else:
 						# There is slight overlap
 						print "=> There is overlap "
+						collision_flag = 1
 				
 			if collision_flag == 0:
 				if not block.profile in profile_hits: # if we haven't seen a hit for this profile before
