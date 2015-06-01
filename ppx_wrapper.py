@@ -215,6 +215,8 @@ def parseFastBlockSearchResult(result_file, profile_name, contig_name):
 			multi_score = float(hit[1].lstrip("Mult. score:"))
 			block = Block(contig, score, multi_score)
 			block.coordinates = sorted([int(x.split("\t")[0]) for x in hit[2:] if len(x.split("\t")) > 1])
+			if len(block.coordinates) < 2:
+				block.coordinates.append(block.coordinates[0]+1000)
 			block.strand = hit[-1].split("\t")[2]
 			block.profile = profile
 		list_of_blocks.append(block)
@@ -303,7 +305,7 @@ def analyseBlocks(list_of_blocks):
 				# for each existingBlock ("sane" block) that has already been put into fastblockresults_dict (they all have better score than the current one)
 				existingBlock_start = int(existingBlock.coordinates[0])
 				existingBlock_end = int(existingBlock.coordinates[-1]) # get coordinates of existingBlock
-				
+
 				print "EXISTING:\t" + existingBlock.profile + "\t" + existingBlock.contig + "\t" + str(existingBlock_start) + " " + str(existingBlock_end) + " " + str(existingBlock.score) + " " + block.strand
 				coordinates = [existingBlock_start, existingBlock_end, block_start, block_end] # make a list with the coordinates 
 				sum_lengths = (existingBlock_end - existingBlock_start) + (block_end - block_start) # sum up the lengths of both regions (existing hit on contig and new block to be added)
