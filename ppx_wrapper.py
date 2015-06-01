@@ -256,6 +256,7 @@ def analyseBlocks(list_of_blocks):
 				# if we haven't seen a hit for this profile before 
 				profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
 			profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
+			print "=> Adding to list"
 		else: 
 			#print "We have seen this contig: " + block.contig
 			#print "Times we have seen " + block.profile + " : " + str(profile_count[block.profile])
