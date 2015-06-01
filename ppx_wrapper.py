@@ -276,16 +276,16 @@ def analyseBlocks(list_of_blocks):
 				sum_lengths = (existingBlock_start - existingBlock_start) + (block_end - block_start) # sum up the lengths of bot regions (existing hit on contig and new block to be added)
 				if sum_lengths >= (max(coordinates) - min(coordinates)):
 					# "overlap between the two" if the sum of the lengths is greater or equal to the difference between maximal and minimal coordinate 
-					print "New block is within better block ... skip"
+					print "=> New block is within better block ... skip"
 					pass # do nothing (there is already one hit with a higher score in that region)
 				else:
 					# There is either complete overlap or none at all
 					if (existingBlock_start >= block_start and existingBlock_start <= block_end):
-						print "New block overlapping, but new block is bigger ... "
+						print "=> New block overlapping, but new block is bigger ... "
 						pass # do nothing (although the region of the new block is bigger than the hit) 
 						# IDEA: one could consider making the hit longer using the coordinates of the block
 					elif (block_start >= existingBlock_start and block_end <= existingBlock_start):
-						print "New block overlapping, but another block is bigger ... "
+						print "=> New block overlapping, but another block is bigger ... "
 						# Block is contained within hit
 						pass # do nothing (the hit is longer than the block)
 					else:
@@ -297,7 +297,7 @@ def analyseBlocks(list_of_blocks):
 							print " BLOCK HAS BEEN SAVED ALREADY"
 							pass
 						else:
-							print " No overlap between new block and other blocks ... adding to list"
+							print "=> No overlap between new block and other blocks ... adding to list"
 							profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
 							fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
 
