@@ -278,12 +278,12 @@ def analyseBlocks(list_of_blocks):
 					if not block.profile in profile_hits: # if we haven't seen a hit for this profile before
 						profile_hits[block.profile]=[] # populate profile_hits : key = profile, value = an empty list
 					if block in profile_hits[block.profile] or block in fastblockresults_dict[block.contig]:
-							print "\tBLOCK HAS BEEN SAVED ALREADY"
-							pass
-						else:
-							print "=> No overlap between new block and other blocks ... adding to list"
-							profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
-							fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
+						print "\tBLOCK HAS BEEN SAVED ALREADY"
+						pass
+					else:
+						print "=> No overlap between new block and other blocks ... adding to list"
+						profile_hits[block.profile].append(block) # add current block to the list in profile_hits   
+						fastblockresults_dict[block.contig].append(block) # add current block to the list in fastblockresults_dict  
 				else:
 					# There is either complete or partial overlap
 
